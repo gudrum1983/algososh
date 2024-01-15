@@ -33,3 +33,8 @@ code {
   gap: 16px;
   margin: 0;
 }
+
+.container-result-column{
+  display: flex;
+  flex-direction: column;
+}
