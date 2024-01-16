@@ -4,16 +4,23 @@ import {Circle} from "../ui/circle/circle";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {ElementStates} from "../../types/element-states";
-
+import { v4 as uuidv4 } from 'uuid';
 export const StringComponent: React.FC = () => {
 
-  const [letters, setLetters] = useState<Array<{ id: number, name: string }> | null>(null)
+  const [letters, setLetters] = useState<Array<TItem> | null>(null)
   const [value, setValue] = useState<string>("")
-  const [reverseLetters, setReverseLetters] = useState<Array<{ id: number, name: string }> | null>(null)
+  const [reverseLetters, setReverseLetters] = useState<Array<TItem> | null>(null)
 const [isLoader, setIsLoader] = useState(false)
 
 
-  function reverseArray(inputArray: Array<{ id: number, name: string }>): Array<{ id: number, name: string }> {
+  type TItem = {
+    id: string,
+    name: string
+    number: number
+  }
+
+
+  function reverseArray(inputArray: Array<TItem>): Array<TItem> {
     return [...inputArray].reverse();
   }
 
@@ -25,7 +32,7 @@ const [isLoader, setIsLoader] = useState(false)
       setIsLoader(true)
 
       const test1 = value.split('')
-      const test2 = test1.map(item => ({id: 55, name: item}))
+      const test2 = test1.map((item, index) => ({id: uuidv4(), number:index, name: item}))
       setLetters(test2)
       setValue("")
 
@@ -61,17 +68,17 @@ const [isLoader, setIsLoader] = useState(false)
   }
 
 
-  const result = (array: Array<{ id: number, name: string }>): JSX.Element => {
+  const result = (array: Array<TItem>): JSX.Element => {
     return (
       <div className="container-result">
-        {array.map((item) => <Circle state={ElementStates.Default} letter={item.name} key={item.id}/>)}
+        {array.map((item) => <Circle state={ElementStates.Default} letter={item.name} key={item.number}/>)}
       </div>)
   }
 
-  const result2 = (array: Array<{ id: number, name: string }>): JSX.Element => {
+  const result2 = (array: Array<TItem>): JSX.Element => {
     return (
       <div className="container-result">
-        {array.map((item) => <Circle state={ElementStates.Changing} letter={item.name} key={item.id}/>)}
+        {array.map((item) => <Circle state={ElementStates.Changing} letter={item.name} key={item.number}/>)}
       </div>)
   }
 
