@@ -4,108 +4,237 @@ import {Circle} from "../ui/circle/circle";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {ElementStates} from "../../types/element-states";
-import { v4 as uuidv4 } from 'uuid';
-export const StringComponent: React.FC = () => {
+import {reverseWithHistory, TCheck} from "../../utils/reverse";
+import {Queue} from "../../utils/queue";
 
-  const [letters, setLetters] = useState<Array<TItem> | null>(null)
-  const [value, setValue] = useState<string>("")
-  const [reverseLetters, setReverseLetters] = useState<Array<TItem> | null>(null)
-const [isLoader, setIsLoader] = useState(false)
+export type TItem = {
+  value: string,
+  number: number,
+  state: ElementStates
+}
+
+const StepByStepDisplay = ({setLoader, str, queue, delay = 1000, content}: {
+  str: Array<TItem>,
+  queue: Queue<TCheck>,
+  delay?: number,
+  setLoader: React.Dispatch<React.SetStateAction<boolean>>,
+  content:  (arr1: Array<TItem>) => JSX.Element
+  }) => {
+  const [arr, setArr] = useState<Array<TItem>>([]);
+  const [countStep, setCountStep] = useState<number>(0)
+  const [visualArr, setVisualArr] = useState<Array<TItem> | null>(null)
+
+  console.log(`reverseComp - ${countStep}`, queue)
 
 
-  type TItem = {
-    id: string,
-    name: string
-    number: number
-  }
+  /*  const [currentIndex, setCurrentIndex] = useState(0);*/
+  /*  React.useEffect(() => {
+      if (currentIndex < arr.length / 2) {
+        setTimeout(() => {
+          const newArr = [...arr]; // Создаем копию массива
+          // Меняем местами элементы в копии массива
+          newArr[currentIndex] = arr[arr.length - 1 - currentIndex];
+          newArr[arr.length - 1 - currentIndex] = arr[currentIndex];
 
+          setArr(newArr); // Обновляем состояние с новым массивом
+          setCurrentIndex(currentIndex + 1); // Перемещаем указатель на следующий шаг
+        }, delay);
+      }
+    }, [arr, currentIndex]);*/
 
-  function reverseArray(inputArray: Array<TItem>): Array<TItem> {
-    return [...inputArray].reverse();
-  }
-
-  function handlerOnClick() {
-    setReverseLetters(null)
-
-
-    if (value) {
-      setIsLoader(true)
-
-      const test1 = value.split('')
-      const test2 = test1.map((item, index) => ({id: uuidv4(), number:index, name: item}))
-      setLetters(test2)
-      setValue("")
-
-    }
-  }
 
   React.useEffect(() => {
-    let reverseTimeoutId: NodeJS.Timeout;
-    let lettersTimeoutId: NodeJS.Timeout;
+    setLoader(true)
+    setArr(str)
 
-    if (letters) {
-      reverseTimeoutId = setTimeout(() => {
-        setReverseLetters(reverseArray(letters!));
-      }, 3000);
+  }, [str]);
 
-      lettersTimeoutId = setTimeout(() => {
-        setLetters(null);
+  React.useEffect(() => {
 
-        setIsLoader(false)
-      }, 6000);
+      let stepsTimeoutId: NodeJS.Timeout;
+      let stepsTimeoutId78: NodeJS.Timeout;
+
+      if (countStep === 0) {
+        setCountStep(1)
+        setVisualArr(arr)
+      }
+
+      if (countStep > 0 && !queue.isEmpty() && visualArr && arr) {
+
+        const newArr = [...arr]; // Создаем копию массива
+
+        //////------------------------------------------------------------------------
+        stepsTimeoutId = setTimeout(() => {
+
+
+          const stepData = queue.peak()
+          console.log(countStep, queue.isEmpty())
+
+          //////////////////////////////////////////////////////////
+          stepData?.forEach((item) => {
+            if (newArr) {
+              const newI = {value: item.value, number: item.number, state: item.state}
+              newArr[item.number] = newI
+            }
+            /*              setCountStep(prevState => prevState + 1)*/
+          })
+          ///////////////////////////////////////////////////////////
+          queue.dequeue()
+          setArr(newArr)
+          /*          // Меняем местами элементы в копии массива
+                    newArr[currentIndex] = arr[arr.length - 1 - currentIndex];
+                    newArr[arr.length - 1 - currentIndex] = arr[currentIndex];
+
+                    setArr(newArr); // Обновляем состояние с новым массивом
+                    setCurrentIndex(currentIndex + 1); // Перемещаем указатель на следующий шаг*/
+        }, delay);
+        //////------------------------------------------------------------------------
+
+
+      }
+
+      if (countStep > 0 && !queue.isEmpty() && visualArr) {
+        stepsTimeoutId78 = setTimeout(() => {
+          console.log("Должно быть по таймеру")
+          setCountStep(prevState => prevState + 1)
+        }, delay);
+      }
+
+      if (countStep > 0 && queue.isEmpty() && visualArr) {
+        setLoader(false)
+      }
+
+      return () => {
+        clearTimeout(stepsTimeoutId);
+        clearTimeout(stepsTimeoutId78)
+      };
     }
+    ,
+    [arr, countStep, queue]
+  )
+  ;
 
-    return () => {
-      clearTimeout(reverseTimeoutId);
-      clearTimeout(lettersTimeoutId);
-    };
+/*  const content = (arr1: Array<TItem>) => {return (
+      <div className="container-result">
+        {visualArr && arr1.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
+      </div>
+    );}*/
 
 
-  }, [letters]);
+return (
+  <>
+    {content(arr)}
+  </>
 
-  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value)
+/*  <div className="container-result">
+    {visualArr && arr.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
+    {/!*      {reverseLetters && result2(reverseLetters)}*!/}
+  </div>*/
+);
+}
+;
+export const StringComponent: React.FC = () => {
+
+  const [inputString, setInputString] = useState<string>("")
+  const [isLoader, setIsLoader] = useState(false)
+
+  const [letters, setLetters] = useState<Array<TItem> | null>(null)
+
+
+  function handlerOnClick() {
+
+
+    if (inputString) {
+      setIsLoader(true)
+      const mappingLetters = inputString.split('').map((item, index) => ({
+        number: index,
+        value: item,
+        state: ElementStates.Default
+      }))
+      setLetters(mappingLetters)
+    }
   }
 
+  const reverseQueue = React.useMemo(() => {
+    if (letters) {
+      const stepsQueue = new Queue<TCheck>(20)
+      reverseWithHistory(letters, stepsQueue)
+      console.log("newStepQueue", stepsQueue)
+      if (stepsQueue) {
+        setIsLoader(false)
+      }
+      return stepsQueue
+    }
+    return null
+  }, [letters])
+
+  /*  React.useEffect(() => {
+      let stepsTimeoutId: NodeJS.Timeout;
+
+      if (reverseQueue && !reverseQueue.isEmpty()) {
+        let step = 0
+
+        stepsTimeoutId = setTimeout(() => {
+          while (!reverseQueue.isEmpty() && step < 4) {
+            console.log(reverseQueue.peak())
+            reverseQueue.dequeue();
+            step++
+          }
+        }, 1000);
+      }
+
+      return () => {
+        clearTimeout(stepsTimeoutId);
+
+      };
+
+    }, [reverseQueue]);*/
+
+  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputString(e.target.value)
+  }
 
   const result = (array: Array<TItem>): JSX.Element => {
     return (
       <div className="container-result">
-        {array.map((item) => <Circle state={ElementStates.Default} letter={item.name} key={item.number}/>)}
+        {array.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
       </div>)
   }
 
-  const result2 = (array: Array<TItem>): JSX.Element => {
-    return (
-      <div className="container-result">
-        {array.map((item) => <Circle state={ElementStates.Changing} letter={item.name} key={item.number}/>)}
-      </div>)
-  }
+  React.useEffect(() => {
+    console.log("Поменялась inputString")
 
+  }, [inputString]);
+
+  React.useEffect(() => {
+    console.log("Поменялась isLoader")
+
+  }, [isLoader]);
+
+  React.useEffect(() => {
+    console.log("Поменялась str")
+
+  }, [letters]);
+
+
+  const content = (arr1: Array<TItem>) => {return (
+    <div className="container-result">
+      {arr1.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
+    </div>
+  );}
 
   return (
     <SolutionLayout title="Строка">
       <div className="container-inputs-buttons container_type_string">
-        <Input maxLength={11} isLimitText={true} onChange={handlerOnChange} value={value}/>
-        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!value}/>
+        <Input maxLength={11} isLimitText={true} onChange={handlerOnChange} value={inputString} disabled={isLoader}/>
+        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputString}/>
       </div>
       <div className="container-result-column">
-
-
-        {/*<Circle state={ElementStates.Changing} letter={"lett"} head={"head"} index={8} isSmall={false}
-                tail={"tail"}></Circle>
-        <Circle state={ElementStates.Modified} letter={"lett"} head={"head"} index={8} isSmall={false}
-                tail={"tail"}></Circle>
-        <Circle letter={"lett"} head={"head"} index={8} isSmall={false}
-                tail={<Circle letter={"lett"} head={"head"} index={8} isSmall={true}
-                              tail={"tail"}></Circle>}></Circle>*/}
-
-
-        {letters && result(letters)}
-        {reverseLetters && result2(reverseLetters)}
-
+        {reverseQueue && letters &&
+          <StepByStepDisplay str={letters} queue={reverseQueue} setLoader={setIsLoader} content={content}/>}
       </div>
 
     </SolutionLayout>
   );
 };
+
