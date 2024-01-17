@@ -73,8 +73,7 @@ const StepByStepDisplay = ({setLoader, str, queue, delay = 1000, content}: {
           //////////////////////////////////////////////////////////
           stepData?.forEach((item) => {
             if (newArr) {
-              const newI = {value: item.value, number: item.number, state: item.state}
-              newArr[item.number] = newI
+              newArr[item.number] = {value: item.value, number: item.number, state: item.state}
             }
             /*              setCountStep(prevState => prevState + 1)*/
           })
@@ -194,12 +193,6 @@ export const StringComponent: React.FC = () => {
     setInputString(e.target.value)
   }
 
-  const result = (array: Array<TItem>): JSX.Element => {
-    return (
-      <div className="container-result">
-        {array.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
-      </div>)
-  }
 
   React.useEffect(() => {
     console.log("Поменялась inputString")

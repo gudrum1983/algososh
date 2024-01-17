@@ -62,8 +62,9 @@ function setModified(a: any, b: any):TCheck {
 }
 
 
+/*
 function swap(a: TItem, b: TItem) {
   const temp = a.value;
   a.value = b.value;
   b.value = temp;
-}
+}*/
