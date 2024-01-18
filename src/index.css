@@ -34,6 +34,11 @@ code {
   margin: 0;
 }
 
+.list {
+list-style: none;
+  padding: 0;
+}
+
 .container-result-column{
   display: flex;
   flex-direction: column;

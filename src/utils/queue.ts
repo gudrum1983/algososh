@@ -11,9 +11,14 @@ export class Queue<T> implements IQueue<T> {
   private readonly size: number = 0;
   private length: number = 0;
 
-  constructor(size: number) {
-    this.size = size;
-    this.container = Array(size);
+  constructor(size: number = 0, data?: T[]) {
+    if (data) {
+      this.size = size || data.length;
+      data.forEach(item => this.enqueue(item));
+    } else {
+      this.size = size;
+      this.container = Array(this.size);
+    }
   }
 
   enqueue = (item: T) => {
@@ -34,8 +39,6 @@ export class Queue<T> implements IQueue<T> {
       this.head = (this.head + 1) % this.size;
       this.length--;
     }
-
-
   };
 
   peak = (): T | null => {
