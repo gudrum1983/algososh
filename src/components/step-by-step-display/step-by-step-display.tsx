@@ -2,7 +2,7 @@ import {Queue} from "../../utils/queue";
 import {TCheck} from "../../utils/reverse";
 import React, {useState} from "react";
 import {TItem} from "../../pages/string/string";
-import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {DELAY_IN_MS} from "../../constants/delays";
 
 export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN_MS, content}: {
     data: Array<TItem>,

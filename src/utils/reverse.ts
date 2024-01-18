@@ -4,10 +4,10 @@ import {IQueue} from "./queue";
 
 export type TCheck = Array<TItem>
 
-export function reverseWithHistory(letters: TCheck, steps?: IQueue<TCheck>): any {
+export function reverseWithHistory(letters: TCheck): any {
 
   let stepTemp = letters.slice();
-  let deepCopiedArray = JSON.parse(JSON.stringify(letters));
+/*  let deepCopiedArray = JSON.parse(JSON.stringify(letters));*/
 /*  let history = steps*/
   let history2:Array<TCheck> = []
   let startIndex = 0
