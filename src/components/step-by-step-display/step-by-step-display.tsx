@@ -1,19 +1,18 @@
 import {Queue} from "../../utils/queue";
-import {TCheck} from "../../utils/reverse";
 import React, {useState} from "react";
-import {TItem} from "../../pages/string/string";
+import {Elements, Element} from "../../pages/string/string";
 import {DELAY_IN_MS} from "../../constants/delays";
 
 export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN_MS, content}: {
-    data: Array<TItem>,
-    stepsQueue: Queue<TCheck>,
+    data: Array<Element>,
+    stepsQueue: Queue<Elements>,
     delay?: number,
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
-    content: (arr1: Array<TItem>) => JSX.Element
+    content: (elementsList: Array<Element>) => JSX.Element
   }) => {
-    const [arr, setArr] = useState<Array<TItem>>([]);
+    const [arr, setArr] = useState<Array<Element>>([]);
     const [countStep, setCountStep] = useState<number>(0)
-    const [visualArr, setVisualArr] = useState<Array<TItem> | null>(null)
+    const [visualArr, setVisualArr] = useState<Array<Element> | null>(null)
 
     React.useEffect(() => {
       setLoader(true)
@@ -36,16 +35,11 @@ export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN
           const newArr = [...arr];
 
           stepsTimeoutId = setTimeout(() => {
-
-
             const stepData = stepsQueue.peak()
-            console.log(countStep, stepsQueue.isEmpty())
-
             stepData?.forEach((item) => {
               if (newArr) {
                 newArr[item.number] = {value: item.value, number: item.number, state: item.state}
               }
-
             })
 
             stepsQueue.dequeue()
@@ -55,7 +49,6 @@ export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN
 
         if (countStep > 0 && !stepsQueue.isEmpty() && visualArr) {
           stepsTimeoutId78 = setTimeout(() => {
-            console.log("Должно быть по таймеру")
             setCountStep(prevState => prevState + 1)
           }, delay);
         }
@@ -74,22 +67,10 @@ export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN
     )
     ;
 
-    /*  const content = (arr1: Array<TItem>) => {return (
-          <div className="container-result">
-            {visualArr && arr1.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
-          </div>
-        );}*/
-
-
     return (
       <>
         {content(arr)}
       </>
-
-      /*  <div className="container-result">
-          {visualArr && arr.map((item) => <Circle state={item.state} letter={item.value} key={item.number}/>)}
-          {/!*      {reverseLetters && result2(reverseLetters)}*!/}
-        </div>*/
     );
   }
 ;

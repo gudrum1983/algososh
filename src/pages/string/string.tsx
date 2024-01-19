@@ -4,63 +4,53 @@ import {Circle} from "../../components/ui/circle/circle";
 import {Input} from "../../components/ui/input/input";
 import {Button} from "../../components/ui/button/button";
 import {ElementStates} from "../../types/element-states";
-import {reverseWithHistory, TCheck} from "../../utils/reverse";
+import {getReverseArrayWithHistory} from "../../utils/reverse";
 import {Queue} from "../../utils/queue";
 import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
 
-export type TItem = {
+export type Element = {
   value: string,
   number: number,
   state: ElementStates
 }
 
+export type Elements = Array<Element>
+
 export const StringComponent: React.FC = () => {
 
   const [inputString, setInputString] = useState<string>("")
-  const [isLoader, setIsLoader] = useState(false)
+  const [isLoader, setIsLoader] = useState<boolean>(false)
+  const [initialElements, setInitialElements] = useState<Elements | null>(null)
+  const [resultReverse, setResultReverse] = useState<Elements | null>(null)
+  const [reversalHistory, setReversalHistory] = useState<Array<Elements> | null>(null)
 
-  const [letters, setLetters] = useState<Array<TItem> | null>(null)
 
-
-  function handlerOnClick() {
-
-    if (inputString) {
-      setIsLoader(true)
-      const mappingLetters = inputString.split('').map((item, index) => ({
-        number: index,
-        value: item,
-        state: ElementStates.Default
-      }))
-      setLetters(mappingLetters)
-    }
+  function handlerOnClick():void {
+    setIsLoader(true)
+    const [historyReverse, reversedElement, initialElement] = getReverseArrayWithHistory(inputString)
+    setInitialElements(initialElement)
+    setResultReverse(reversedElement)
+    setReversalHistory(historyReverse)
   }
 
   const reverseQueue = React.useMemo(() => {
-    if (letters) {
-      const historyRe = reverseWithHistory(letters)
-
-      const stepsQueue = new Queue<TCheck>(20, historyRe)
-
-/*      const stepsQueue = new Queue<TCheck>(20)
-      reverseWithHistory(letters, stepsQueue)*/
-      console.log("newStepQueue", stepsQueue)
-      if (stepsQueue) {
-        setIsLoader(false)
-      }
-      return stepsQueue
+    if (reversalHistory) {
+      return new Queue<Elements>(10, reversalHistory)
     }
     return null
-  }, [letters])
+  }, [resultReverse])
 
-  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>)  {
     setInputString(e.target.value)
   }
 
-  const content = (arr1: Array<TItem>) => {return (
-    <ul className="container-result list">
-      {arr1.map((item) => <li key={item.number}><Circle state={item.state} letter={item.value} /></li>)}
-    </ul>
-  );}
+  const content = (elementsList: Elements) => {
+    return (
+      <ul className="container-result list">
+        {elementsList.map((element) => <li key={element.number}><Circle state={element.state} letter={element.value}/></li>)}
+      </ul>
+    );
+  }
 
   return (
     <SolutionLayout title="Строка">
@@ -68,8 +58,8 @@ export const StringComponent: React.FC = () => {
         <Input maxLength={11} isLimitText={true} onChange={handlerOnChange} value={inputString} disabled={isLoader}/>
         <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputString}/>
       </div>
-        {reverseQueue && letters &&
-          <StepByStepDisplay data={letters} stepsQueue={reverseQueue} setLoader={setIsLoader} content={content}/>}
+      {reverseQueue && initialElements &&
+        <StepByStepDisplay data={initialElements} stepsQueue={reverseQueue} setLoader={setIsLoader} content={content}/>}
 
     </SolutionLayout>
   );

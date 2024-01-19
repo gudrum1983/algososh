@@ -1,83 +1,66 @@
 import {ElementStates} from "../types/element-states";
-import {TItem} from "../pages/string/string";
-import {IQueue} from "./queue";
+import {Elements} from "../pages/string/string";
+import {allEqual, cloneElements, setChanging, setModified} from "./utils";
 
-export type TCheck = Array<TItem>
+export const getReverseArrayWithHistory = (string: string): [Array<Elements>, Elements, Elements] => {
 
-export function reverseWithHistory(letters: TCheck): any {
+  //Массив элементов созданных из каждого символа строки
+  const initElements: Elements = string.split('').map((item, index) => ({
+    number: index,
+    value: item,
+    state: ElementStates.Default
+  }))
 
-  let stepTemp = letters.slice();
-/*  let deepCopiedArray = JSON.parse(JSON.stringify(letters));*/
-/*  let history = steps*/
-  let history2:Array<TCheck> = []
-  let startIndex = 0
-  let endIndex = stepTemp.length - 1
+  //Копия массива initElements для сортировки
+  const elements = cloneElements(initElements);
+
+  //Массив для хранения истории разворота
+  const reversalHistory: Array<Elements> = []
+
+  const startIndex = 0
+  const endIndex = elements.length - 1
 
 
+  //указатель на начальный/левый индекс
+  let leftPointer = startIndex
+  //указатель на конечный/правый индекс
+  let rightPointer = endIndex
 
-/*  history.enqueue(setChanging(stepTemp[startIndex], stepTemp[endIndex]))*/
-  history2.push(setChanging(stepTemp[startIndex], stepTemp[endIndex]))
+  while (leftPointer <= rightPointer) {
+
+    const leftElement = elements[leftPointer]
+    const rightElement = elements[rightPointer]
+
+    if (allEqual(leftPointer, rightPointer, 0)) {
+      setModified(elements[leftPointer])
+      return [reversalHistory, elements, elements]
+    }
+
+    if (allEqual(leftPointer, startIndex) || allEqual(rightPointer, endIndex)) {
+      setChanging(elements[leftPointer], elements[rightPointer])
+      reversalHistory.push([{...elements[leftPointer]}, {...elements[rightPointer]}])
+    }
+
+    setModified(leftElement, rightElement)
 
 
-  while (startIndex <= endIndex) {
-    let start = stepTemp[startIndex]
-    let end = stepTemp[endIndex]
+    if (leftPointer + 1 >= rightPointer) {
+      reversalHistory.push([{...leftElement}, {...rightElement}])
+      return [reversalHistory, elements, initElements]
+    }
 
-    const nextEndIndex = endIndex - 1
-    const nextStartIndex = startIndex + 1
-    const modifiedItems = setModified(start, end)
-    const changingItems = (nextStartIndex <= nextEndIndex) ? setChanging( stepTemp[nextStartIndex], stepTemp[nextEndIndex]) : []
- /*   history.enqueue([...modifiedItems, ...changingItems])*/
-    history2.push([...modifiedItems, ...changingItems])
+    const nextStart = elements[leftPointer + 1]
+    const prevEnd = elements[rightPointer - 1]
 
-    endIndex = nextEndIndex
-    startIndex = nextStartIndex
+    setChanging(nextStart, prevEnd)
+
+    reversalHistory.push([{...leftElement}, {...rightElement}, {...nextStart}, {...prevEnd}])
+
+    rightPointer--
+    leftPointer++
   }
 
-  return history2
+  return [reversalHistory, elements, initElements]
 }
 
 
-function setChanging(a: any, b: any): TCheck {
-  if (a === b) {
-    return [{state: ElementStates.Changing, number: a.number, value: a.value,}];
-  } else {
-    return [{state: ElementStates.Changing, number: a.number, value: a.value}, {
-      state: ElementStates.Changing,
-      number: b.number,
-      value: b.value
-    }]
-  }
-}
-
-function setModified(a: any, b: any): TCheck {
-  if (a === b) {
-    return [{
-      state: ElementStates.Modified,
-      value: b.value,
-      number: b.number
-
-    }];
-  } else {
-    return [{
-      state: ElementStates.Modified,
-      value: b.value,
-      number: a.number
-
-    }, {
-
-      state: ElementStates.Modified,
-      value: a.value,
-      number: b.number
-
-    }]
-  }
-}
-
-
-/*
-function swap(a: TItem, b: TItem) {
-  const temp = a.value;
-  a.value = b.value;
-  b.value = temp;
-}*/
