@@ -1,66 +1,75 @@
 import {ElementStates} from "../types/element-states";
-import {Elements} from "../pages/string/string";
-import {allEqual, cloneElements, setChanging, setModified} from "./utils";
+import {TElements} from "../pages/string/string";
+import {cloneElements, setState, swap} from "./utils";
+import { v4 as uuidv4 } from 'uuid';
 
-export const getReverseArrayWithHistory = (string: string): [Array<Elements>, Elements, Elements] => {
+export const getReverseArrayWithHistory = (string: string): [Array<TElements>, TElements, TElements] => {
 
   //Массив элементов созданных из каждого символа строки
-  const initElements: Elements = string.split('').map((item, index) => ({
-    number: index,
+  const initElements: TElements = string.split('').map((item) => ({
     value: item,
-    state: ElementStates.Default
+    state: ElementStates.Default,
+    id: uuidv4()
   }))
 
   //Копия массива initElements для сортировки
   const elements = cloneElements(initElements);
 
   //Массив для хранения истории разворота
-  const reversalHistory: Array<Elements> = []
+  const reversalHistory: Array<TElements> = []
 
-  const startIndex = 0
-  const endIndex = elements.length - 1
+  let startIndex = 0
+  let endIndex = elements.length - 1
 
 
   //указатель на начальный/левый индекс
-  let leftPointer = startIndex
+  /*  let start = startIndex*/
   //указатель на конечный/правый индекс
-  let rightPointer = endIndex
+  /*  let end = endIndex*/
 
-  while (leftPointer <= rightPointer) {
+  while (startIndex <= endIndex) {
 
-    const leftElement = elements[leftPointer]
-    const rightElement = elements[rightPointer]
+    const start = elements[startIndex]
+    const end = elements[endIndex]
+    const nextStartIndex = startIndex + 1
+    const prevEndIndex = endIndex - 1
 
-    if (allEqual(leftPointer, rightPointer, 0)) {
-      setModified(elements[leftPointer])
-      return [reversalHistory, elements, elements]
+
+    if (startIndex === endIndex ) {
+      setState(ElementStates.Modified, start)
+      reversalHistory.push([{...start}])
+      return endIndex === 0 ? ([reversalHistory, elements, elements]) : ([reversalHistory, elements, initElements])
     }
 
-    if (allEqual(leftPointer, startIndex) || allEqual(rightPointer, endIndex)) {
-      setChanging(elements[leftPointer], elements[rightPointer])
-      reversalHistory.push([{...elements[leftPointer]}, {...elements[rightPointer]}])
+    if (startIndex === 0) {
+      setState(ElementStates.Changing, start, end)
+      reversalHistory.push([{...start},{...end}])
     }
 
-    setModified(leftElement, rightElement)
+    swap(elements, startIndex, endIndex)
+    setState(ElementStates.Modified, start, end)
 
 
-    if (leftPointer + 1 >= rightPointer) {
-      reversalHistory.push([{...leftElement}, {...rightElement}])
+    if (nextStartIndex >= endIndex) {
+      reversalHistory.push([{...start},{...end}])
       return [reversalHistory, elements, initElements]
     }
 
-    const nextStart = elements[leftPointer + 1]
-    const prevEnd = elements[rightPointer - 1]
+    const nextStart = elements[nextStartIndex]
+    const prevEnd = elements[prevEndIndex]
+    setState(ElementStates.Changing, nextStart, prevEnd)
 
-    setChanging(nextStart, prevEnd)
 
-    reversalHistory.push([{...leftElement}, {...rightElement}, {...nextStart}, {...prevEnd}])
+    reversalHistory.push([
+      {...start},
+      {...end},
+      {...nextStart},
+      {...prevEnd},
+    ])
 
-    rightPointer--
-    leftPointer++
+    endIndex--
+    startIndex++
   }
 
   return [reversalHistory, elements, initElements]
 }
-
-

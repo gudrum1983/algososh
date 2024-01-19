@@ -11,7 +11,7 @@ export class Queue<T> implements IQueue<T> {
   private readonly size: number = 0;
   private length: number = 0;
 
-  constructor(size: number = 0, data?: T[]) {
+  constructor(size: number = 0, data?: Array<T>) {
     if (data) {
       this.size = size || data.length;
       data.forEach(item => this.enqueue(item));

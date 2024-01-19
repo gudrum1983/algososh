@@ -8,21 +8,21 @@ import {getReverseArrayWithHistory} from "../../utils/reverse";
 import {Queue} from "../../utils/queue";
 import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
 
-export type Element = {
+export type TElement = {
   value: string,
-  number: number,
   state: ElementStates
+  id: string
 }
 
-export type Elements = Array<Element>
+export type TElements = Array<TElement>
 
 export const StringComponent: React.FC = () => {
 
   const [inputString, setInputString] = useState<string>("")
   const [isLoader, setIsLoader] = useState<boolean>(false)
-  const [initialElements, setInitialElements] = useState<Elements | null>(null)
-  const [resultReverse, setResultReverse] = useState<Elements | null>(null)
-  const [reversalHistory, setReversalHistory] = useState<Array<Elements> | null>(null)
+  const [initialElements, setInitialElements] = useState<TElements | null>(null)
+  const [resultReverse, setResultReverse] = useState<TElements | null>(null)
+  const [reversalHistory, setReversalHistory] = useState<Array<TElements> | null>(null)
 
 
   function handlerOnClick():void {
@@ -33,9 +33,9 @@ export const StringComponent: React.FC = () => {
     setReversalHistory(historyReverse)
   }
 
-  const reverseQueue = React.useMemo(() => {
+  const algorithmSteps = React.useMemo(() => {
     if (reversalHistory) {
-      return new Queue<Elements>(10, reversalHistory)
+      return new Queue<TElements>(10, reversalHistory)
     }
     return null
   }, [resultReverse])
@@ -44,13 +44,14 @@ export const StringComponent: React.FC = () => {
     setInputString(e.target.value)
   }
 
-  const content = (elementsList: Elements) => {
+  const content = (elementsList: TElements) => {
     return (
       <ul className="container-result list">
-        {elementsList.map((element) => <li key={element.number}><Circle state={element.state} letter={element.value}/></li>)}
+        {elementsList.map((element) => <li key={element.id}><Circle state={element.state} letter={element.value}/></li>)}
       </ul>
     );
   }
+
 
   return (
     <SolutionLayout title="Строка">
@@ -58,8 +59,8 @@ export const StringComponent: React.FC = () => {
         <Input maxLength={11} isLimitText={true} onChange={handlerOnChange} value={inputString} disabled={isLoader}/>
         <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputString}/>
       </div>
-      {reverseQueue && initialElements &&
-        <StepByStepDisplay data={initialElements} stepsQueue={reverseQueue} setLoader={setIsLoader} content={content}/>}
+      {algorithmSteps && initialElements &&
+        <StepByStepDisplay data={initialElements} stepsQueue={algorithmSteps} setLoader={setIsLoader} content={content}/>}
 
     </SolutionLayout>
   );

@@ -1,18 +1,18 @@
 import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
-import {Elements, Element} from "../../pages/string/string";
+import {TElements} from "../../pages/string/string";
 import {DELAY_IN_MS} from "../../constants/delays";
 
 export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN_MS, content}: {
-    data: Array<Element>,
-    stepsQueue: Queue<Elements>,
+    data: TElements,
+    stepsQueue: Queue<TElements>,
     delay?: number,
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
-    content: (elementsList: Array<Element>) => JSX.Element
+    content: (elementsList: TElements) => JSX.Element
   }) => {
-    const [arr, setArr] = useState<Array<Element>>([]);
+    const [arr, setArr] = useState<TElements>([]);
     const [countStep, setCountStep] = useState<number>(0)
-    const [visualArr, setVisualArr] = useState<Array<Element> | null>(null)
+    const [visualArr, setVisualArr] = useState<TElements | null>(null)
 
     React.useEffect(() => {
       setLoader(true)
@@ -38,7 +38,11 @@ export const StepByStepDisplay = ({setLoader, data, stepsQueue, delay = DELAY_IN
             const stepData = stepsQueue.peak()
             stepData?.forEach((item) => {
               if (newArr) {
-                newArr[item.number] = {value: item.value, number: item.number, state: item.state}
+                const test = newArr.find((newItem) => newItem.id === item.id)
+                if (test) {
+                  test.value = item.value
+                  test.state = item.state
+                }
               }
             })
 
