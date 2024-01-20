@@ -2,6 +2,8 @@ import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
 import {TElements, TSnapshots} from "../../pages/string/string";
 import {DELAY_IN_MS} from "../../constants/delays";
+import {test} from "../../utils/confetti/confetti";
+
 
 export const StepByStepDisplay = ({setLoader, stateSnapshotsList, delay = DELAY_IN_MS, content}: {
   stateSnapshotsList: TSnapshots<TElements>
@@ -45,8 +47,9 @@ export const StepByStepDisplay = ({setLoader, stateSnapshotsList, delay = DELAY_
       }, delay);
     }
 
-    if (stepsQueue && stepsQueue.isEmpty()) {
+    if (arr && stepsQueue && stepsQueue.isEmpty()) {
       setLoader(false)
+      test()
     }
 
     return () => {

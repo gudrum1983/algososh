@@ -43,3 +43,9 @@ list-style: none;
   display: flex;
   flex-direction: column;
 }
+
+/*
+*{
+  border: aquamarine solid 1px;
+  box-sizing: border-box;
+}*/
