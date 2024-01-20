@@ -1,9 +1,9 @@
 import {ElementStates} from "../types/element-states";
-import {TElements} from "../pages/string/string";
+import {TElements, TSnapshots} from "../pages/string/string";
 import {cloneElements, setState, swap} from "./utils";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
-export const getReverseArrayWithHistory = (string: string): [Array<TElements>, TElements, TElements] => {
+export const getReverseArrayWithHistory = (string: string): TSnapshots<TElements> => {
 
   //Массив элементов созданных из каждого символа строки
   const initElements: TElements = string.split('').map((item) => ({
@@ -14,18 +14,12 @@ export const getReverseArrayWithHistory = (string: string): [Array<TElements>, T
 
   //Копия массива initElements для сортировки
   const elements = cloneElements(initElements);
-
+  const stateSnapshotsList: TSnapshots<TElements> = [];
   //Массив для хранения истории разворота
-  const reversalHistory: Array<TElements> = []
+
 
   let startIndex = 0
   let endIndex = elements.length - 1
-
-
-  //указатель на начальный/левый индекс
-  /*  let start = startIndex*/
-  //указатель на конечный/правый индекс
-  /*  let end = endIndex*/
 
   while (startIndex <= endIndex) {
 
@@ -35,15 +29,16 @@ export const getReverseArrayWithHistory = (string: string): [Array<TElements>, T
     const prevEndIndex = endIndex - 1
 
 
-    if (startIndex === endIndex ) {
+    if (startIndex === endIndex) {
       setState(ElementStates.Modified, start)
-      reversalHistory.push([{...start}])
-      return endIndex === 0 ? ([reversalHistory, elements, elements]) : ([reversalHistory, elements, initElements])
+      stateSnapshotsList.push(cloneElements(elements))
+      return stateSnapshotsList
     }
 
     if (startIndex === 0) {
+      stateSnapshotsList.push(cloneElements(elements))
       setState(ElementStates.Changing, start, end)
-      reversalHistory.push([{...start},{...end}])
+      stateSnapshotsList.push(cloneElements(elements))
     }
 
     swap(elements, startIndex, endIndex)
@@ -51,25 +46,16 @@ export const getReverseArrayWithHistory = (string: string): [Array<TElements>, T
 
 
     if (nextStartIndex >= endIndex) {
-      reversalHistory.push([{...start},{...end}])
-      return [reversalHistory, elements, initElements]
+      stateSnapshotsList.push(cloneElements(elements))
+      return stateSnapshotsList
     }
 
     const nextStart = elements[nextStartIndex]
     const prevEnd = elements[prevEndIndex]
     setState(ElementStates.Changing, nextStart, prevEnd)
-
-
-    reversalHistory.push([
-      {...start},
-      {...end},
-      {...nextStart},
-      {...prevEnd},
-    ])
-
+    stateSnapshotsList.push(cloneElements(elements))
     endIndex--
     startIndex++
   }
-
-  return [reversalHistory, elements, initElements]
+  return stateSnapshotsList
 }
