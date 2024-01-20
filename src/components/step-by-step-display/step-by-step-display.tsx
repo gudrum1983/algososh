@@ -1,21 +1,22 @@
 import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
-import {TElements, TSnapshots} from "../../pages/string/string";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {test} from "../../utils/confetti/confetti";
 
-
-export const StepByStepDisplay = ({setLoader, stateSnapshotsList, delay = DELAY_IN_MS, content}: {
-  stateSnapshotsList: TSnapshots<TElements>
+type TSteps<T> = {
+  stateSnapshotsList: Array<Array<T>>
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<boolean>>,
-  content: (elementsList: TElements) => JSX.Element
-}) => {
-  const [arr, setArr] = useState<TElements | null>(null);
+  content: (elementsList: Array<T>) => JSX.Element
+}
+
+
+export const StepByStepDisplay = <T,>({setLoader, stateSnapshotsList, delay = DELAY_IN_MS, content}: TSteps<T>) => {
+  const [arr, setArr] = useState<Array<T> | null>(null);
 
   const stepsQueue = React.useMemo(() => {
     if (stateSnapshotsList) {
-      return new Queue<TElements>(10, stateSnapshotsList)
+      return new Queue<Array<T>>(0, stateSnapshotsList)
     }
     return null
   }, [stateSnapshotsList])
@@ -58,8 +59,8 @@ export const StepByStepDisplay = ({setLoader, stateSnapshotsList, delay = DELAY_
   }, [arr]);
 
   return (
-    <ul className="container-result list">
+    <>
       {arr && content(arr)}
-    </ul>
+    </>
   );
 };

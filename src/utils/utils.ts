@@ -1,7 +1,7 @@
-import {TElement, TElements} from "../pages/string/string";
+import {TElement} from "../pages/string/string";
 import {ElementStates} from "../types/element-states";
 
-export function cloneElements(elements: TElements): TElements {
+export function cloneElements(elements: Array<TElement>): Array<TElement> {
   return elements.map(el => ({...el}));
 }
 

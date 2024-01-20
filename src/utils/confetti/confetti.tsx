@@ -29,6 +29,5 @@ export function test () {
   setTimeout(shoot, 0);
   setTimeout(shoot, 200);
   setTimeout(shoot, 400);
-  setTimeout(shoot, 600);
-  setTimeout(shoot, 800);
+
 }

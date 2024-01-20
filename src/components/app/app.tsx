@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { FibonacciPage } from "../fibonacci-page/fibonacci-page";
+import { FibonacciPage } from "../../pages/fibonacci-page/fibonacci-page";
 import { ListPage } from "../list-page/list-page";
 import { MainPage } from "../main-page/main-page";
 import { QueuePage } from "../queue-page/queue-page";
