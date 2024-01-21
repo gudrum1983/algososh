@@ -4,6 +4,8 @@ import {Button} from "../../components/ui/button/button";
 import {RadioInput} from "../../components/ui/radio-input/radio-input";
 import {Column} from "../../components/ui/column/column";
 import {ElementStates} from "../../types/element-states";
+import {Direction} from "../../types/direction";
+import {randomArr} from "../../utils/random-arr";
 
 export enum Sort {
   bubble = "bubble",
@@ -44,16 +46,19 @@ export const SortingPage: React.FC = () => {
     setIsLoaderSortAscending(true)
     startSort(typeSort, RouteSort.Ascending)
 
-/*    const snapshotsList = generateReversedStringSnapshots(initialValue)*/
+    /*    const snapshotsList = generateReversedStringSnapshots(initialValue)*/
 
-/*    setSnapshots(snapshotsList)*/
+    /*    setSnapshots(snapshotsList)*/
   }
 
   function handlerOnClickNewRandomValue(): void {
+    const newArr = randomArr({})
     console.log("NewArray")
+    console.log(newArr)
+    setInitialValue(newArr)
   }
 
-  function startSort (type:string, route:RouteSort) {
+  function startSort(type: string, route: RouteSort) {
     console.log(`Запуск сортировки тип ${type} направление ${route}`)
   }
 
@@ -79,32 +84,34 @@ export const SortingPage: React.FC = () => {
     );
   }
 
-  const content2 = (elementsList: Array<number>) => {
-    return (
-      <ul className="container-result list">
-        {elementsList.map((element, index) => <li key={index}><ColumnMemo state={ElementStates.Default} index={element}/>
-        </li>)}
-      </ul>
-    );
-  }
 
   return (
     <SolutionLayout title="Сортировка массива">
-      <div role="form" className="container-inputs-buttons container_type_string">
+      <div role="form" className="container-inputs-buttons container_type_sort">
+        <ul className={"list list-row"}>
+          <li><RadioInput extraClass={"m-0 mr-20"} onChange={handlerOnChange} value={Sort.selection} label={"Выбор"}
+                          defaultChecked name={"typeSort"}
+                          disabled={isLoaderSortDescending || isLoaderSortAscending}/></li>
+          <li><RadioInput extraClass="mr-20" onChange={handlerOnChange} value={Sort.bubble} label={"Пузырёк"}
+                          name={"typeSort"}
+                          disabled={isLoaderSortDescending || isLoaderSortAscending}/></li>
 
-          <RadioInput onChange={handlerOnChange} value={Sort.selection} label={"Выбор"} defaultChecked name={"rety"}
-                      disabled={isLoaderSortDescending || isLoaderSortAscending}/>
-          <RadioInput onChange={handlerOnChange} value={Sort.bubble} label={"Пузырёк"} name={"rety"}
-                      disabled={isLoaderSortDescending || isLoaderSortAscending}/>
+        </ul>
 
-        <Button onClick={handlerOnClickAscending} text={"По возрастанию"} isLoader={isLoaderSortAscending}
-                disabled={isCanSortAscending}/>
-        <Button onClick={handlerOnClickDescending} text={"По убыванию"} isLoader={isLoaderSortDescending}
-                disabled={isCanSortDescending}/>
-        <Button onClick={handlerOnClickNewRandomValue} text={"Новый массив"}
+        <ul className={"list list-row-butt"}>
+          <li><Button sorting={Direction.Ascending} linkedList={"medium"} onClick={handlerOnClickAscending} text={"По возрастанию"} isLoader={isLoaderSortAscending}
+                      disabled={isCanSortAscending}/>
+          </li>
+          <li>
+            <Button sorting={Direction.Descending} linkedList={"medium"} onClick={handlerOnClickDescending} text={"По убыванию"} isLoader={isLoaderSortDescending}
+                    disabled={isCanSortDescending}/>
+          </li>
+        </ul>
+
+        <Button extraClass="ml-auto" linkedList={"medium"} onClick={handlerOnClickNewRandomValue} text={"Новый массив"}
                 disabled={isLoaderSortDescending || isLoaderSortAscending}/>
       </div>
-      {initialValue && <ul className="container-result list">
+      {initialValue && <ul className="container-result container-result-type-sort list">
         {initialValue.map((element, index) => <li key={index}><ColumnMemo state={ElementStates.Default}
                                                                           index={element}/>
         </li>)}

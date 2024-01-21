@@ -2,7 +2,7 @@ import confetti from "canvas-confetti";
 
 const defaults = {
   spread: 360,
-  ticks: 50,
+  ticks: 200,
   gravity: 1,
   decay: 0.94,
   startVelocity: 30,

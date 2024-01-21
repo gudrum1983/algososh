@@ -22,12 +22,18 @@ code {
 }
 
 .container_type_string {
-  padding-bottom: 120px;
+  margin-bottom: 120px;
 }
 
 .container_type_fibb {
-  padding-bottom: 48px;
+  margin-bottom: 48px;
 }
+
+.container_type_sort{
+  margin-bottom: 48px;
+  max-width: 980px;
+}
+
 
 .container-result {
   display: flex;
@@ -36,6 +42,12 @@ code {
   width: 100%;
   gap: 16px;
   margin: 0;
+}
+
+.container-result-type-sort{
+  align-items: flex-end;
+  gap: 10px;
+  min-height: 340px;
 }
 
 .container-result-fibb {
@@ -55,11 +67,35 @@ code {
 .list {
   list-style: none;
   padding: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+}
+
+.list-row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.list-row-butt{
+  gap: 12px;
+  display: flex;
+  flex-direction: row;
+  max-width: 422px;
+  width: 100%;
+}
+
+.rightButton {
+    margin-left: auto;
 }
 
 .container-result-column {
   display: flex;
   flex-direction: column;
+
 }
 
 /*
