@@ -1,4 +1,4 @@
-import {v4 as uuidv4} from "uuid";
+import {nanoid} from "nanoid";
 import {TElementFibb} from "../../pages/fibonacci-page/fibonacci-page";
 
 export function calculateFibonacciWithMemoization(index: number,
@@ -42,7 +42,7 @@ function createHisrory(mapHas: Record<number, number>, index: number) {
 
     snapshotsItem[i] = {
       value: mapHas[i],
-      id: uuidv4(),
+      id: nanoid(5),
       order: i
     }
 

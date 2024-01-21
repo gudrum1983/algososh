@@ -1,7 +1,7 @@
-import {ElementStates} from "../types/element-states";
-import {TElement} from "../pages/string/string";
-import {cloneElements, setState, swap} from "./utils";
-import {v4 as uuidv4} from 'uuid';
+import {ElementStates} from "../../types/element-states";
+import {TElement} from "../../pages/string/string";
+import {cloneElements, setState, swap} from "../../utils/utils";
+import {nanoid} from "nanoid";
 
 export const generateReversedStringSnapshots = (string: string): Array<Array<TElement>> => {
 
@@ -9,7 +9,7 @@ export const generateReversedStringSnapshots = (string: string): Array<Array<TEl
   const initElements: Array<TElement> = string.split('').map((item) => ({
     value: item,
     state: ElementStates.Default,
-    id: uuidv4()
+    id: nanoid(5)
   }))
 
   //Копия массива initElements для сортировки

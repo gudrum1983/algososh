@@ -1,20 +1,13 @@
 import React, {useState} from "react";
-import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
-import {Circle} from "../../components/ui/circle/circle";
+import { SolutionLayout } from "../../components/ui/solution-layout/solution-layout";
 import {Input} from "../../components/ui/input/input";
 import {Button} from "../../components/ui/button/button";
-import {ElementStates} from "../../types/element-states";
-import {generateReversedStringSnapshots} from "../../algorithms/reverse/reverse";
 import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
+import {TElement} from "../string/string";
+import {generateReversedStringSnapshots} from "../../algorithms/reverse/reverse";
+import {Circle} from "../../components/ui/circle/circle";
 
-export type TElement = {
-  value: string,
-  state?: ElementStates
-  id: string
-}
-
-
-export const StringComponent: React.FC = () => {
+export const SortingPage: React.FC = () => {
 
   const [inputValue, setInputValue] = useState<string>("")
   const [isLoader, setIsLoader] = useState<boolean>(false)
@@ -41,13 +34,13 @@ export const StringComponent: React.FC = () => {
   }
 
   return (
-    <SolutionLayout title="Строка">
+    <SolutionLayout title="Сортировка массива">
       <div role="form" className="container-inputs-buttons container_type_string">
-        <Input maxLength={11} isLimitText={true} onChange={handlerOnChange} value={inputValue} disabled={isLoader}/>
+        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
+        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
         <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
       </div>
       {snapshots &&
         <StepByStepDisplay<TElement> stateSnapshotsList={snapshots} setLoader={setIsLoader} content={content}/>}
     </SolutionLayout>
-  );
-};
+  )};
