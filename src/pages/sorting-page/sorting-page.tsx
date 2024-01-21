@@ -1,34 +1,89 @@
 import React, {useState} from "react";
-import { SolutionLayout } from "../../components/ui/solution-layout/solution-layout";
-import {Input} from "../../components/ui/input/input";
+import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
 import {Button} from "../../components/ui/button/button";
-import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
-import {TElement} from "../string/string";
-import {generateReversedStringSnapshots} from "../../algorithms/reverse/reverse";
-import {Circle} from "../../components/ui/circle/circle";
+import {RadioInput} from "../../components/ui/radio-input/radio-input";
+import {Column} from "../../components/ui/column/column";
+import {ElementStates} from "../../types/element-states";
+
+export enum Sort {
+  bubble = "bubble",
+  selection = "selection"
+}
+
+export enum RouteSort {
+  "Descending" = 0,
+  "Ascending" = 1
+}
+
+export type TColumn = {
+  index: number,
+  state: ElementStates,
+  id: string
+}
+
 
 export const SortingPage: React.FC = () => {
 
-  const [inputValue, setInputValue] = useState<string>("")
-  const [isLoader, setIsLoader] = useState<boolean>(false)
-  const [snapshots, setSnapshots] = useState<Array<Array<TElement>> | null>(null)
+  const [initialValue, setInitialValue] = useState<Array<number>>([25, 10, 50, 100])
+  const [isLoaderSortDescending, setIsLoaderSortDescending] = useState<boolean>(false)
+  const [isLoaderSortAscending, setIsLoaderSortAscending] = useState<boolean>(false)
+  const [typeSort, setTypeSort] = useState<string>(Sort.selection)
+  const [isCanSortAscending, setIsCanSortAscending] = useState<boolean>(false)
+  const [isCanSortDescending, setIsCanSortDescending] = useState<boolean>(false)
+  const [snapshots, setSnapshots] = useState<Array<Array<TColumn>> | null>(null)
 
-  function handlerOnClick():void {
-    setIsLoader(true)
-    const snapshotsList = generateReversedStringSnapshots(inputValue)
-    setSnapshots(snapshotsList)
+  function handlerOnClickDescending(): void {
+    setIsLoaderSortDescending(true)
+    startSort(typeSort, RouteSort.Descending)
+    /*      const snapshotsList = generateReversedStringSnapshots(initialValue)
+
+        setSnapshots(snapshotsList)*/
   }
 
-  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>)  {
-    setInputValue(e.target.value)
+  function handlerOnClickAscending(): void {
+    setIsLoaderSortAscending(true)
+    startSort(typeSort, RouteSort.Ascending)
+
+/*    const snapshotsList = generateReversedStringSnapshots(initialValue)*/
+
+/*    setSnapshots(snapshotsList)*/
   }
 
-  const CircleMemo = React.memo(Circle);
+  function handlerOnClickNewRandomValue(): void {
+    console.log("NewArray")
+  }
 
-  const content = (elementsList: Array<TElement>) => {
+  function startSort (type:string, route:RouteSort) {
+    console.log(`Запуск сортировки тип ${type} направление ${route}`)
+  }
+
+  /*
+    createBubbleSortSnapshot
+    createSelectionSortSnapshot
+  */
+
+  function handlerOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+
+    console.log(e.target.value)
+    setTypeSort(e.target.value)
+  }
+
+  const ColumnMemo = React.memo(Column);
+
+  const content = (elementsList: Array<TColumn>) => {
     return (
       <ul className="container-result list">
-        {elementsList.map((element) => <li key={element.id}><CircleMemo state={element.state} letter={element.value}/></li>)}
+        {elementsList.map((element) => <li key={element.id}><ColumnMemo state={element.state} index={element.index}/>
+        </li>)}
+      </ul>
+    );
+  }
+
+  const content2 = (elementsList: Array<number>) => {
+    return (
+      <ul className="container-result list">
+        {elementsList.map((element, index) => <li key={index}><ColumnMemo state={ElementStates.Default} index={element}/>
+        </li>)}
       </ul>
     );
   }
@@ -36,11 +91,27 @@ export const SortingPage: React.FC = () => {
   return (
     <SolutionLayout title="Сортировка массива">
       <div role="form" className="container-inputs-buttons container_type_string">
-        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
-        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
-        <Button onClick={handlerOnClick} text={"Развернуть"} isLoader={isLoader} disabled={!inputValue}/>
+
+          <RadioInput onChange={handlerOnChange} value={Sort.selection} label={"Выбор"} defaultChecked name={"rety"}
+                      disabled={isLoaderSortDescending || isLoaderSortAscending}/>
+          <RadioInput onChange={handlerOnChange} value={Sort.bubble} label={"Пузырёк"} name={"rety"}
+                      disabled={isLoaderSortDescending || isLoaderSortAscending}/>
+
+        <Button onClick={handlerOnClickAscending} text={"По возрастанию"} isLoader={isLoaderSortAscending}
+                disabled={isCanSortAscending}/>
+        <Button onClick={handlerOnClickDescending} text={"По убыванию"} isLoader={isLoaderSortDescending}
+                disabled={isCanSortDescending}/>
+        <Button onClick={handlerOnClickNewRandomValue} text={"Новый массив"}
+                disabled={isLoaderSortDescending || isLoaderSortAscending}/>
       </div>
-      {snapshots &&
-        <StepByStepDisplay<TElement> stateSnapshotsList={snapshots} setLoader={setIsLoader} content={content}/>}
+      {initialValue && <ul className="container-result list">
+        {initialValue.map((element, index) => <li key={index}><ColumnMemo state={ElementStates.Default}
+                                                                          index={element}/>
+        </li>)}
+      </ul>}
+      {/*      {snapshots &&
+        <StepByStepDisplay<TColumn> stateSnapshotsList={snapshots} setLoader={setIsCanSortDescending}
+                                    content={content}/>}*/}
     </SolutionLayout>
-  )};
+  )
+};
