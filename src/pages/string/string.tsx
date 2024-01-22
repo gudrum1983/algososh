@@ -9,7 +9,7 @@ import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-s
 
 export type TElement = {
   value: string,
-  state?: ElementStates
+  state: ElementStates
   id: string
 }
 
