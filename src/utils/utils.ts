@@ -1,23 +1,13 @@
-import {TElement} from "../pages/string/string";
 import {ElementStates} from "../types/element-states";
+import {TColumn} from "../pages/sorting-page/sorting-page";
+import {nanoid} from "nanoid";
 
-export function cloneElements(elements: Array<TElement>): Array<TElement> {
+export function cloneElements<T>(elements: Array<T>): Array<T> {
   return elements.map(el => ({...el}));
 }
 
 export function allEqual<T>(...parameters: Array<T>) {
   return parameters.every(param => param === parameters[0]);
-}
-
-export function setChanging(a: TElement, b: TElement): void {
-  a.state = ElementStates.Changing;
-  b && a !== b && (b.state = ElementStates.Changing);
-}
-
-function swapValue(a: TElement, b: TElement): void {
-  const temp = a.value;
-  a.value = b.value;
-  b.value = temp;
 }
 
 export function swap<T>(arr: T[], i: number, j: number) {
@@ -26,17 +16,19 @@ export function swap<T>(arr: T[], i: number, j: number) {
   arr[j] = tmp;
 }
 
-export function setModified(a: TElement, b?: TElement): void {
-  a.state = ElementStates.Modified;
-  if (b && a !== b) {
-    b.state = ElementStates.Modified;
-    if (!allEqual(a.value, b.value)) {
-      swapValue(a, b)
-    }
-  }
-}
-
-export function setState(state: ElementStates, a: TElement, b?: TElement): void {
+export function setState<T extends {state:ElementStates}>(state: ElementStates, a: T, b?: T): void {
   a.state = state;
   b && a !== b && (b.state = state);
+}
+
+export function createInitElements(numbers: Array<number>):Array<TColumn> {
+  return numbers.map((item): TColumn => ({
+    index: item,
+    state: ElementStates.Default,
+    id: nanoid(5)
+  }))
+}
+
+export function copyAndResetElementStates<T extends {state:ElementStates}>(elements: Array<T>): Array<T> {
+  return elements.map(el => ({...el, state:ElementStates.Default}));
 }
