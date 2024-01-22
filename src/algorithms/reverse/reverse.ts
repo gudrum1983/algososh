@@ -36,13 +36,13 @@ export const generateReversedStringSnapshots = (string: string): Array<Array<TEl
     }
 
     if (startIndex === 0) {
-      stateSnapshotsList.push(cloneElements(elements))
+      stateSnapshotsList.push(cloneElements<TElement>(elements))
       setState(ElementStates.Changing, start, end)
       stateSnapshotsList.push(cloneElements(elements))
     }
 
     swap(elements, startIndex, endIndex)
-    setState(ElementStates.Modified, start, end)
+    setState<TElement>(ElementStates.Modified, start, end)
 
 
     if (nextStartIndex >= endIndex) {
