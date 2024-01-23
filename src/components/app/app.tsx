@@ -4,7 +4,7 @@ import { FibonacciPage } from "../../pages/fibonacci-page/fibonacci-page";
 import { ListPage } from "../list-page/list-page";
 import { MainPage } from "../main-page/main-page";
 import { QueuePage } from "../queue-page/queue-page";
-import { StringComponent } from "../../pages/string/string";
+import { StringPage } from "../../pages/string-page/string-page";
 import { SortingPage } from "../../pages/sorting-page/sorting-page";
 import { StackPage } from "../stack-page/stack-page";
 
@@ -18,8 +18,8 @@ function App() {
           <Route path="/" exact>
             <MainPage />
           </Route>
-          <Route path="/recursion">
-            <StringComponent />
+          <Route path="/string">
+            <StringPage />
           </Route>
           <Route path="/fibonacci">
             <FibonacciPage />

@@ -1,25 +1,26 @@
 import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
-import {test} from "../../utils/confetti/confetti";
+import {TSnapshot} from "../../types/element-and-snapshot";
+/*import {test} from "../../utils/confetti/confetti";*/
 
 type TSteps<T> = {
-  stateSnapshotsList: Array<Array<T>>
+  steps: Array<Array<T>>
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<boolean>>,
-  content: (elementsList: Array<T>) => JSX.Element
+  childComponent: (elementsList: Array<T>) => JSX.Element
 }
 
 
-export const StepByStepDisplay = <T,>({setLoader, stateSnapshotsList, delay = DELAY_IN_MS, content}: TSteps<T>) => {
-  const [arr, setArr] = useState<Array<T> | null>(null);
+export const StepByStepDisplay = <T,>({setLoader, steps, delay = DELAY_IN_MS, childComponent}: TSteps<T>) => {
+  const [arr, setArr] = useState<TSnapshot<T> | null>(null);
 
   const stepsQueue = React.useMemo(() => {
-    if (stateSnapshotsList) {
-      return new Queue<Array<T>>(0, stateSnapshotsList)
+    if (steps) {
+      return new Queue<Array<T>>(0, steps)
     }
     return null
-  }, [stateSnapshotsList])
+  }, [steps])
 
   React.useEffect(() => {
     if (stepsQueue) {
@@ -50,7 +51,7 @@ export const StepByStepDisplay = <T,>({setLoader, stateSnapshotsList, delay = DE
 
     if (arr && stepsQueue && stepsQueue.isEmpty()) {
       setLoader(false)
-      test()
+/*      test()*/
     }
 
     return () => {
@@ -60,7 +61,7 @@ export const StepByStepDisplay = <T,>({setLoader, stateSnapshotsList, delay = DE
 
   return (
     <>
-      {arr && content(arr)}
+      {arr && childComponent(arr)}
     </>
   );
 };
