@@ -3,7 +3,9 @@ import {SolutionLayout} from "../../components/ui/solution-layout/solution-layou
 import {Circle} from "../../components/ui/circle/circle";
 import {Input} from "../../components/ui/input/input";
 import {Button} from "../../components/ui/button/button";
-import {createStringInversionSnapshots} from "../../algorithms/create-string-inversion-snapshots/create-string-inversion-snapshots";
+import {
+  createStringInversionSnapshots
+} from "../../algorithms/create-string-inversion-snapshots/create-string-inversion-snapshots";
 import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
 import {CircleBaseElement} from "../../types/element-and-snapshot";
 

@@ -1,9 +1,9 @@
 import {ElementStates} from "../types/element-states";
 import {nanoid} from "nanoid";
-import {TSnapshot, TSnapshotsList} from "../types/element-and-snapshot";
 import {TElementFibonacci} from "../pages/fibonacci-page/fibonacci-page";
 import {TElementColumn} from "../pages/sorting-page/sorting-page";
 import {TElementString} from "../pages/string-page/string-page";
+import {TElementStack} from "../pages/stack-page/stack-page";
 
 
 export function cloneElements<T>(elements: Array<T>): Array<T> {
@@ -46,10 +46,20 @@ export function createInitElementsString(string: string): Array<TElementString> 
 }
 
 
-export function createElementFibonacci(letter: string, index:number): TElementFibonacci {
+export function createElementFibonacci(letter: string, index: number): TElementFibonacci {
   return {
     letter: letter,
     index: index,
     id: nanoid(5)
+  }
+}
+
+export function createStackItem(value: string, state: ElementStates, index: number): TElementStack {
+  return {
+    letter: value,
+    index: index,
+    id: nanoid(5),
+    state: state,
+    top: true,
   }
 }

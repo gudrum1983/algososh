@@ -34,6 +34,10 @@ code {
   max-width: 980px;
 }
 
+.container_type_stack{
+  margin-bottom: 48px;
+  max-width: 829px;
+}
 
 .container-result {
   display: flex;
