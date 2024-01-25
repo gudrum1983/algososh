@@ -1,29 +1,29 @@
 import React, {FormEvent, useRef, useState} from "react";
 import {TElementQueue1} from "../../utils/utils";
 import {
-  createQueneSnaphotsPush,
+  createGueueSnaphotsClear,
+  createQueneSnaphotsPush, createQueueSnaphotsPop,
   initialState,
-  IQueueWithSnapshots,
-  QueueWithSnapshots
+  IQueueWithSnapshots, QueueWithSnapshots, TNewSnap
 } from "../../algorithms/create-queue-snaphots/create-gueue-snaphots";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
-import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
+import {StepByStepDisplay2} from "../step-by-step-display/step-by-step-display2";
 
 type TFormData = {
   inputValue: string;
 }
 
+
 export const QueueContainer: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isLoader2, setIsLoader2] = useState<boolean>(false);
-  const [snapshots, setSnapshots] = useState<Array<Array<TElementQueue1 | null>> | null>(null);
+  const [snapshots, setSnapshots] = useState<Array<TNewSnap<TElementQueue1>> | null>(null);
   const [Queue1, setQueue1] = useState<IQueueWithSnapshots<TElementQueue1> | null>(null);
 
 
@@ -37,7 +37,8 @@ export const QueueContainer: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const queue = new QueueWithSnapshots<TElementQueue1>(7);
+    const queue  = new QueueWithSnapshots<TElementQueue1>(7);
+
     setQueue1(queue)
 
 
@@ -79,8 +80,8 @@ export const QueueContainer: React.FC = () => {
 
   function handlerOnClickClear(): void {
     if (Queue1) {
-      /*      createStackSnaphotsClear(Queue1)*/
-      setSnapshots(null);
+      createGueueSnaphotsClear(Queue1)
+      setSnapshots(Queue1.getHistory());
     }
 
   }
@@ -89,7 +90,7 @@ export const QueueContainer: React.FC = () => {
   function handlerOnClickDelete(): void {
     setIsLoader2(true)
     if (Queue1) {
-      /*      createStackSnaphotsPop(Queue1)*/
+           createQueueSnaphotsPop(Queue1)
       setSnapshots(Queue1.getHistory());
     }
 
@@ -97,16 +98,19 @@ export const QueueContainer: React.FC = () => {
 
   const CircleMemo = React.memo(Circle);
 
-  const createContent = (elementsList: Array<TElementQueue1 | null>) => {
+  const createContent = (elementsList: TNewSnap<TElementQueue1>) => {
+    console.log({"Head":elementsList.head, "Tail":elementsList.tail,"size":elementsList.size,"lenght":elementsList.length,})
     return (
       <ul className="container-result list">
-        {elementsList.map((element, index) =>
+        {elementsList.container.map((element, index) =>
           <li key={index}>
-            {!element && <CircleMemo state={ElementStates.Default} letter={""} index={index}/>}
+            {!element && <CircleMemo state={ElementStates.Default} letter={""} index={index} {...index === elementsList.head && index !== 0 && {
+              head: "head"
+            }}/>}
             {element &&
-              <CircleMemo state={element.state} letter={element.letter} index={index} {...element.head && {
+              <CircleMemo state={element.state} letter={element.letter} index={index} {...index === elementsList.head && {
                 head: "head"
-              }} {...element.tail && {
+              }} {...index === elementsList.tail - 1 && {
                 tail: "tail"
               }}/>}
           </li>)}
@@ -120,15 +124,15 @@ export const QueueContainer: React.FC = () => {
         <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange}
                disabled={isLoader || isLoader2} tabIndex={0}
                value={values.inputValue} name='inputValue'/>
-        <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader} disabled={!values.inputValue}/>
+        <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader} disabled={isLoader2 || !values.inputValue || Queue1?.getCanAdd()}/>
         <Button text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader2}
-                disabled={!Queue1?.getSize() || isLoader}/>
+                disabled={!Queue1?.getCanDelete() || isLoader}/>
         <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                 disabled={!Queue1?.getSize() || isLoader || isLoader2}/>
       </form>
 
       {snapshots &&
-        <StepByStepDisplay<TElementQueue1 | null> steps={snapshots}
+        <StepByStepDisplay2<TNewSnap<TElementQueue1>> steps={snapshots}
                                                   setLoader={isLoader ? setIsLoader : setIsLoader2}
                                                   childComponent={createContent}
                                                   delay={delay}/>}
