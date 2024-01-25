@@ -4,6 +4,7 @@ import {TElementFibonacci} from "../pages/fibonacci-page/fibonacci-page";
 import {TElementColumn} from "../pages/sorting-page/sorting-page";
 import {TElementString} from "../pages/string-page/string-page";
 import {TElementStack} from "../pages/stack-page/stack-page";
+import {CircleBaseElement} from "../types/element-and-snapshot";
 
 
 export function cloneElements<T>(elements: Array<T>): Array<T> {
@@ -61,5 +62,21 @@ export function createStackItem(value: string, state: ElementStates, index: numb
     id: nanoid(5),
     state: state,
     top: true,
+  }
+}
+
+export type TElementQueue1 = Pick<CircleBaseElement,
+  "letter"
+  | "state"
+  | "index"> & { tail?: boolean, head?: boolean }
+
+
+export function createQueueItem({letter, state, index, tail = false, head = false}:TElementQueue1): TElementQueue1 {
+  return {
+    letter: letter,
+    index: index,
+    state: state,
+    tail: tail,
+    head: head,
   }
 }
