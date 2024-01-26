@@ -68,14 +68,35 @@ export function createStackItem(value: string, state: ElementStates, index: numb
 export type TElementQueue1 = Pick<CircleBaseElement,
   "letter"
   | "state"
- > & { tail?: boolean, head?: boolean }
+>
 
 
-export function createQueueItem({letter, state, tail = false, head = false}:TElementQueue1): TElementQueue1 {
+export function createQueueItem({letter, state}: TElementQueue1): TElementQueue1 {
   return {
     letter: letter,
     state: state,
-    tail: tail,
-    head: head,
+  }
+}
+
+export type TElementList = Pick<CircleBaseElement,
+  "letter"
+  | "state"
+  | "isSmall"
+>
+
+
+export function createListItem(letter: string): TElementList {
+  return {
+    letter: letter,
+    state: ElementStates.Default,
+    isSmall: false
+  }
+}
+
+export function createListItemSmall(letter:string): TElementList {
+  return {
+    letter: letter,
+    state: ElementStates.Changing,
+    isSmall: true
   }
 }

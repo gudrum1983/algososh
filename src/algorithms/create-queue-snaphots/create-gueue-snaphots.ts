@@ -23,8 +23,6 @@ export function createQueneSnaphotsPush(stack: IQueueWithSnapshots<TElementQueue
   //если очередь есть = надо заменить на другое???
   if (stack) {
 
-    const lengthQueue = stack.getLength()
-
     const newItem = createQueueItem({letter: value, state: ElementStates.Changing})
 
     stack.enqueue(newItem)
