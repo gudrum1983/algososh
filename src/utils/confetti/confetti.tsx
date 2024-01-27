@@ -3,9 +3,9 @@ import confetti from "canvas-confetti";
 const defaults = {
   spread: 360,
   ticks: 200,
-  gravity: 1,
+  gravity: .1,
   decay: 0.94,
-  startVelocity: 30,
+  startVelocity: 50,
   colors: ['0032FF', 'D252E1', '7FE051', '82CEFF', 'FF6B9B']
 };
 
@@ -27,7 +27,7 @@ function shoot() {
 
 export function test () {
   setTimeout(shoot, 0);
-  setTimeout(shoot, 200);
-  setTimeout(shoot, 400);
+/*  setTimeout(shoot, 200);
+  setTimeout(shoot, 400);*/
 
 }

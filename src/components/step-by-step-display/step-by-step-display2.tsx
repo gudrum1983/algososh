@@ -2,10 +2,6 @@ import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {useLocation} from "react-router-dom";
-import {ListResult} from "../list-result/list-result";
-import {TElementString} from "../../pages/string-page/string-page";
-import {TNewSnapList} from "../../utils/linked-list";
-import {TElementList} from "../../utils/utils";
 /*import {test} from "../../utils/confetti/confetti";*/
 
 type TStepsWithArray<T> = {

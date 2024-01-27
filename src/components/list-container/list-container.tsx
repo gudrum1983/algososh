@@ -1,4 +1,4 @@
-import React, {FormEvent, useRef, useState} from "react";
+import React, {FormEvent, useState} from "react";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {Input} from "../ui/input/input";
@@ -8,8 +8,9 @@ import {createListItem, TElementList} from "../../utils/utils";
 import {LinkedListNode} from "../../utils/linked-list-node";
 import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
 import styles from "./list-container.module.css"
+import {randomNumbers} from "../../utils/random-numbers";
 
-type TFormData = {
+type TInputData = {
   inputValue: string;
   inputIndex: string;
 }
@@ -22,13 +23,16 @@ export const ListContainer: React.FC = () => {
   const [list, setList] = useState<ILinkedList<TElementList> | null>(null);
 
 
-  const {values, handleChange} = useForm<TFormData>({
+  const {values, handleChange} = useForm<TInputData>({
     inputValue: "",
     inputIndex: "",
   });
 
   const delay = DELAY_IN_MS;
-  const max = 4
+  const maxInput = 4
+  const maxSizeList = 10
+  const minSizeList = 1
+  const stepNumber = 1
 
   function createNode(element: TElementList): LinkedListNode<TElementList> {
     return new LinkedListNode(element);
@@ -36,124 +40,114 @@ export const ListContainer: React.FC = () => {
 
   React.useEffect(() => {
 
-    const initialDate: Array<LinkedListNode<TElementList>> = []
-    initialDate.push(createNode(createListItem("I--0")))
-    initialDate.push(createNode(createListItem("I--1")))
-    initialDate.push(createNode(createListItem("I--2")))
-    initialDate.push(createNode(createListItem("I--3")))
-    initialDate.push(createNode(createListItem("I--4")))
-    initialDate.push(createNode(createListItem("I--5")))
-
+    const random = randomNumbers({minLen: 1, maxLen: 6, maxValue: 9999})
+    const initialDate = random.map((item) => {
+      return createNode(createListItem(String(item)))
+    })
     const list = new LinkedList<TElementList>(initialDate);
-
     setList(list)
   }, [])
 
   React.useEffect(() => {
     if (list) {
-      const rer = list.getSnap()
-      setSnapshots(rer)
+      saveSnapshots(list)
     }
   }, [list])
 
 
-  function sub(e: FormEvent): void {
+  function disableFormSubmission(e: FormEvent): void {
     e.preventDefault()
   }
 
-  function handlerOnClickAddHead(): void {
+  function saveSnapshots(list: ILinkedList<TElementList>):void {
+    const snapshots = list.getSnap()
+    setSnapshots(snapshots)
+  }
+  function addHead(): void {
     if (list) {
-      setIsLoader(true)
       const newElement = createListItem(values.inputValue);
       list.prepend(newElement);
-      const test = list.getSnap()
-      setSnapshots(test)
+      saveSnapshots(list)
     }
   }
 
-  function handlerOnClickAddTail(): void {
+  function addTail(): void {
     if (list) {
-      setIsLoader(true)
       const newElement = createListItem(values.inputValue);
       list.append(newElement);
-      const test = list.getSnap()
-      setSnapshots(test)
+      saveSnapshots(list)
     }
   }
 
-  function handlerOnClickAddByIndex(): void {
-
-
+  function addByIndex(): void {
     if (list) {
-      setIsLoader(true)
       const newElement = createListItem(values.inputValue);
       const index = Number(values.inputIndex);
-
       list.addByIndex(newElement, index);
-      const test = list.getSnap()
-      setSnapshots(test)
+      saveSnapshots(list)
     }
   }
 
-  function handlerOnClickDeleteHead(): void {
+  function deleteHead(): void {
     setIsLoader2(true)
     if (list) {
       list.deleteHead()
-      const test = list.getSnap()
-      setSnapshots(test)
+      saveSnapshots(list)
     }
 
   }
 
-  function handlerOnClickDeleteTail(): void {
+  function deleteTail(): void {
     setIsLoader2(true)
     if (list) {
       list.deleteTail()
-      const test = list.getSnap()
-      setSnapshots(test)
+      saveSnapshots(list)
     }
 
   }
 
-  function handlerOnClickDeleteByIndex(): void {
+  function deleteByIndex(): void {
     setIsLoader2(true)
     if (list) {
       const index = Number(values.inputIndex);
       list.deleteByIndex(index)
-
-      const test = list.getSnap()
-      test.forEach((item) => {
-        console.log(item.sectionPointer)
-      })
-     if(test){ setSnapshots(test)}
+      saveSnapshots(list)
     }
   }
 
+  const maxIndex = (list && (maxSizeList - 1) > list.getSize() - 1 ) ? list.getSize() - 1: (maxSizeList - 1);
+  const isCorrectNumber =  (Number(values.inputIndex) >= 0) && (Number(values.inputIndex) <= maxIndex)
+  const isCorrectValue = values.inputValue !== ""
+  const isCorrectValueIndex = values.inputValue !== ""
+
+  const isCorrectSize = (list && list.getSize() > 1)
+console.log( values.inputIndex + 4)
+
   return (
     <>
-      <form className="container-inputs-buttons container_type_list" onSubmit={sub}>
+      <form className="container-inputs-buttons container_type_list" onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset}>
-          <Input maxLength={max} isLimitText={true} onChange={handleChange}
+          <Input maxLength={maxInput} isLimitText={true} onChange={handleChange}
                  disabled={isLoader || isLoader2} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <Button text={"Добавить в head"} onClick={handlerOnClickAddHead} isLoader={isLoader}
-                  disabled={isLoader2 || !values.inputValue} linkedList={"small"}/>
-          <Button text={"Добавить в tail"} onClick={handlerOnClickAddTail} isLoader={isLoader2}
-                  disabled={!list?.getSize() || isLoader} linkedList={"small"}/>
-          <Button text={"Удалить из head"} onClick={handlerOnClickDeleteHead} isLoader={isLoader}
-                  disabled={isLoader2 || !values.inputValue} linkedList={"small"}/>
-          <Button text={"Удалить из tail"} onClick={handlerOnClickDeleteTail} isLoader={isLoader2}
-                  disabled={!list?.getSize() || isLoader} linkedList={"small"}/>
+          <Button text={"Добавить в head"} onClick={addHead} isLoader={isLoader}
+                  disabled={!isCorrectValue} linkedList={"small"}/>
+          <Button text={"Добавить в tail"} onClick={addTail} isLoader={isLoader2}
+                  disabled={!isCorrectValue} linkedList={"small"}/>
+          <Button text={"Удалить из head"} onClick={deleteHead} isLoader={isLoader}
+                  disabled={!isCorrectSize} linkedList={"small"}/>
+          <Button text={"Удалить из tail"} onClick={deleteTail} isLoader={isLoader2}
+                  disabled={!isCorrectSize} linkedList={"small"}/>
 
         </fieldset>
         <fieldset className={styles.fieldset2}>
           <Input onChange={handleChange}
-                 disabled={isLoader || isLoader2} tabIndex={0} type={"number"}
+                 disabled={isLoader || isLoader2} max={9} min={0}  tabIndex={0} type={"number"}
                  value={values.inputIndex} name='inputIndex'/>
-          <Button text={"Добавить по индексу"} onClick={handlerOnClickAddByIndex} isLoader={isLoader}
-                  disabled={isLoader2 || !values.inputValue} linkedList={"big"}/>
-          <Button text={"Удалить по индексу"} onClick={handlerOnClickDeleteByIndex} linkedList={"big"} isLoader={isLoader2}
-                  disabled={!list?.getSize() || isLoader}/>
+          <Button text={"Добавить по индексу"} onClick={addByIndex} isLoader={isLoader}
+                  disabled={!isCorrectNumber || !isCorrectValue} linkedList={"big"}/>
+          <Button text={"Удалить по индексу"} onClick={deleteByIndex} linkedList={"big"} isLoader={isLoader2}
+                  disabled={!isCorrectNumber || !isCorrectValueIndex || !isCorrectSize}/>
 
         </fieldset>
 

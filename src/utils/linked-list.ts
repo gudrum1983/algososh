@@ -294,7 +294,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
 
     this.newToAdd = null
     this.elementPointer = null
-    this.saveHistory()
+/*    this.saveHistory()*/
 
     this.newElement = null
     this.saveHistory()
