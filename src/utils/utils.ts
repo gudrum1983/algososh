@@ -80,23 +80,13 @@ export function createQueueItem({letter, state}: TElementQueue1): TElementQueue1
 
 export type TElementList = Pick<CircleBaseElement,
   "letter"
-  | "state"
-  | "isSmall"
+  | "id"
 >
 
 
 export function createListItem(letter: string): TElementList {
   return {
     letter: letter,
-    state: ElementStates.Default,
-    isSmall: false
-  }
-}
-
-export function createListItemSmall(letter:string): TElementList {
-  return {
-    letter: letter,
-    state: ElementStates.Changing,
-    isSmall: true
+    id: nanoid(5),
   }
 }

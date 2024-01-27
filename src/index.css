@@ -39,6 +39,12 @@ code {
   max-width: 829px;
 }
 
+.container_type_list{
+  flex-direction: column;
+  margin-bottom: 120px;
+  max-width: 952px;
+}
+
 .container-result {
   display: flex;
   flex-direction: row;

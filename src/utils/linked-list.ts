@@ -1,5 +1,4 @@
 import {LinkedListNode} from "./linked-list-node";
-import {createListItemSmall, TElementList} from "./utils";
 
 export type TNewSnapList<T> = {
   head: LinkedListNode<T> | null;
@@ -8,13 +7,13 @@ export type TNewSnapList<T> = {
   newToAdd: LinkedListNode<T> | null;
   oldToRemove: LinkedListNode<T> | null;
   elementPointer: LinkedListNode<T> | null;
-  sectionPointer: LinkedListNode<T> | null;
+  sectionPointer: Record<string, true>;
   newElement: LinkedListNode<T> | null;
   removeElement: LinkedListNode<T> | null;
   container: Array<LinkedListNode<T> | null>,
 }
 
-export interface ILinkedList<T> {
+export interface ILinkedList<T extends { id: string }> {
   append: (element: T) => void;
   prepend: (element: T) => void;
   addByIndex: (element: T, position: number) => void;
@@ -23,33 +22,10 @@ export interface ILinkedList<T> {
   getSize: () => number;
   deleteHead: () => void;
   deleteTail: () => void;
-  toArray: () => Array<LinkedListNode<T>>;
-  getSnap:() => Array<TNewSnapList<T>>;
+  getSnap: () => Array<TNewSnapList<T>>;
 }
 
-
-export function createListSnaphotsPush(stack: ILinkedList<TElementList>, value: string) {
-
-
-  //если очередь есть = надо заменить на другое???
-  if (stack) {
-
-    const newItem = createListItemSmall(value)
-
-    stack.prepend(newItem)
-    /*  stack.saveHistory()
-
-      if (newItem && newItem.state) {
-        const item = {...newItem, state: ElementStates.Default}
-        stack.changeLast(item)
-      }
-
-      stack.saveHistory()
-  */
-  }
-}
-
-export class LinkedList<T> implements ILinkedList<T> {
+export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
   private head: LinkedListNode<T> | null;
   private tail: LinkedListNode<T> | null;
   private size: number;
@@ -57,10 +33,9 @@ export class LinkedList<T> implements ILinkedList<T> {
   private oldToRemove: LinkedListNode<T> | null;
   private snapshots: Array<TNewSnapList<T>> = [];
   private elementPointer: LinkedListNode<T> | null;
-  private sectionPointer: LinkedListNode<T> | null;
+  private sectionPointer: Record<string, true>;
   private removeElement: LinkedListNode<T> | null;
   private newElement: LinkedListNode<T> | null;
-
 
   constructor(initialElements?: Array<LinkedListNode<T>>) {
     this.head = null;
@@ -68,7 +43,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     this.size = 0;
 
     this.elementPointer = null;   // выделение одного активного элемента
-    this.sectionPointer = null;  // выделение секции до активного элемента
+    this.sectionPointer = {};  // выделение секции до активного элемента
 
     this.newToAdd = null;         // маленький кружок сверху
     this.newElement = null;
@@ -82,97 +57,25 @@ export class LinkedList<T> implements ILinkedList<T> {
     //+ исходные данные останутся без изменений
     if (initialElements) {
       initialElements.forEach((element) => {
-        this.append(element.value)
+        this.InitAppend(element.value)
 
       })
       this.saveHistory()
     }
   }
-
   private createNode(element: T): LinkedListNode<T> {
     return new LinkedListNode(element);
   }
-
-  addByIndex(element: T, index: number) {
-
-    this.validateIndex(index)
-
-    if (index === 0) {
-      this.prepend(element)
-    } else if (index === this.size - 1) {
-      this.append(element)
-    } else {
-      const linkedListNode = this.createNode(element);
-      const previous = this.getByIndex(index - 1)
-      linkedListNode.next = previous?.next ?? null
-      this.incrementSize();
-    }
-
+  private clearAll2() {
+    this.newToAdd = null;
+    this.oldToRemove = null;
+    this.elementPointer = null;
+    this.sectionPointer = {};
+    this.newElement = null;
+    this.removeElement = null;
+    this.snapshots = []
   }
-
-  deleteByIndex(index: number) {
-
-    this.validateIndex(index)
-
-    if (index === 0) {
-      this.deleteHead()
-    } else if (index === this.size - 1) {
-      this.deleteTail()
-    } else {
-      const previous = this.getByIndex(index - 1)
-      if (previous) {
-        previous.next = previous?.next?.next ?? null
-      }
-      this.decrementSize();
-
-    }
-  }
-
-  ///ГОТОВО
-  deleteHead() {
-    if (this.head === null) {
-      throw new Error('deleteHead() - List is empty');
-    } else {
-      this.head = this.head?.next || null;
-      this.decrementSize();
-    }
-  }
-
-  ///ГОТОВО
-  deleteTail() {
-    if (this.size === 0) {
-      throw new Error('deleteTail() - List is empty');
-    }
-
-    if (this.head === this.tail) {
-      //короткая запись - this.tail = null; this.head = this.tail;
-      this.head = this.tail = null;
-    } else {
-      //находим предпоследний "penultimate" элемент
-      let penultimate = this.getByIndex(this.size - 2);
-      penultimate!.next = null;
-      this.tail = penultimate;
-    }
-
-    this.decrementSize();
-  }
-
-  ///ГОТОВО
-  getByIndex(index: number) {
-
-    this.validateIndex(index)
-
-    let current = this.head;
-
-    for (let currentIndex = 0; current && currentIndex < index; ++currentIndex) {
-      current = current.next;
-    }
-
-    return current;
-  }
-
-  ///ГОТОВО
-  append(element: T) {
+  private InitAppend(element: T) {
     const linkedListNode = this.createNode(element);
     if (this.tail) {
       this.tail.next = linkedListNode;
@@ -183,20 +86,206 @@ export class LinkedList<T> implements ILinkedList<T> {
     this.tail = linkedListNode;
     this.incrementSize();
   }
-
-  /////ГОТОВО
-  prepend(element: T) {
-    this.snapshots=[]
-
-    this.newToAdd = this.createNode(element);
-    this.elementPointer = this.head
-    this.saveHistory()
-
-    if (this.head) {
-      this.newToAdd.next = this.head
-
-/*      nextHead.next = this.newToAdd*/
+  private decrementSize(): void {
+    this.size--;
+  }
+  private incrementSize(): void {
+    this.size++;
+  }
+  private toArray() {
+    const result: Array<LinkedListNode<T>> = [];
+    let current = this.head;
+    while (current) {
+      result.push(current);
+      current = current.next;
     }
+    return result;
+
+  }
+  private validateIndex(index: number) {
+    if (index < 0 || index > this.size) {
+      throw new Error('Неверная позиция');
+    }
+  }
+  private saveHistory() {
+    this.snapshots.push({
+      head: this.head,
+      tail: this.tail,
+      size: this.size,
+      newToAdd: this.newToAdd,
+      oldToRemove: this.oldToRemove,
+      elementPointer: this.elementPointer,
+      sectionPointer: this.sectionPointer,
+      newElement: this.newElement,
+      removeElement: this.removeElement,
+      container: this.toArray()
+    });
+  }
+  public addByIndex(element: T, index: number) {
+
+    this.sectionPointer = {}
+
+    this.validateIndex(index)
+
+    if (index === 0) {
+      this.prepend(element)
+    } else {
+
+      this.snapshots = []
+      this.newToAdd = this.createNode(element);
+      const previous = this.getByIndex(index - 1)
+      this.elementPointer = previous
+      if (this.elementPointer) {
+        const id = this.elementPointer.value.id
+        this.sectionPointer = {...this.sectionPointer, [id]: true}
+      }
+      this.saveHistory()
+      this.elementPointer = previous && previous.next
+      this.saveHistory()
+      if (previous) {
+        previous.next = this.newElement = this.newToAdd
+      }
+      this.newToAdd.next = this.elementPointer
+      this.newToAdd = null
+      this.elementPointer = null
+      this.incrementSize();
+      this.sectionPointer = {}
+      this.saveHistory()
+      this.newElement = null
+      this.saveHistory()
+    }
+  }
+  public deleteByIndex(index: number) {
+    this.sectionPointer = {}
+    this.snapshots = []
+      const prev = this.getByIndex(index - 1)
+    if (prev){
+      const id = prev.value.id
+      this.sectionPointer = {...this.sectionPointer, [id]: true}
+      this.saveHistory();
+      this.oldToRemove = this.removeElement = prev.next
+      this.saveHistory();
+      prev.next = this.removeElement && this.removeElement.next
+
+    }
+
+    this.sectionPointer = {}
+
+      this.decrementSize();
+      this.saveHistory();
+
+  }
+  public deleteHead() {
+
+    this.clearAll2()
+
+    if (this.head === null) {
+      throw new Error('deleteHead() - List is empty');
+    } else {
+
+      this.removeElement = this.head; // текущий элемент с пустым значением
+      this.oldToRemove = this.head // маленький розовый
+
+      this.saveHistory();
+
+      this.head = this.head?.next || null;
+      this.decrementSize();
+      this.removeElement = null; // текущий элемент с пустым значением
+      this.oldToRemove = null // маленький розовый
+
+      this.saveHistory();
+    }
+  }
+  public deleteTail() {
+    this.clearAll2()
+    if (this.size === 0) {
+      throw new Error('deleteTail() - List is empty');
+    }
+
+    let penultimate = this.getByIndex(this.size - 2);
+    this.clearAll2()
+
+    this.removeElement = this.tail; // текущий элемент с пустым значением
+    this.oldToRemove = this.tail // маленький розовый
+
+    this.saveHistory();
+
+
+    penultimate!.next = null;
+    this.tail = penultimate;
+
+    /* if (this.head === this.tail) {
+       //короткая запись - this.tail = null; this.head = this.tail;
+       this.head = this.tail = null;
+     } else {
+       //находим предпоследний "penultimate" элемент
+       let penultimate = this.getByIndex(this.size - 2);
+       this.snapshots = []
+
+
+
+       penultimate!.next = null;
+       this.tail = penultimate;
+     }*/
+
+    this.removeElement = null; // текущий элемент с пустым значением
+    this.oldToRemove = null // маленький розовый
+
+    this.saveHistory();
+    this.decrementSize();
+  }
+  public getByIndex(index: number) {
+
+    this.validateIndex(index)
+
+    let current = this.head;
+
+    for (let currentIndex = 0; current && currentIndex < index; ++currentIndex) {
+      const id = current.value.id
+      this.sectionPointer = {...this.sectionPointer, [id]: true}
+      this.elementPointer = current
+      this.saveHistory()
+      current = current.next;
+    }
+    return current;
+  }
+  public append(element: T) {
+    this.snapshots = []
+    this.clearAll2()
+    this.newToAdd = this.createNode(element);
+
+
+    if (this.tail) {
+      this.sectionPointer[this.tail.value.id] = true
+      this.elementPointer = this.tail
+      this.saveHistory()
+
+      this.tail.next = this.newToAdd;
+      this.sectionPointer = {}
+      this.elementPointer = null
+      this.newElement = this.tail = this.newToAdd
+      this.saveHistory()
+    } else {
+      this.head = this.newToAdd;
+    }
+
+    this.newElement = this.newToAdd = null
+    this.incrementSize();
+    this.saveHistory()
+  }
+  public prepend(element: T) {
+    this.snapshots = []
+    this.clearAll2()
+    this.newToAdd = this.createNode(element);
+    if (this.head) {
+      this.elementPointer = this.head
+      this.sectionPointer[this.head.value.id] = true
+      this.saveHistory()
+
+
+      this.newToAdd.next = this.head
+    }
+    this.sectionPointer = {}
     this.elementPointer = null
     this.head = this.newElement = this.newToAdd
 
@@ -213,57 +302,11 @@ export class LinkedList<T> implements ILinkedList<T> {
 
     this.incrementSize();
   }
-
-  ///ГОТОВО
-  getSize() {
+  public getSize() {
     return this.size;
   }
-
-  getSnap() {
+  public getSnap() {
     return this.snapshots;
   }
-
-  private decrementSize(): void {
-    this.size--;
-  }
-
-  private incrementSize(): void {
-    this.size++;
-  }
-
-  ////ГОТОВО
-  toArray() {
-    const result: Array<LinkedListNode<T>> = [];
-    let current = this.head;
-    while (current) {
-      result.push(current);
-      current = current.next;
-    }
-    console.log({result})
-    return result;
-
-  }
-
-  private validateIndex(index: number) {
-    if (index < 0 || index > this.size) {
-      throw new Error('Неверная позиция');
-    }
-  }
-
-  private saveHistory() {
-    this.snapshots.push({
-      head: this.head,
-      tail: this.tail,
-      size: this.size,
-      newToAdd: this.newToAdd,
-      oldToRemove: this.oldToRemove,
-      elementPointer: this.elementPointer,
-      sectionPointer: this.sectionPointer,
-      newElement: this.newElement,
-      removeElement: this.removeElement,
-      container: this.toArray()
-    });
-  }
-
 
 }

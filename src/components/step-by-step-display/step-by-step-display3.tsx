@@ -12,18 +12,17 @@ type TStepsWithArray<T> = {
   steps: Array<T>,
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<boolean>>,
-  childComponent: (elementsList: T) => JSX.Element
 };
 
 type TSteps<T> = TStepsWithArray<T>;
 
-export const StepByStepDisplay2 = <T, >({setLoader, steps, delay = DELAY_IN_MS, childComponent}: TSteps<T>) => {
+export const StepByStepDisplay3 = <T extends TNewSnapList<TElementList>, >({setLoader, steps, delay = DELAY_IN_MS}: TSteps<T>) => {
+
+  console.log({steps})
 
   let location = useLocation()
-  console.log(location)
 
   const [obj, setObj] = useState<null | T>(null);
-
   const stepsQueue = React.useMemo(() => {
     if (steps) {
       return new Queue<T>(0, steps)
@@ -31,6 +30,8 @@ export const StepByStepDisplay2 = <T, >({setLoader, steps, delay = DELAY_IN_MS, 
     return null
   }, [steps])
 
+  console.log("stepsQueue")
+  console.log(stepsQueue)
   React.useEffect(() => {
     if (stepsQueue) {
       const stepData = stepsQueue.peak()
@@ -70,7 +71,7 @@ export const StepByStepDisplay2 = <T, >({setLoader, steps, delay = DELAY_IN_MS, 
 
   return (
     <>
-      {obj && location.pathname !== "/list" && childComponent(obj)}
+      {obj && location.pathname === "/list" && <ListResult<TNewSnapList<TElementList>> content={obj}/>}
     </>
   );
 };

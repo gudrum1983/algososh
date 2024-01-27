@@ -54,7 +54,6 @@ export function createStackSnaphotsPop(stack: IStackWithSnapshots<TElementStack>
   if (stack) {
 
     const index = stack.getSize() - 1
-    debugger
     if (index < 0) {
       return
     }

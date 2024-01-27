@@ -2,6 +2,7 @@ import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {TSnapshot} from "../../types/element-and-snapshot";
+import {useLocation} from "react-router-dom";
 /*import {test} from "../../utils/confetti/confetti";*/
 
 type TSteps<T> = {
@@ -15,6 +16,9 @@ type TSteps<T> = {
 export const StepByStepDisplay = <T,>({setLoader, steps, delay = DELAY_IN_MS, childComponent}: TSteps<T>) => {
 
   const [arr, setArr] = useState<TSnapshot<T> | null >(null);
+
+  let location = useLocation()
+  console.log(location)
 
   const stepsQueue = React.useMemo(() => {
     if (steps) {
