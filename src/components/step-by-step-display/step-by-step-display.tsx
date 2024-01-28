@@ -3,6 +3,8 @@ import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {TSnapshot} from "../../types/element-and-snapshot";
 import {useLocation} from "react-router-dom";
+
+import {Buttons} from "../../utils/utils";
 /*import {test} from "../../utils/confetti/confetti";*/
 
 type TSteps<T> = {

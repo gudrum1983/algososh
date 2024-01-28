@@ -11,10 +11,6 @@ export function cloneElements<T>(elements: Array<T>): Array<T> {
   return elements.map(el => ({...el}));
 }
 
-export function allEqual<T>(...parameters: Array<T>) {
-  return parameters.every(param => param === parameters[0]);
-}
-
 export function swap<T>(arr: T[], i: number, j: number) {
   const tmp = arr[i];
   arr[i] = arr[j];
@@ -89,4 +85,13 @@ export function createListItem(letter: string): TElementList {
     letter: letter,
     id: nanoid(5),
   }
+}
+
+export enum Buttons {
+  addHead = "addHead",
+  addTail = "addTail",
+  deleteHead = "deleteHead",
+  deleteTail = "deleteTail",
+  addByIndex = "addByIndex",
+  deleteByIndex = "deleteByIndex",
 }

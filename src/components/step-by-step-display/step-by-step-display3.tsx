@@ -4,13 +4,13 @@ import {DELAY_IN_MS} from "../../constants/delays";
 import {useLocation} from "react-router-dom";
 import {VisualContentList} from "../visual-content-list/visual-content-list";
 import {TNewSnapList} from "../../utils/linked-list";
-import {TElementList} from "../../utils/utils";
+import {Buttons, TElementList} from "../../utils/utils";
 /*import {test} from "../../utils/confetti/confetti";*/
 
 type TSteps<T> = {
   steps: Array<T>,
   delay?: number,
-  setLoader: React.Dispatch<React.SetStateAction<boolean>>,
+  setLoader: React.Dispatch<React.SetStateAction<false | Buttons>>,
 };
 
 export const StepByStepDisplay3 = <T extends TNewSnapList<TElementList>, >({

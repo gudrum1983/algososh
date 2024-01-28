@@ -5,7 +5,7 @@ import {TElementList} from "../../utils/utils";
 import {LinkedListNode} from "../../utils/linked-list-node";
 import {ElementStates} from "../../types/element-states";
 
-type TVisualContentListProps<T> = {content: T};
+type TVisualContentListProps<T> = { content: T };
 
 export const VisualContentList = <T extends TNewSnapList<TElementList>, >({content}: TVisualContentListProps<T>): JSX.Element => {
 
@@ -13,7 +13,6 @@ export const VisualContentList = <T extends TNewSnapList<TElementList>, >({conte
 
   function getElementHead(elementsList: TNewSnapList<TElementList>, index: number, element: LinkedListNode<TElementList>) {
     let headProp = null;
-
     if (element === elementsList.elementPointer && elementsList.newToAdd) {
       headProp = {
         head:
@@ -22,7 +21,6 @@ export const VisualContentList = <T extends TNewSnapList<TElementList>, >({conte
     } else if (index === 0) {
       headProp = {head: "head"};
     }
-
     return headProp;
   }
 
