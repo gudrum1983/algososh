@@ -61,16 +61,17 @@ export function createStackItem(value: string, state: ElementStates, index: numb
   }
 }
 
-export type TElementQueue1 = Pick<CircleBaseElement,
+export type TElementQueue1 = TElementQueue2 & Pick<CircleBaseElement, "id">
+export type TElementQueue2 = Pick<CircleBaseElement,
   "letter"
   | "state"
 >
 
-
-export function createQueueItem({letter, state}: TElementQueue1): TElementQueue1 {
+export function createQueueItem({letter, state}: TElementQueue2): TElementQueue1 {
   return {
     letter: letter,
     state: state,
+    id: nanoid(5),
   }
 }
 
@@ -80,12 +81,12 @@ export type TElementList = Pick<CircleBaseElement,
 >
 
 
-export function createListItem(letter: string): TElementList {
+/*export function createListItem(letter: string): TElementList {
   return {
     letter: letter,
     id: nanoid(5),
   }
-}
+}*/
 
 export enum Buttons {
   addHead = "addHead",
@@ -94,4 +95,5 @@ export enum Buttons {
   deleteTail = "deleteTail",
   addByIndex = "addByIndex",
   deleteByIndex = "deleteByIndex",
+  clear = "clear",
 }

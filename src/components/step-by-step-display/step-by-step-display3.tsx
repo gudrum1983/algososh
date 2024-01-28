@@ -3,17 +3,17 @@ import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {useLocation} from "react-router-dom";
 import {VisualContentList} from "../visual-content-list/visual-content-list";
-import {TNewSnapList} from "../../utils/linked-list";
-import {Buttons, TElementList} from "../../utils/utils";
+import {Buttons} from "../../utils/utils";
+import {VisualContentQueue} from "../visual-content-queue/visual-content-queue";
 /*import {test} from "../../utils/confetti/confetti";*/
-
 type TSteps<T> = {
   steps: Array<T>,
   delay?: number,
-  setLoader: React.Dispatch<React.SetStateAction<false | Buttons>>,
+  setLoader: React.Dispatch<React.SetStateAction<null | Buttons>>,
 };
 
-export const StepByStepDisplay3 = <T extends TNewSnapList<TElementList>, >({
+
+export const StepByStepDisplay3 = <T, >({
                                                                              setLoader,
                                                                              steps,
                                                                              delay = DELAY_IN_MS
@@ -58,7 +58,7 @@ export const StepByStepDisplay3 = <T extends TNewSnapList<TElementList>, >({
     }
 
     if (stepsQueue && stepsQueue.isEmpty()) {
-      setLoader(false);
+      setLoader(null);
     }
 
     return () => {
@@ -66,9 +66,13 @@ export const StepByStepDisplay3 = <T extends TNewSnapList<TElementList>, >({
     };
   }, [step]);
 
+  console.log(typeof step)
+
+
   return (
     <>
-      {step && location.pathname === "/list" && <VisualContentList<TNewSnapList<TElementList>> content={step}/>}
+      {step && location.pathname === "/list" && <VisualContentList<T> content={step}/>}
+      {step && location.pathname === "/queue" && <VisualContentQueue<T> content={step}/>}
     </>
   );
 };

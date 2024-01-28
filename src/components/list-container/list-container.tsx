@@ -3,13 +3,11 @@ import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {ILinkedList, LinkedList, TNewSnapList} from "../../utils/linked-list";
-import {Buttons, createListItem, TElementList} from "../../utils/utils";
-import {LinkedListNode} from "../../utils/linked-list-node";
+import {ILinkedList, LinkedListWithSnapshots, TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
+import {Buttons} from "../../utils/utils";
 import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
 import styles from "./list-container.module.css"
 import {randomNumbers} from "../../utils/random-numbers";
-import {initialState} from "../../algorithms/create-queue-snaphots/create-gueue-snaphots";
 
 type TInputData = {
   inputValue: string;
@@ -18,9 +16,9 @@ type TInputData = {
 
 export const ListContainer: React.FC = () => {
 
-  const [isLoader, setIsLoader] = useState<false | Buttons>(false);
-  const [snapshots, setSnapshots] = useState<Array<TNewSnapList<TElementList>> | null>(null);
-  const [list, setList] = useState<ILinkedList<TElementList> | null>(null);
+  const [isLoader, setIsLoader] = useState<null | Buttons>(null);
+  const [snapshots, setSnapshots] = useState<Array<TNewSnapList<string>> | null>(null);
+  const [list, setList] = useState<ILinkedList<string> | null>(null);
 
   const initialStateValue:TInputData = {inputValue: "", inputIndex: ""}
 
@@ -39,16 +37,12 @@ export const ListContainer: React.FC = () => {
   const isCorrectValueIndex = values.inputIndex !== ""
   const isCorrectSize = (list && list.getSize() > 1)
 
-  function createNode(element: TElementList): LinkedListNode<TElementList> {
-    return new LinkedListNode(element);
-  }
-
   React.useEffect(() => {
     const random = randomNumbers({minLen: minSizeList, maxLen: maxSizeInitialList, maxValue: 9999})
     const initialDate = random.map((item) => {
-      return createNode(createListItem(String(item)))
+      return (String(item))
     })
-    const list = new LinkedList<TElementList>(initialDate);
+    const list = new LinkedListWithSnapshots<string>(initialDate);
     setList(list)
   }, [])
 
@@ -62,38 +56,37 @@ export const ListContainer: React.FC = () => {
     e.preventDefault()
   }
 
-  function saveSnapshots(list: ILinkedList<TElementList>): void {
+  function saveSnapshots(list: ILinkedList<string>): void {
     const snapshots = list.getSnapshots()
     setSnapshots(snapshots)
   }
 
   function addHead(): void {
     setIsLoader(Buttons.addHead)
-    const newElement = createListItem(values.inputValue);
     setValues(initialStateValue)
     if (list) {
-      list.prepend(newElement);
+      list.prepend(values.inputValue);
       saveSnapshots(list)
     }
   }
 
   function addTail(): void {
     setIsLoader(Buttons.addTail)
-    const newElement = createListItem(values.inputValue);
+/*    const newElement = createListItem(values.inputValue);*/
     setValues(initialStateValue)
     if (list) {
-      list.append(newElement);
+      list.append(values.inputValue);
       saveSnapshots(list)
     }
   }
 
   function addByIndex(): void {
     setIsLoader(Buttons.addByIndex)
-    const newElement = createListItem(values.inputValue);
+/*    const newElement = createListItem(values.inputValue);*/
     setValues(initialStateValue)
     if (list) {
       const index = Number(values.inputIndex);
-      list.addByIndex(newElement, index);
+      list.addByIndex(values.inputValue, index);
       saveSnapshots(list)
     }
   }
@@ -151,7 +144,7 @@ export const ListContainer: React.FC = () => {
       </form>
 
       {snapshots &&
-        <StepByStepDisplay3<TNewSnapList<TElementList>> steps={snapshots}
+        <StepByStepDisplay3<TNewSnapList<string>> steps={snapshots}
                                                         setLoader={setIsLoader}
                                                         delay={delay}/>}
     </>

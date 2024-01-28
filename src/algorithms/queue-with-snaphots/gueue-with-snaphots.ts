@@ -1,6 +1,3 @@
-import {ElementStates} from "../../types/element-states";
-import {createQueueItem, TElementQueue1} from "../../utils/utils";
-
 export interface IQueueWithSnapshots<T> {
   enqueue: (item: T) => void;
   dequeue: () => void;
@@ -10,93 +7,43 @@ export interface IQueueWithSnapshots<T> {
   getSize: () => number;
   getLength: () => number;
   saveHistory: () => void;
-  getHistory: () => Array<TNewSnap<T>> | null;
+  getHistory: () => Array<TNewSnapQueue<T>> | null;
   changeLast: (item: T) => void;
   clear: () => void;
   getCanAdd: () => boolean;
   getCanDelete: () => boolean;
 }
 
-export function createQueneSnaphotsPush(stack: IQueueWithSnapshots<TElementQueue1>, value: string) {
 
 
-  //если очередь есть = надо заменить на другое???
-  if (stack) {
-
-    const newItem = createQueueItem({letter: value, state: ElementStates.Changing})
-
-    stack.enqueue(newItem)
-    stack.saveHistory()
-
-    if (newItem && newItem.state) {
-      const item = {...newItem, state: ElementStates.Default}
-      stack.changeLast(item)
-    }
-
-    stack.saveHistory()
-
-  }
-}
-
-export function createQueueSnaphotsPop(stack: IQueueWithSnapshots<TElementQueue1>) {
-
-  if (stack) {
-
-    const lenghtQueue = stack.getLength()
-    if (lenghtQueue <= 0) {
-      return
-    }
-
-    const first = stack.peak()
-
-    if (first && first.state) {
-      first.state = ElementStates.Changing
-      stack.saveHistory()
-    }
-
-    stack.dequeue()
-
-    stack.saveHistory()
-  }
-}
-
-export function initialState(Queue1: IQueueWithSnapshots<TElementQueue1>) {
-  Queue1.saveHistory()
-
-}
-
-export function createGueueSnaphotsClear(stack: IQueueWithSnapshots<TElementQueue1>) {
-
-  if (stack) {
-
-    const size = stack.getSize()
-
-    if (size > 0) {
-
-      stack.clear()
-
-    }
-
-  }
-}
 
 
-export type TNewSnap<T> = {
-  container: Array<T | null>,
+
+
+
+export type TNewSnapQueue<T> = {
+  containerQueue: Array<T | null>,
   head: number;
   tail: number;
   size: number;
   length: number,
+  elementPointer: number | null;
+  newElement: T | null;
+  removeElement: T | null;
 }
 
 
 export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
-  private container: Array<T | null> = [];
+  private containerQueue: Array<T | null> = [];
   private head: number = 0;
   private tail: number = 0;
   private readonly size: number = 0;
   private length: number = 0;
-  private snapshots: Array<TNewSnap<T>> = [];
+  private snapshots: Array<TNewSnapQueue<T>> = [];
+  private elementPointer: number | null;
+  private removeElement: T | null;
+  private newElement: T | null;
+
 
   constructor(size: number = 0, data?: Array<T>) {
     if (data) {
@@ -104,17 +51,29 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
       data.forEach(item => this.enqueue(item));
     } else {
       this.size = size;
-      this.container = Array(this.size);
+      this.containerQueue = Array(this.size);
     }
+
+
+    this.elementPointer = null;         // выделение одного активного элемента
+    this.newElement = null;             // новый элемент в массиве - зелёный
+    this.removeElement = null;          // удаляемый элемент
+    this.snapshots = []                 // снимки
+
+    this.saveHistory()
   }
 
   enqueue = (item: T) => {
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     } else {
-      this.container[this.tail] = item;
+      this.elementPointer = this.tail
+      this.saveHistory()
+      this.elementPointer = null
+      this.containerQueue[this.tail] = item;
       this.tail++;
       this.length++;
+      this.saveHistory()
     }
   };
 
@@ -122,9 +81,14 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
     if (this.isEmpty()) {
       throw new Error("No elements in the queue");
     } else {
-      this.container[this.head] = null;
+      this.elementPointer = this.head;
+      this.saveHistory();
+      this.elementPointer = null;
+      this.containerQueue[this.head] = null;
+
       (this.head !== this.size - 1) && this.head++;
       this.length--;
+      this.saveHistory();
     }
   };
 
@@ -132,8 +96,8 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   peakLast = (): T | null => {
     if (this.isEmpty()) {
       throw new Error("No elements in the queue");
-    } else if (this.container[this.tail - 1]) {
-      return this.container[this.tail - 1]
+    } else if (this.containerQueue[this.tail - 1]) {
+      return this.containerQueue[this.tail - 1]
     }
     return null;
   };
@@ -142,14 +106,14 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   peak = (): T | null => {
     if (this.isEmpty()) {
       throw new Error("No elements in the queue");
-    } else if (this.container[this.head]) {
-      return this.container[this.head]
+    } else if (this.containerQueue[this.head]) {
+      return this.containerQueue[this.head]
     }
     return null;
   };
 
   clear = () => {
-    this.container = Array(this.size);
+    this.containerQueue = Array(this.size);
     this.head = 0;
     this.tail = 0;
     this.length = 0;
@@ -161,17 +125,17 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   changeLast = (item: T): void => {
 
     const lastInd = (this.tail === 0 && this.length > 0) ? this.size - 1 : this.tail - 1
-    this.container[lastInd] = item
+    this.containerQueue[lastInd] = item
   }
 
   changeFirst = (item: T): void => {
     if (this.getSize() !== 0) {
       const lastInd = this.head
-      this.container[lastInd] = item
+      this.containerQueue[lastInd] = item
     }
   }
 
-  getSize = () => this.container.length;
+  getSize = () => this.containerQueue.length;
   getLength = () => this.length;
 
   getCanAdd = () => (this.size === this.tail)
@@ -179,7 +143,16 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   getCanDelete = () => (this.length !== 0)
 
   saveHistory() {
-    this.snapshots.push({head: this.head, tail: this.tail, length: this.length, size:this.size, container: [...this.container]})
+    this.snapshots.push({
+      head: this.head,
+      tail: this.tail,
+      length: this.length,
+      size: this.size,
+      elementPointer: this.elementPointer,
+      removeElement: this.removeElement,
+      newElement: this.newElement,
+      containerQueue: [...this.containerQueue]
+    })
   }
 
   clearHistory() {
@@ -188,7 +161,7 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
 
   clearAll() {
     this.snapshots = []
-    this.container = this.container = Array(this.size);
+    this.containerQueue = this.containerQueue = Array(this.size);
   }
 
   getHistory() {

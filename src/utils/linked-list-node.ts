@@ -1,10 +1,13 @@
-export class LinkedListNode<T> {
+import {nanoid} from "nanoid";
 
-  value: T
+export class LinkedListNode<T> {
+  letter: T
   next: LinkedListNode<T> | null;
+  id: string
 
   constructor(value: T, next?: LinkedListNode<T> | null) {
-    this.value = value;
+    this.letter = value;
     this.next = (next === undefined ? null : next);
+    this.id = nanoid(5)
   }
 }

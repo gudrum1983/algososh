@@ -1,4 +1,4 @@
-import {LinkedListNode} from "./linked-list-node";
+import {LinkedListNode} from "../../utils/linked-list-node";
 
 export type TNewSnapList<T> = {
   head: LinkedListNode<T> | null;
@@ -10,10 +10,10 @@ export type TNewSnapList<T> = {
   sectionPointer: Record<string, true>;
   newElement: LinkedListNode<T> | null;
   removeElement: LinkedListNode<T> | null;
-  container: Array<LinkedListNode<T> | null>,
+  containerList: Array<LinkedListNode<T> | null>,
 }
 
-export interface ILinkedList<T extends { id: string }> {
+export interface ILinkedList<T> {
   prepend: (element: T) => void;
   append: (element: T) => void;
   addByIndex: (element: T, position: number) => void;
@@ -24,7 +24,7 @@ export interface ILinkedList<T extends { id: string }> {
   getSnapshots: () => Array<TNewSnapList<T>>;
 }
 
-export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
+export class LinkedListWithSnapshots<T> implements ILinkedList<T> {
   private head: LinkedListNode<T> | null;
   private tail: LinkedListNode<T> | null;
   private size: number;
@@ -36,7 +36,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
   private removeElement: LinkedListNode<T> | null;
   private newElement: LinkedListNode<T> | null;
 
-  constructor(initialElements?: Array<LinkedListNode<T>>) {
+  constructor(initialElements?: Array<T>) {
     this.head = null;
     this.tail = null;
     this.size = 0;
@@ -52,11 +52,9 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
 
     this.snapshots = []                  // снимки
 
-    //пересоздаем список из значений initialElements, так как нет гарантии, что связи в элементах корректные
-    //+ исходные данные останутся без изменений
     if (initialElements) {
-      initialElements.forEach((element) => {
-        const newNode = this.createNode(element.value);
+      initialElements.forEach((value) => {
+        const newNode = this.createNode(value);
         if (this.tail) {
           this.tail.next = newNode;
         } else {
@@ -69,8 +67,8 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
     }
   }
 
-  private createNode(element: T): LinkedListNode<T> {
-    return new LinkedListNode(element);
+  private createNode(value: T): LinkedListNode<T> {
+    return new LinkedListNode(value);
   }
   private getByIndex(index: number) {
 
@@ -79,7 +77,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
     let current = this.head;
 
     for (let currentIndex = 0; current && currentIndex < index; ++currentIndex) {
-      const id = current.value.id
+      const id = current.id
       this.sectionPointer = {...this.sectionPointer, [id]: true}
       this.elementPointer = current
       this.saveHistory()
@@ -118,7 +116,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
       sectionPointer: this.sectionPointer,
       newElement: this.newElement,
       removeElement: this.removeElement,
-      container: this.toArray()
+      containerList: this.toArray()
     });
   }
   private toArray() {
@@ -141,13 +139,13 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
   }
 
   // публичные методы изменения списка
-  public prepend(element: T) {
+  public prepend(value: T) {
     this.snapshots = []
     this.clearHistory()
-    this.indicatorToAdd = this.createNode(element);
+    this.indicatorToAdd = this.createNode(value);
     if (this.head) {
       this.elementPointer = this.head
-      this.sectionPointer[this.head.value.id] = true
+      this.sectionPointer[this.head.id] = true
       this.saveHistory()
 
 
@@ -177,7 +175,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
     this.indicatorToAdd = this.createNode(element);
 
     if (this.tail) {
-      this.sectionPointer[this.tail.value.id] = true
+      this.sectionPointer[this.tail.id] = true
       this.elementPointer = this.tail
       this.saveHistory()
 
@@ -208,7 +206,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
       const previous = this.getByIndex(index - 1)
       this.elementPointer = previous
       if (this.elementPointer) {
-        const id = this.elementPointer.value.id
+        const id = this.elementPointer.id
         this.sectionPointer = {...this.sectionPointer, [id]: true}
       }
       this.saveHistory()
@@ -235,7 +233,7 @@ export class LinkedList<T extends { id: string }> implements ILinkedList<T> {
     this.snapshots = []
     const prev = this.getByIndex(index - 1)
     if (prev) {
-      const id = prev.value.id
+      const id = prev.id
       this.sectionPointer = {...this.sectionPointer, [id]: true}
       this.saveHistory();
       this.indicatorToRemove = this.removeElement = prev.next

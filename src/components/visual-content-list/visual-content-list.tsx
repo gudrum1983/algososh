@@ -1,22 +1,29 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
-import {TNewSnapList} from "../../utils/linked-list";
-import {TElementList} from "../../utils/utils";
-import {LinkedListNode} from "../../utils/linked-list-node";
+import {TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
 import {ElementStates} from "../../types/element-states";
+import {LinkedListNode} from "../../utils/linked-list-node";
 
 type TVisualContentListProps<T> = { content: T };
 
-export const VisualContentList = <T extends TNewSnapList<TElementList>, >({content}: TVisualContentListProps<T>): JSX.Element => {
+type Ttest = TNewSnapList<string>
+
+export const VisualContentList = <T, >({content}: TVisualContentListProps<T>): JSX.Element => {
 
   const CircleMemo = React.memo(Circle);
 
-  function getElementHead(elementsList: TNewSnapList<TElementList>, index: number, element: LinkedListNode<TElementList>) {
+  // функция проверки типов так как я не смогла понять как указать в компоненте конкретный тип
+  // и что бы это всё окончательно не сломалось
+  function isTNewSnapList(value: any): value is Ttest {
+    return value && (value as Ttest).containerList !== undefined;
+  }
+
+  function getElementHead(elementsList: Ttest, index: number, element: LinkedListNode<string>) {
     let headProp = null;
     if (element === elementsList.elementPointer && elementsList.newToAdd) {
       headProp = {
         head:
-          <CircleMemo letter={elementsList.newToAdd?.value.letter} state={ElementStates.Changing} isSmall={true}/>
+          <CircleMemo letter={elementsList.newToAdd?.letter} state={ElementStates.Changing} isSmall={true}/>
       };
     } else if (index === 0) {
       headProp = {head: "head"};
@@ -24,9 +31,9 @@ export const VisualContentList = <T extends TNewSnapList<TElementList>, >({conte
     return headProp;
   }
 
-  function getElementState(elementsList: TNewSnapList<TElementList>, element: LinkedListNode<TElementList>) {
+  function getElementState(elementsList: TNewSnapList<string>, element: LinkedListNode<string>) {
     let stateProp = null;
-    if (element.value.id in elementsList.sectionPointer) {
+    if (elementsList.sectionPointer && element.id in elementsList.sectionPointer) {
       stateProp = {state: ElementStates.Changing};
     } else if (elementsList.newElement === element) {
       stateProp = {state: ElementStates.Modified};
@@ -34,32 +41,36 @@ export const VisualContentList = <T extends TNewSnapList<TElementList>, >({conte
     return stateProp;
   }
 
-  function getElementTail(elementsList: TNewSnapList<TElementList>, index: number, element: LinkedListNode<TElementList>) {
+  function getElementTail(elementsList: TNewSnapList<string>, index: number, element: LinkedListNode<string>) {
     let tailProp = null;
     if (element === elementsList.oldToRemove) {
       tailProp = {
         tail:
-          <CircleMemo letter={elementsList.oldToRemove?.value.letter} state={ElementStates.Changing} isSmall={true}/>
+          <CircleMemo letter={elementsList.oldToRemove?.letter} state={ElementStates.Changing} isSmall={true}/>
       };
-    } else if (index === content.container.length - 1) {
+    } else if (index === elementsList.containerList.length - 1) {
       tailProp = {tail: "tail"}
     }
     return tailProp
   }
 
-  return (
-    <ul className="container-result list">
-      {content && content.container.map((element, index) =>
-        <li key={element ? element.value.id : index}>
-          {element && <CircleMemo
-            {...getElementState(content, element)}
-            letter={content.removeElement === element ? "" : element.value.letter}
-            index={index}
-            {...getElementHead(content, index, element)}
-            {...getElementTail(content, index, element)} />
-          }
-        </li>
-      )}
-    </ul>
-  );
+  if (isTNewSnapList(content)) {
+    return (
+      <ul className="container-result list">
+        {content && content.containerList.map((element, index) =>
+          <li key={element ? element.id : index}>
+            {element && <CircleMemo
+              {...getElementState(content, element)}
+              letter={content.removeElement === element ? "" : element.letter}
+              index={index}
+              {...getElementHead(content, index, element)}
+              {...getElementTail(content, index, element)} />
+            }
+          </li>
+        )}
+      </ul>
+    );
+  } else {
+    return (<p>Ошибочка вышла</p>)
+  }
 };
