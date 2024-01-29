@@ -9,6 +9,7 @@ import {VisualContentString} from "../visual-content-string/visual-content-strin
 import {VisualContentFibonacci} from "../visual-content-fibonacci/visual-content-fibonacci";
 import {VisualContentSorting} from "../visual-content-sorting/visual-content-sorting";
 import {startConfetti} from "../../utils/confetti/confetti";
+import {VisualContentStack} from "../visual-content-stack/visual-content-stack";
 
 type TSteps<T> = {
   steps: Array<T>,
@@ -77,7 +78,7 @@ export const StepByStepDisplay3 = <T, >({setLoader, steps, delay = DELAY_IN_MS}:
       {step && location.pathname === Path.string && <VisualContentString<T> content={step}/>}
       {step && location.pathname === Path.fibonacci && <VisualContentFibonacci<T> content={step}/>}
       {step && location.pathname === Path.sorting && <VisualContentSorting<T> content={step}/>}
-      {step && location.pathname === Path.list && <VisualContentSorting<T> content={step}/>}
+      {step && location.pathname === Path.stack && <VisualContentStack<T> content={step}/>}
     </>
   );
 };
