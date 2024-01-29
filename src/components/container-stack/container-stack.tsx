@@ -28,9 +28,9 @@ export const ContainerStack: React.FC = () => {
   const [snapshots, setSnapshots] = useState<Array<TSnapshotStack> | null>(null);
   const [stack, setStack] = useState<IStackWithSnapshots<TElementStack> | null>(null);
 
-  const {values, handleChange} = useForm<TFormData>({
-    inputValue: "",
-  });
+  const initialInputValue = {inputValue: ""}
+
+  const {values, handleChange, setValues} = useForm<TFormData>(initialInputValue);
 
   const delay: number = DELAY_IN_MS;
   const max: number = 4
@@ -84,6 +84,7 @@ export const ContainerStack: React.FC = () => {
         }
       })
       setSnapshots(snapshotsStack);
+      setValues(initialInputValue)
     }
   }
 
