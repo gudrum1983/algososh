@@ -1,6 +1,5 @@
 import React, {FormEvent, useRef, useState} from "react";
 import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
-import {CircleBaseElement} from "../../types/element-and-snapshot";
 import {Input} from "../../components/ui/input/input";
 import {Button} from "../../components/ui/button/button";
 import {StepByStepDisplay} from "../../components/step-by-step-display/step-by-step-display";
@@ -14,14 +13,7 @@ import {
 } from "../../algorithms/create-stack-snaphots/create-stack-snaphots";
 import {Circle} from "../../components/ui/circle/circle";
 import useForm from "../../useForm";
-
-export type TElementStack = Pick<CircleBaseElement,
-  "letter"
-  | "state"
-  | "id"
-  /*  | "tailType"
-    | "tail"*/
-  | "index"> & { top: boolean }
+import {TElementStack} from "../../components/container-stack/container-stack";
 
 type TFormData = {
   inputValue: string;

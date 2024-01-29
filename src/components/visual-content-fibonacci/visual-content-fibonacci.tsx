@@ -10,11 +10,11 @@ export const VisualContentFibonacci = <T, >({content}: TVisualContentListProps<T
 
   // функция проверки типов так как я не смогла понять как указать в компоненте конкретный тип
   // и что бы это всё окончательно не сломалось
-  function isTNewSnapString(value: any): value is TSnapshotFibonacci {
+  function isSnapshotFibonacci(value: any): value is TSnapshotFibonacci {
     return value && (value as TSnapshotFibonacci).containerFibonacci !== undefined;
   }
 
-  if (isTNewSnapString(content)) {
+  if (isSnapshotFibonacci(content)) {
     return (
       <ul className="container-result-fibb list">
         {content.containerFibonacci.map((element) =>

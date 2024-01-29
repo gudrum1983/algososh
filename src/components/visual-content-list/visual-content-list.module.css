@@ -1,0 +1,6 @@
+.arrows {
+  background-image: url("../../images/icons/ChevronRight.svg") ;
+  width: 24px;
+  height: 24px;
+  align-self: center;
+}

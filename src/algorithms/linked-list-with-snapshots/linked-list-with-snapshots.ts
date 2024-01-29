@@ -70,6 +70,18 @@ export class LinkedListWithSnapshots<T> implements ILinkedList<T> {
   private createNode(value: T): LinkedListNode<T> {
     return new LinkedListNode(value);
   }
+
+  private setTail() {
+    let current = this.head;
+    while (current && current.next) {
+      current = current.next;
+    }
+    this.tail = current;
+  }
+
+
+
+
   private getByIndex(index: number) {
 
     this.validateIndex(index)
@@ -218,10 +230,12 @@ export class LinkedListWithSnapshots<T> implements ILinkedList<T> {
       this.indicatorToAdd.next = this.elementPointer
       this.indicatorToAdd = null
       this.elementPointer = null
+      this.setTail()
       this.incrementSize();
       this.sectionPointer = {}
       this.saveHistory()
       this.newElement = null
+
       this.saveHistory()
     }
   }
@@ -240,9 +254,9 @@ export class LinkedListWithSnapshots<T> implements ILinkedList<T> {
       this.saveHistory();
       prev.next = this.removeElement && this.removeElement.next
     }
-
     this.sectionPointer = {}
     this.decrementSize();
+    this.setTail()
     this.saveHistory();
   }
 
@@ -263,6 +277,9 @@ export class LinkedListWithSnapshots<T> implements ILinkedList<T> {
       this.decrementSize();
       this.removeElement = null; // текущий элемент с пустым значением
       this.indicatorToRemove = null // маленький розовый
+
+
+
 
       this.saveHistory();
     }

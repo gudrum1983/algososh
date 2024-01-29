@@ -1,15 +1,14 @@
 import {ElementStates} from "../../types/element-states";
-import {TElementColumn} from "../../pages/sorting-page/sorting-page";
 import {cloneElements, setState, swap} from "../../utils/utils";
 import {Direction} from "../../types/direction";
-import {TSnapshot, TSnapshotsList} from "../../types/element-and-snapshot";
+import {TElementSorting, TSnapshotSorting} from "../../components/container-sorting/container-sorting";
 
-export const createSelectSortingSnapshots = (initElements: TSnapshot<TElementColumn>, direction: Direction): TSnapshotsList<TElementColumn> => {
+export const createSelectSortingSnapshots = (initElements: Array<TElementSorting>, direction: Direction): Array<TSnapshotSorting> => {
 
   const elements = cloneElements(initElements);
-  const stateSnapshotsList: TSnapshotsList<TElementColumn> = [];
+  const stateSnapshotsList: Array<TSnapshotSorting> = [];
 
-  stateSnapshotsList.push(initElements);
+  stateSnapshotsList.push({containerSorting:initElements})
 
   const {length} = elements;
 
@@ -19,7 +18,7 @@ export const createSelectSortingSnapshots = (initElements: TSnapshot<TElementCol
     let compareIndex = startIndex;
 
     setState(ElementStates.Changing, start);
-    stateSnapshotsList.push(cloneElements(elements));
+    stateSnapshotsList.push({containerSorting:cloneElements(elements)})
 
     for (let currentIndex = startIndex + 1; currentIndex < length; currentIndex++) {
 
@@ -27,7 +26,7 @@ export const createSelectSortingSnapshots = (initElements: TSnapshot<TElementCol
       const compare = elements[compareIndex];
 
       setState(ElementStates.Changing, curr);
-      stateSnapshotsList.push(cloneElements(elements));
+      stateSnapshotsList.push({containerSorting:cloneElements(elements)})
 
       //так как в массиве есть повторения, то сравнение с равно "<=" и ">="
       if (direction === Direction.Ascending ? compare.index >= curr.index : compare.index <= curr.index) {
@@ -42,7 +41,7 @@ export const createSelectSortingSnapshots = (initElements: TSnapshot<TElementCol
   }
 
   setState(ElementStates.Modified, elements[length - 1]);
-  stateSnapshotsList.push(cloneElements(elements))
+  stateSnapshotsList.push({containerSorting:cloneElements(elements)})
 
   return stateSnapshotsList
 }

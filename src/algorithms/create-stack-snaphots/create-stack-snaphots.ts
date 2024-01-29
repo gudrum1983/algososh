@@ -1,7 +1,8 @@
 import {TSnapshot, TSnapshotsList} from "../../types/element-and-snapshot";
 import {ElementStates} from "../../types/element-states";
 import {createStackItem} from "../../utils/utils";
-import {TElementStack} from "../../pages/stack-page/stack-page";
+
+import {TElementStack} from "../../components/container-stack/container-stack";
 
 export interface IStackWithSnapshots<T> {
   push: (item: T) => void;

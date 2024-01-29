@@ -4,6 +4,7 @@ import {TElementQueue1} from "../../utils/utils";
 import {ElementStates} from "../../types/element-states";
 import {TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 
+
 type TVisualContentQueueProps<T> = { content: T };
 
 export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): JSX.Element => {

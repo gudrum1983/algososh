@@ -3,6 +3,7 @@ import {Circle} from "../ui/circle/circle";
 import {TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
 import {ElementStates} from "../../types/element-states";
 import {LinkedListNode} from "../../utils/linked-list-node";
+import styles from "./visual-content-list.module.css";
 
 type TVisualContentListProps<T> = { content: T };
 
@@ -58,18 +59,27 @@ export const VisualContentList = <T, >({content}: TVisualContentListProps<T>): J
     return (
       <ul className="container-result list">
         {content && content.containerList.map((element, index) =>
-          <li key={element ? element.id : index}>
-            {element && <CircleMemo
-              {...getElementState(content, element)}
-              letter={content.removeElement === element ? "" : element.letter}
-              index={index}
-              {...getElementHead(content, index, element)}
-              {...getElementTail(content, index, element)} />
+          <>
+            <li key={element ? element.id : index}>
+              {element && <CircleMemo
+                {...getElementState(content, element)}
+                letter={content.removeElement === element ? "" : element.letter}
+                index={index}
+                {...getElementHead(content, index, element)}
+                {...getElementTail(content, index, element)} />
+              }
+
+            </li>
+            {element && content.tail !== element &&
+              <li key={`${element ? element.id : index} + icon`}
+                  className={styles.arrows}/>
             }
-          </li>
-        )}
+          </>
+        )
+        }
       </ul>
-    );
+    )
+      ;
   } else {
     return (<p>Ошибочка вышла</p>)
   }

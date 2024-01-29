@@ -1,10 +1,6 @@
 import React, {FormEvent, useRef, useState} from "react";
 import {Buttons, createQueueItem, TElementQueue1} from "../../utils/utils";
-import {
-  IQueueWithSnapshots,
-  QueueWithSnapshots,
-  TNewSnapQueue
-} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
+import {QueueWithSnapshots, TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {ElementStates} from "../../types/element-states";
@@ -12,25 +8,33 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 
 import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
-import styles from "./container-queue.module.css";
+import styles from "./container-stack.module.css";
+import {IStackWithSnapshots} from "../../algorithms/create-stack-snaphots/create-stack-snaphots";
+import {CircleBaseElement} from "../../types/element-and-snapshot";
 
 type TFormData = {
   inputValue: string;
 }
 
-export const ContainerQueue: React.FC = () => {
+export type TElementStack = Pick<CircleBaseElement,
+  "letter"
+  | "state"
+  | "id"
+  | "index"> & { top: boolean }
+export type TSnapshotStack = { containerStack: Array<TElementStack> };
+export const ContainerStack: React.FC = () => {
 
-  const [isLoader, setIsLoader] = useState<null |Buttons>(null);
+  const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [snapshots, setSnapshots] = useState<Array<TNewSnapQueue<TElementQueue1>> | null>(null);
-  const [Queue1, setQueue1] = useState<IQueueWithSnapshots<TElementQueue1> | null>(null);
-
+  const [Stack1, setStack1] = useState<IStackWithSnapshots<TElementStack> | null>(null);
 
   const {values, handleChange} = useForm<TFormData>({
     inputValue: "",
   });
 
-  const delay = DELAY_IN_MS;
-  const max = 4
+  const delay: number = DELAY_IN_MS;
+  const max: number = 4
+  const isLimitText:boolean = true
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -121,17 +125,19 @@ export const ContainerQueue: React.FC = () => {
     <>
       <form className="container-inputs-buttons container_type_stack" onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange}  tabIndex={0}
+
+          <Input ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
+
           <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
-                  name={Buttons.addTail}
-                  disabled={!values.inputValue || Queue1?.getCanAdd()}/>
-          <Button text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
-                  name={Buttons.deleteHead}
-                  disabled={!Queue1?.getCanDelete()}/>
+                  name={Buttons.addTail}/>
+
+          <Button text={"Удалить"} onClick={handlerOnClickDelete}
+                  isLoader={isLoader === Buttons.deleteTail} name={Buttons.deleteTail}/>
+
           <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
-                  isLoader={isLoader === Buttons.clear} name={Buttons.clear}
-                  disabled={!Queue1?.getSize()}/>
+                  isLoader={isLoader === Buttons.clear} name={Buttons.clear}/>
+
         </fieldset>
       </form>
       {snapshots &&

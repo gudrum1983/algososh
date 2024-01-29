@@ -1,8 +1,7 @@
 import {ElementStates} from "../types/element-states";
 import {nanoid} from "nanoid";
-import {TElementColumn} from "../pages/sorting-page/sorting-page";
-import {TElementStack} from "../pages/stack-page/stack-page";
 import {CircleBaseElement} from "../types/element-and-snapshot";
+import {TElementStack} from "../components/container-stack/container-stack";
 
 
 export function cloneElements<T>(elements: Array<T>): Array<T> {
@@ -21,13 +20,13 @@ export function setState<T extends { state: ElementStates }>(state: ElementState
   b && a !== b && (b.state = state);
 }
 
-export function createInitElements(numbers: Array<number>): Array<TElementColumn> {
+/*export function createInitElements(numbers: Array<number>): Array<TElementColumn> {
   return numbers.map((item): TElementColumn => ({
     index: item,
     state: ElementStates.Default,
     id: nanoid(5)
   }))
-}
+}*/
 
 export function copyAndResetElementStates<T extends { state: ElementStates }>(elements: Array<T>): Array<T> {
   return elements.map(el => ({...el, state: ElementStates.Default}));
@@ -80,7 +79,9 @@ export enum Buttons {
   deleteByIndex = "deleteByIndex",
   clear = "clear",
   reverse = "reverse",
-  fibonacci = "fibonacci"
+  fibonacci = "fibonacci",
+  sortDescending = "sortDescending",
+  sortAscending = "sortAscending"
 }
 
 export enum Path {

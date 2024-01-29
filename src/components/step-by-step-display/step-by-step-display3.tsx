@@ -7,8 +7,8 @@ import {Buttons, Path} from "../../utils/utils";
 import {VisualContentQueue} from "../visual-content-queue/visual-content-queue";
 import {VisualContentString} from "../visual-content-string/visual-content-string";
 import {VisualContentFibonacci} from "../visual-content-fibonacci/visual-content-fibonacci";
-/*import {test} from "../../utils/confetti/confetti";*/
-
+import {VisualContentSorting} from "../visual-content-sorting/visual-content-sorting";
+import {startConfetti} from "../../utils/confetti/confetti";
 
 type TSteps<T> = {
   steps: Array<T>,
@@ -16,14 +16,7 @@ type TSteps<T> = {
   setLoader: React.Dispatch<React.SetStateAction<null | Buttons>>,
 };
 
-
-
-
-export const StepByStepDisplay3 = <T, >({
-                                                                             setLoader,
-                                                                             steps,
-                                                                             delay = DELAY_IN_MS
-                                                                           }: TSteps<T>) => {
+export const StepByStepDisplay3 = <T, >({setLoader, steps, delay = DELAY_IN_MS}: TSteps<T>) => {
 
   let location = useLocation();
 
@@ -65,6 +58,11 @@ export const StepByStepDisplay3 = <T, >({
 
     if (stepsQueue && stepsQueue.isEmpty()) {
       setLoader(null);
+      if (location.pathname === Path.string
+        || location.pathname === Path.sorting
+        || location.pathname === Path.fibonacci) {
+        startConfetti();
+      }
     }
 
     return () => {
@@ -72,15 +70,14 @@ export const StepByStepDisplay3 = <T, >({
     };
   }, [step]);
 
-  console.log(typeof step)
-
-
   return (
     <>
       {step && location.pathname === Path.list && <VisualContentList<T> content={step}/>}
       {step && location.pathname === Path.queue && <VisualContentQueue<T> content={step}/>}
       {step && location.pathname === Path.string && <VisualContentString<T> content={step}/>}
       {step && location.pathname === Path.fibonacci && <VisualContentFibonacci<T> content={step}/>}
+      {step && location.pathname === Path.sorting && <VisualContentSorting<T> content={step}/>}
+      {step && location.pathname === Path.list && <VisualContentSorting<T> content={step}/>}
     </>
   );
 };

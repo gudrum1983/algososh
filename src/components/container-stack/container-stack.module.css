@@ -1,0 +1,9 @@
+.fieldset{
+  display: grid;
+  grid-template-columns: 204px repeat(5, 1fr);
+  column-gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+

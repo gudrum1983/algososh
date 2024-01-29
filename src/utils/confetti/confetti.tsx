@@ -25,7 +25,7 @@ function shoot() {
   });
 }
 
-export function test () {
+export function startConfetti () {
   setTimeout(shoot, 0);
 /*  setTimeout(shoot, 200);
   setTimeout(shoot, 400);*/
