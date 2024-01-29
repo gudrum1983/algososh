@@ -1,12 +1,11 @@
-import {TSnapshot, TSnapshotsList} from "../../types/element-and-snapshot";
-import {createElementFibonacci} from "../../utils/utils";
-import {TElementFibonacci} from "../../pages/fibonacci-page/fibonacci-page";
+import {TSnapshotFibonacci} from "../../components/container-fibonacci/container-fibonacci";
+import {nanoid} from "nanoid";
 
 export function createFibonacciAndSnapshots(index: number, fibonacciCache: Record<number, number> | null):
-  [Record<number, number>, TSnapshotsList<TElementFibonacci>] {
+  [Record<number, number>, Array<TSnapshotFibonacci>] {
 
-  const snapshotsList: TSnapshotsList<TElementFibonacci> = [];
-  const snapshot: TSnapshot<TElementFibonacci> = [];
+  const snapshotsList: Array<TSnapshotFibonacci> = [];
+  const snapshot: TSnapshotFibonacci = {containerFibonacci: []};
 
   const mapHas: Record<number, number> = {...fibonacciCache, 0: 1, 1: 1};
 
@@ -20,10 +19,10 @@ export function createFibonacciAndSnapshots(index: number, fibonacciCache: Recor
   calculateFibonacci(index);
 
   for (let i = 0; i <= index; i++) {
-    snapshot[i] = createElementFibonacci(String(mapHas[i]), i);
+    snapshot.containerFibonacci[i] = {letter: String(mapHas[i]), index: i, id: nanoid(5)}
     //тут на каждой итерации массив snapshot пополняется на один элемент
     //и каждую итерацию новый вариант массива записывается в snapshotsList
-    snapshotsList.push([...snapshot]);
+    snapshotsList.push({containerFibonacci: [...snapshot.containerFibonacci]});
   }
 
   return [mapHas, snapshotsList];

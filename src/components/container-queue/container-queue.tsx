@@ -12,13 +12,13 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 
 import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
-import styles from "./queue-container.module.css";
+import styles from "./container-queue.module.css";
 
 type TFormData = {
   inputValue: string;
 }
 
-export const QueueContainer: React.FC = () => {
+export const ContainerQueue: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null |Buttons>(null);
   const [snapshots, setSnapshots] = useState<Array<TNewSnapQueue<TElementQueue1>> | null>(null);

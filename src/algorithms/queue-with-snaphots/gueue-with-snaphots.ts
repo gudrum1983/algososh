@@ -14,13 +14,6 @@ export interface IQueueWithSnapshots<T> {
   getCanDelete: () => boolean;
 }
 
-
-
-
-
-
-
-
 export type TNewSnapQueue<T> = {
   containerQueue: Array<T | null>,
   head: number;

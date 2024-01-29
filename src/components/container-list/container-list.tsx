@@ -6,7 +6,7 @@ import {Button} from "../ui/button/button";
 import {ILinkedList, LinkedListWithSnapshots, TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
 import {Buttons} from "../../utils/utils";
 import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
-import styles from "./list-container.module.css"
+import styles from "./container-list.module.css"
 import {randomNumbers} from "../../utils/random-numbers";
 
 type TInputData = {
@@ -14,7 +14,7 @@ type TInputData = {
   inputIndex: string;
 }
 
-export const ListContainer: React.FC = () => {
+export const ContainerList: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [snapshots, setSnapshots] = useState<Array<TNewSnapList<string>> | null>(null);
@@ -144,7 +144,7 @@ export const ListContainer: React.FC = () => {
       </form>
 
       {snapshots &&
-        <StepByStepDisplay3<TNewSnapList<string>> steps={snapshots}
+        <StepByStepDisplay3<TNewSnapList<string>>           steps={snapshots}
                                                         setLoader={setIsLoader}
                                                         delay={delay}/>}
     </>

@@ -3,14 +3,20 @@ import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {useLocation} from "react-router-dom";
 import {VisualContentList} from "../visual-content-list/visual-content-list";
-import {Buttons} from "../../utils/utils";
+import {Buttons, Path} from "../../utils/utils";
 import {VisualContentQueue} from "../visual-content-queue/visual-content-queue";
+import {VisualContentString} from "../visual-content-string/visual-content-string";
+import {VisualContentFibonacci} from "../visual-content-fibonacci/visual-content-fibonacci";
 /*import {test} from "../../utils/confetti/confetti";*/
+
+
 type TSteps<T> = {
   steps: Array<T>,
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<null | Buttons>>,
 };
+
+
 
 
 export const StepByStepDisplay3 = <T, >({
@@ -71,8 +77,10 @@ export const StepByStepDisplay3 = <T, >({
 
   return (
     <>
-      {step && location.pathname === "/list" && <VisualContentList<T> content={step}/>}
-      {step && location.pathname === "/queue" && <VisualContentQueue<T> content={step}/>}
+      {step && location.pathname === Path.list && <VisualContentList<T> content={step}/>}
+      {step && location.pathname === Path.queue && <VisualContentQueue<T> content={step}/>}
+      {step && location.pathname === Path.string && <VisualContentString<T> content={step}/>}
+      {step && location.pathname === Path.fibonacci && <VisualContentFibonacci<T> content={step}/>}
     </>
   );
 };

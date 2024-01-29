@@ -1,8 +1,6 @@
 import {ElementStates} from "../types/element-states";
 import {nanoid} from "nanoid";
-import {TElementFibonacci} from "../pages/fibonacci-page/fibonacci-page";
 import {TElementColumn} from "../pages/sorting-page/sorting-page";
-import {TElementString} from "../pages/string-page/string-page";
 import {TElementStack} from "../pages/stack-page/stack-page";
 import {CircleBaseElement} from "../types/element-and-snapshot";
 
@@ -11,6 +9,7 @@ export function cloneElements<T>(elements: Array<T>): Array<T> {
   return elements.map(el => ({...el}));
 }
 
+//точно utils
 export function swap<T>(arr: T[], i: number, j: number) {
   const tmp = arr[i];
   arr[i] = arr[j];
@@ -34,22 +33,6 @@ export function copyAndResetElementStates<T extends { state: ElementStates }>(el
   return elements.map(el => ({...el, state: ElementStates.Default}));
 }
 
-export function createInitElementsString(string: string): Array<TElementString> {
-  return string.split('').map((item) => ({
-    letter: item,
-    state: ElementStates.Default,
-    id: nanoid(5)
-  }))
-}
-
-
-export function createElementFibonacci(letter: string, index: number): TElementFibonacci {
-  return {
-    letter: letter,
-    index: index,
-    id: nanoid(5)
-  }
-}
 
 export function createStackItem(value: string, state: ElementStates, index: number): TElementStack {
   return {
@@ -96,4 +79,15 @@ export enum Buttons {
   addByIndex = "addByIndex",
   deleteByIndex = "deleteByIndex",
   clear = "clear",
+  reverse = "reverse",
+  fibonacci = "fibonacci"
+}
+
+export enum Path {
+  string = "/string",
+  fibonacci = "/fibonacci",
+  sorting = "/sorting",
+  stack = "/stack",
+  queue = "/queue",
+  list = "/list",
 }

@@ -9,6 +9,7 @@ import { SortingPage } from "../../pages/sorting-page/sorting-page";
 import { StackPage } from "../../pages/stack-page/stack-page";
 
 import "./app.css";
+import {Path} from "../../utils/utils";
 
 function App() {
   return (
@@ -18,22 +19,22 @@ function App() {
           <Route path="/" exact>
             <MainPage />
           </Route>
-          <Route path="/string">
+          <Route path={Path.string}>
             <StringPage />
           </Route>
-          <Route path="/fibonacci">
+          <Route path={Path.fibonacci}>
             <FibonacciPage />
           </Route>
-          <Route path="/sorting">
+          <Route path={Path.sorting}>
             <SortingPage />
           </Route>
-          <Route path="/stack">
+          <Route path={Path.stack}>
             <StackPage />
           </Route>
-          <Route path="/queue">
+          <Route path={Path.queue}>
             <QueuePage />
           </Route>
-          <Route path="/list">
+          <Route path={Path.list}>
             <ListPage />
           </Route>
         </Switch>
