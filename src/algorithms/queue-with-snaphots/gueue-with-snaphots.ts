@@ -162,6 +162,4 @@ export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
     this.clearHistory()
     return temp
   }
-
-
 }

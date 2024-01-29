@@ -38,8 +38,8 @@ export const ContainerStack: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const stack = new StackWithSnapshots<TElementStack>();
-    setStack(stack)
+    const newStack = new StackWithSnapshots<TElementStack>();
+    setStack(newStack)
   }, [])
 
   React.useEffect(() => {
@@ -128,7 +128,7 @@ export const ContainerStack: React.FC = () => {
 
   return (
     <>
-      <form className="container-inputs-buttons container_type_stack" onSubmit={disableFormSubmission}>
+      <form className={styles.formStack} onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
           <Input ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>

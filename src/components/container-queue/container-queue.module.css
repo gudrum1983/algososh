@@ -7,3 +7,11 @@
   border: none;
 }
 
+.formQueue {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  margin: 0 auto 48px;
+  flex-direction: column;
+  max-width: 829px;
+}

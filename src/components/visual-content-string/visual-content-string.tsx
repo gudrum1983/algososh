@@ -1,6 +1,7 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
 import {TSnapshotReverseString} from "../container-string/container-string";
+import styles from "./visual-content-string.module.css"
 
 type TVisualContentListProps<T> = { content: T };
 
@@ -16,7 +17,7 @@ export const VisualContentString = <T, >({content}: TVisualContentListProps<T>):
 
   if (isTNewSnapString(content)) {
     return (
-      <ul className="container-result list">
+      <ul className={styles.containerResultString}>
         {content.containerString.map((element) =>
           <li key={element.id}>
             <CircleMemo state={element.state} letter={element.letter}/>

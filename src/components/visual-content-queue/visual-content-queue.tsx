@@ -3,8 +3,7 @@ import {Circle} from "../ui/circle/circle";
 import {TElementQueue1} from "../../utils/utils";
 import {ElementStates} from "../../types/element-states";
 import {TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
-
-
+import styles from "./visual-content-queue.module.css"
 type TVisualContentQueueProps<T> = { content: T };
 
 export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): JSX.Element => {
@@ -45,7 +44,7 @@ export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): 
 
   if (isTNewSnapQueue(content)) {
     return (
-      <ul className="container-result list">
+      <ul className={styles.containerResultQueue}>
         {content && content.containerQueue.map((element, index) =>
           <li key={index}>
             {!element && <CircleMemo state={ElementStates.Default} letter={""}

@@ -119,7 +119,7 @@ export const ContainerList: React.FC = () => {
 
   return (
     <>
-      <form className="container-inputs-buttons container_type_list" onSubmit={disableFormSubmission}>
+      <form className={styles.formList} onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
           <Input maxLength={maxInput} isLimitText={true} onChange={handleChange}
                  value={values.inputValue} name='inputValue'/>

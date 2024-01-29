@@ -1,6 +1,7 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
 import {TSnapshotFibonacci} from "../container-fibonacci/container-fibonacci";
+import styles from "./visual-content-fibonacci.module.css"
 
 type TVisualContentListProps<T> = { content: T };
 
@@ -16,10 +17,10 @@ export const VisualContentFibonacci = <T, >({content}: TVisualContentListProps<T
 
   if (isSnapshotFibonacci(content)) {
     return (
-      <ul className="container-result-fibb list">
+      <ul className={styles.containerResultFibonacci}>
         {content.containerFibonacci.map((element) =>
           <li key={element.id}>
-            <CircleMemo extraClass="fibb" index={element.index} letter={`${element.letter}`}/>
+            <CircleMemo extraClass={styles.elementFibonacci} index={element.index} letter={`${element.letter}`}/>
           </li>
         )}
       </ul>

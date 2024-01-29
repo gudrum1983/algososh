@@ -1,6 +1,7 @@
 import React from "react";
 import {Column} from "../ui/column/column";
 import {TSnapshotSorting} from "../container-sorting/container-sorting";
+import styles from "./visual-content-sorting.module.css"
 
 type TVisualContentListProps<T> = { content: T };
 
@@ -16,7 +17,7 @@ export const VisualContentSorting = <T, >({content}: TVisualContentListProps<T>)
 
   if (isSnapshotSorting(content)) {
     return (
-      <ul className="container-result container-result-type-sort list">
+      <ul className={styles.containerResultSorting}>
         {content.containerSorting.map((element) =>
           <li key={element.id}>
             <ColumnMemo state={element.state} index={element.index}/>

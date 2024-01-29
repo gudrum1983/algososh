@@ -57,7 +57,7 @@ export const VisualContentList = <T, >({content}: TVisualContentListProps<T>): J
 
   if (isTNewSnapList(content)) {
     return (
-      <ul className="container-result list">
+      <ul className={styles.containerResultList}>
         {content && content.containerList.map((element, index) =>
           <>
             <li key={element ? element.id : index}>
@@ -66,20 +66,14 @@ export const VisualContentList = <T, >({content}: TVisualContentListProps<T>): J
                 letter={content.removeElement === element ? "" : element.letter}
                 index={index}
                 {...getElementHead(content, index, element)}
-                {...getElementTail(content, index, element)} />
-              }
-
+                {...getElementTail(content, index, element)}
+              />}
             </li>
-            {element && content.tail !== element &&
-              <li key={`${element ? element.id : index} + icon`}
-                  className={styles.arrows}/>
-            }
+            {element && content.tail !== element && <li key={`${index} + icon`} className={styles.arrows}/>}
           </>
-        )
-        }
+        )}
       </ul>
-    )
-      ;
+    );
   } else {
     return (<p>Ошибочка вышла</p>)
   }

@@ -20,9 +20,9 @@ type TFormData = {
 
 export const ContainerQueue: React.FC = () => {
 
-  const [isLoader, setIsLoader] = useState<null |Buttons>(null);
+  const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [snapshots, setSnapshots] = useState<Array<TNewSnapQueue<TElementQueue1>> | null>(null);
-  const [Queue1, setQueue1] = useState<IQueueWithSnapshots<TElementQueue1> | null>(null);
+  const [queue, setQueue] = useState<IQueueWithSnapshots<TElementQueue1> | null>(null);
 
 
   const {values, handleChange} = useForm<TFormData>({
@@ -35,30 +35,19 @@ export const ContainerQueue: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const queue = new QueueWithSnapshots<TElementQueue1>(7);
-
-    setQueue1(queue)
-
-
+    const newQueue = new QueueWithSnapshots<TElementQueue1>(7);
+    setQueue(newQueue)
   }, [])
 
   React.useEffect(() => {
-    if (Queue1) {
-
-      const steps = Queue1.getHistory()
-
+    if (queue) {
+      const steps = queue.getHistory()
       setSnapshots(steps);
     }
-
-
-  }, [Queue1])
+  }, [queue])
 
   React.useEffect(() => {
-    // Предполагая, что есть состояние, которое изменяется в handlerOnClickAdd
-    // Например, это может быть состояние, отслеживающее, была ли нажата кнопка
-
     inputRef.current?.focus();
-
   }, [isLoader, snapshots]);
 
   function disableFormSubmission(e: FormEvent): void {
@@ -66,37 +55,25 @@ export const ContainerQueue: React.FC = () => {
   }
 
   function handlerOnClickAdd(): void {
-
     setIsLoader(Buttons.addTail)
-    if (Queue1) {
-
+    if (queue) {
       const newItem = createQueueItem({letter: values.inputValue, state: ElementStates.Changing})
-      Queue1.enqueue(newItem)
-
+      queue.enqueue(newItem)
       values.inputValue = ""
-
-      const steps = Queue1.getHistory()
-
+      const steps = queue.getHistory()
       setSnapshots(steps);
     }
-
-
   }
 
 
   function handlerOnClickClear(): void {
     setIsLoader(Buttons.clear)
-    if (Queue1) {
-
-      const size = Queue1.getSize()
-
+    if (queue) {
+      const size = queue.getSize()
       if (size > 0) {
-
-        Queue1.clear()
-
+        queue.clear()
       }
-      const steps = Queue1.getHistory()
-
+      const steps = queue.getHistory()
       setSnapshots(steps);
     }
   }
@@ -104,14 +81,13 @@ export const ContainerQueue: React.FC = () => {
 
   function handlerOnClickDelete(): void {
     setIsLoader(Buttons.deleteHead)
-    if (Queue1) {
-      const queueLength = Queue1.getLength()
+    if (queue) {
+      const queueLength = queue.getLength()
       if (queueLength <= 0) {
         return
       }
-      Queue1.dequeue()
-      const steps = Queue1.getHistory()
-
+      queue.dequeue()
+      const steps = queue.getHistory()
       setSnapshots(steps);
     }
   }
@@ -119,19 +95,19 @@ export const ContainerQueue: React.FC = () => {
 
   return (
     <>
-      <form className="container-inputs-buttons container_type_stack" onSubmit={disableFormSubmission}>
+      <form className={styles.formQueue} onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange}  tabIndex={0}
+          <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
           <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail}
-                  disabled={!values.inputValue || Queue1?.getCanAdd()}/>
+                  disabled={!values.inputValue || queue?.getCanAdd()}/>
           <Button text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
                   name={Buttons.deleteHead}
-                  disabled={!Queue1?.getCanDelete()}/>
+                  disabled={!queue?.getCanDelete()}/>
           <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear}
-                  disabled={!Queue1?.getSize()}/>
+                  disabled={!queue?.getSize()}/>
         </fieldset>
       </form>
       {snapshots &&
