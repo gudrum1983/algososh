@@ -2,13 +2,13 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import React, {FormEvent, useRef, useState} from "react";
 import useForm from "../../useForm";
-import {Buttons} from "../../utils/utils";
-import {CircleBaseElement} from "../../types/element-and-snapshot";
+import {CircleBaseElement} from "../../types/base-element";
 import styles from "./container-string.module.css"
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {
   createStringInversionSnapshots
 } from "../../algorithms/create-string-inversion-snapshots/create-string-inversion-snapshots";
+import {Buttons} from "../../types/buttons";
 
 type TFormData = {inputValue: string;};
 export type TElementReverseString = Pick<CircleBaseElement, "letter" | "state" | "id">;
@@ -25,6 +25,7 @@ export const ContainerString = (): JSX.Element => {
   const inputInitialState = {inputValue: ""};
   const {values, handleChange} = useForm<TFormData>(inputInitialState);
   const inputRef = useRef<HTMLInputElement>(null);
+
 
   React.useEffect(() => {
     inputRef.current?.focus();
@@ -47,7 +48,7 @@ export const ContainerString = (): JSX.Element => {
                   disabled={!values.inputValue} name={Buttons.reverse}/>
         </fieldset>
       </form>
-      {snapshots && <StepByStepDisplay3<TSnapshotReverseString> steps={snapshots} setLoader={setIsLoader}/>}
+      {snapshots && <StepByStepDisplay<TSnapshotReverseString> steps={snapshots} setLoader={setIsLoader}/>}
     </>
   );
 };

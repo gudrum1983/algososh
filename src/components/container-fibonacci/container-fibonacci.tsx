@@ -5,11 +5,11 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {
   createFibonacciAndSnapshots
 } from "../../algorithms/create-fibonacci-and-snapshots/create-fibonacci-and-snapshots";
-import {CircleBaseElement} from "../../types/element-and-snapshot";
+import {CircleBaseElement} from "../../types/base-element";
 import useForm from "../../useForm";
 import styles from "./container-fibonacci.module.css";
-import {Buttons} from "../../utils/utils";
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
+import {Buttons} from "../../types/buttons";
 
 type TFormData = { inputValue: string; };
 export type TElementFibonacci = Pick<CircleBaseElement, "letter" | "index" | "id">
@@ -63,8 +63,8 @@ export const ContainerFibonacci = () => {
       </form>
 
       {snapshots &&
-        <StepByStepDisplay3<TSnapshotFibonacci> steps={snapshots} setLoader={setIsLoader}
-                                              delay={delay}/>}
+        <StepByStepDisplay<TSnapshotFibonacci> steps={snapshots} setLoader={setIsLoader}
+                                               delay={delay}/>}
     </>
   );
 };

@@ -50,7 +50,6 @@ export class Queue<T> implements IQueue<T> {
     return null ;
   };
 
-
   clear = () => {
     this.container = Array(this.size);
     this.head = 0;

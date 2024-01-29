@@ -1,5 +1,3 @@
-import {TSnapshot, TSnapshotsList} from "../../types/element-and-snapshot";
-
 export interface IStackWithSnapshots<T> {
   push: (item: T) => void;
   pop: () => void;
@@ -12,8 +10,8 @@ export interface IStackWithSnapshots<T> {
 }
 
 export class StackWithSnapshots<T> implements IStackWithSnapshots<T> {
-  private container: TSnapshot<T> = [];
-  private snapshots: TSnapshotsList<T> = [];
+  private container: Array<T> = [];
+  private snapshots: Array<Array<T>> = [];
 
   push = (item: T): void => {
     this.container.push(item)

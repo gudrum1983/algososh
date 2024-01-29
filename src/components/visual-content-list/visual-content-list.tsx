@@ -1,8 +1,7 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
-import {TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
+import {LinkedListNode, TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
 import {ElementStates} from "../../types/element-states";
-import {LinkedListNode} from "../../utils/linked-list-node";
 import styles from "./visual-content-list.module.css";
 
 type TVisualContentListProps<T> = { content: T };

@@ -1,11 +1,10 @@
 import {Button} from "../ui/button/button";
 import React, {FormEvent, useState} from "react";
 import {SHORT_DELAY_IN_MS} from "../../constants/delays";
-import {ColumnBaseElement} from "../../types/element-and-snapshot";
+import {ColumnBaseElement} from "../../types/base-element";
 import useForm from "../../useForm";
 import styles from "./container-sorting.module.css";
-import {Buttons} from "../../utils/utils";
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {BUBBLE, SELECTION, TSortingMethod} from "../../types/sorting-method";
 import {Direction} from "../../types/direction";
@@ -19,6 +18,7 @@ import {
 import {ElementStates} from "../../types/element-states";
 import {nanoid} from "nanoid";
 import {VisualContentSorting} from "../visual-content-sorting/visual-content-sorting";
+import {Buttons} from "../../types/buttons";
 
 type TFormData = { inputValue: string; typeSort: string };
 export type TElementSorting = Pick<ColumnBaseElement, "index" | "state" | "id">
@@ -116,8 +116,8 @@ export const ContainerSorting = () => {
       </form>
       {initialElements && !snapshots && <VisualContentSorting content={{containerSorting: initialElements}}/>}
       {snapshots &&
-        <StepByStepDisplay3<TSnapshotSorting> steps={snapshots} setLoader={setIsLoader}
-                                              delay={delay}/>}
+        <StepByStepDisplay<TSnapshotSorting> steps={snapshots} setLoader={setIsLoader}
+                                             delay={delay}/>}
     </>
   );
 };

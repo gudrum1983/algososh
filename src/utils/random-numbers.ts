@@ -5,13 +5,8 @@ type TParamsRandomNumbers = {
 }
 
 export function randomNumbers(params?: TParamsRandomNumbers): Array<number> {
-
   const { minLen = 3, maxLen = 17, maxValue = 100 } = params || {};
-
-  const randomLength = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen
-
-  const randomNumber = () => {
-    return Math.floor(Math.random() * maxValue)
-  }
+  const randomLength = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
+  const randomNumber = () => Math.floor(Math.random() * maxValue);
   return Array.from({length: randomLength}, randomNumber);
 }

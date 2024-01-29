@@ -1,14 +1,15 @@
 import React, {FormEvent, useRef, useState} from "react";
-import {Buttons, createStackItem} from "../../utils/utils";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import styles from "./container-stack.module.css";
 import {IStackWithSnapshots, StackWithSnapshots} from "../../algorithms/stack-with-snaphots/create-stack-snaphots";
-import {CircleBaseElement} from "../../types/element-and-snapshot";
+import {CircleBaseElement} from "../../types/base-element";
 import {ElementStates} from "../../types/element-states";
+import {Buttons} from "../../types/buttons";
+import {nanoid} from "nanoid";
 
 type TFormData = {
   inputValue: string;
@@ -53,8 +54,6 @@ export const ContainerStack: React.FC = () => {
 
   function handlerOnClickAdd(): void {
     setIsLoader(Buttons.addTail)
-
-
     if (stack) {
       const index = stack.getSize()
       if (index > 0) {
@@ -63,7 +62,14 @@ export const ContainerStack: React.FC = () => {
           topElement.top = false
         }
       }
-      stack.push(createStackItem(values.inputValue, ElementStates.Changing, index))
+      const newStackItem = {
+        letter: values.inputValue,
+        index: index,
+        id: nanoid(5),
+        state: ElementStates.Changing,
+        top: true,
+      }
+      stack.push(newStackItem)
       stack.saveHistory()
       const currElement = stack.peak()
       if (currElement && currElement.state) {
@@ -78,10 +84,6 @@ export const ContainerStack: React.FC = () => {
         }
       })
       setSnapshots(snapshotsStack);
-
-
-
-
     }
   }
 
@@ -141,7 +143,7 @@ export const ContainerStack: React.FC = () => {
         </fieldset>
       </form>
       {snapshots &&
-        <StepByStepDisplay3<TSnapshotStack> steps={snapshots} setLoader={setIsLoader} delay={delay}/>}
+        <StepByStepDisplay<TSnapshotStack> steps={snapshots} setLoader={setIsLoader} delay={delay}/>}
     </>
   );
 };

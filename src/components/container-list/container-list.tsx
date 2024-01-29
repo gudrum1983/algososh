@@ -4,10 +4,10 @@ import {DELAY_IN_MS} from "../../constants/delays";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {ILinkedList, LinkedListWithSnapshots, TNewSnapList} from "../../algorithms/linked-list-with-snapshots/linked-list-with-snapshots";
-import {Buttons} from "../../utils/utils";
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import styles from "./container-list.module.css"
 import {randomNumbers} from "../../utils/random-numbers";
+import {Buttons} from "../../types/buttons";
 
 type TInputData = {
   inputValue: string;
@@ -144,9 +144,9 @@ export const ContainerList: React.FC = () => {
       </form>
 
       {snapshots &&
-        <StepByStepDisplay3<TNewSnapList<string>>           steps={snapshots}
-                                                        setLoader={setIsLoader}
-                                                        delay={delay}/>}
+        <StepByStepDisplay<TNewSnapList<string>> steps={snapshots}
+                                                 setLoader={setIsLoader}
+                                                 delay={delay}/>}
     </>
   );
 };

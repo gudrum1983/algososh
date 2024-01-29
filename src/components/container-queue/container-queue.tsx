@@ -1,28 +1,24 @@
 import React, {FormEvent, useRef, useState} from "react";
-import {Buttons, createQueueItem, TElementQueue1} from "../../utils/utils";
-import {
-  IQueueWithSnapshots,
-  QueueWithSnapshots,
-  TNewSnapQueue
-} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
+import {IQueueWithSnapshots, QueueWithSnapshots, TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {ElementStates} from "../../types/element-states";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-
-import {StepByStepDisplay3} from "../step-by-step-display/step-by-step-display3";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import styles from "./container-queue.module.css";
+import {CircleBaseElement} from "../../types/base-element";
+import {nanoid} from "nanoid";
+import {Buttons} from "../../types/buttons";
 
-type TFormData = {
-  inputValue: string;
-}
-
+type TFormData = {inputValue: string};
+export type TElementQueue = Pick<CircleBaseElement, "letter" | "state" | "id">
+export type TSnapshotQueue = TNewSnapQueue<TElementQueue>;
 export const ContainerQueue: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
-  const [snapshots, setSnapshots] = useState<Array<TNewSnapQueue<TElementQueue1>> | null>(null);
-  const [queue, setQueue] = useState<IQueueWithSnapshots<TElementQueue1> | null>(null);
+  const [snapshots, setSnapshots] = useState<Array<TSnapshotQueue> | null>(null);
+  const [queue, setQueue] = useState<IQueueWithSnapshots<TElementQueue> | null>(null);
 
 
   const {values, handleChange} = useForm<TFormData>({
@@ -35,7 +31,7 @@ export const ContainerQueue: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const newQueue = new QueueWithSnapshots<TElementQueue1>(7);
+    const newQueue = new QueueWithSnapshots<TElementQueue>(7);
     setQueue(newQueue)
   }, [])
 
@@ -57,7 +53,12 @@ export const ContainerQueue: React.FC = () => {
   function handlerOnClickAdd(): void {
     setIsLoader(Buttons.addTail)
     if (queue) {
-      const newItem = createQueueItem({letter: values.inputValue, state: ElementStates.Changing})
+      const newItem: TElementQueue =  {
+          letter: values.inputValue,
+          state: ElementStates.Changing,
+          id: nanoid(5),
+
+      }
       queue.enqueue(newItem)
       values.inputValue = ""
       const steps = queue.getHistory()
@@ -111,9 +112,9 @@ export const ContainerQueue: React.FC = () => {
         </fieldset>
       </form>
       {snapshots &&
-        <StepByStepDisplay3<TNewSnapQueue<TElementQueue1>> steps={snapshots}
-                                                           setLoader={setIsLoader}
-                                                           delay={delay}/>}
+        <StepByStepDisplay<TNewSnapQueue<TElementQueue>> steps={snapshots}
+                                                          setLoader={setIsLoader}
+                                                          delay={delay}/>}
     </>
   );
 };

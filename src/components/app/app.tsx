@@ -9,7 +9,8 @@ import { SortingPage } from "../../pages/sorting-page/sorting-page";
 import { StackPage } from "../../pages/stack-page/stack-page";
 
 import "./app.css";
-import {Path} from "../../utils/utils";
+
+import {Path} from "../../types/path";
 
 function App() {
   return (

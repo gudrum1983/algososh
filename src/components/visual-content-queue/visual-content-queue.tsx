@@ -1,9 +1,9 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
-import {TElementQueue1} from "../../utils/utils";
 import {ElementStates} from "../../types/element-states";
 import {TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 import styles from "./visual-content-queue.module.css"
+import {TElementQueue} from "../container-queue/container-queue";
 type TVisualContentQueueProps<T> = { content: T };
 
 export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): JSX.Element => {
@@ -12,11 +12,11 @@ export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): 
 
   // функция проверки типов так как я не смогла понять как указать в компоненте конкретный тип
   // и что бы это всё окончательно не сломалось
-  function isTNewSnapQueue(value: any): value is TNewSnapQueue<TElementQueue1> {
-    return value && (value as TNewSnapQueue<TElementQueue1>).containerQueue !== undefined;
+  function isTNewSnapQueue(value: any): value is TNewSnapQueue<TElementQueue> {
+    return value && (value as TNewSnapQueue<TElementQueue>).containerQueue !== undefined;
   }
 
-  function getElementHead(elementsList: TNewSnapQueue<TElementQueue1>, index: number) {
+  function getElementHead(elementsList: TNewSnapQueue<TElementQueue>, index: number) {
     let headProp = null;
     if (index === elementsList.head) {
       headProp = {head: "head"};
@@ -24,17 +24,15 @@ export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): 
     return headProp;
   }
 
-  function getElementState(elementsList: TNewSnapQueue<TElementQueue1>, index: number, element?: TElementQueue1) {
+  function getElementState(elementsList: TNewSnapQueue<TElementQueue>, index: number) {
     let stateProp = null;
     if (index === elementsList.elementPointer) {
       stateProp = {state: ElementStates.Changing};
-    } else if (element && elementsList.newElement === element) {
-      stateProp = {state: ElementStates.Modified};
     }
     return stateProp;
   }
 
-  function getElementTail(elementsList: TNewSnapQueue<TElementQueue1>, index: number) {
+  function getElementTail(elementsList: TNewSnapQueue<TElementQueue>, index: number) {
     let tailProp = null;
     if (index === elementsList.tail - 1) {
       tailProp = {tail: "tail"}
@@ -53,7 +51,7 @@ export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): 
               head: "head"
             }}/>}
             {element && <CircleMemo
-              {...getElementState(content, index, element)}
+              {...getElementState(content, index)}
               letter={element.letter}
               index={index}
               {...getElementHead(content, index)}
