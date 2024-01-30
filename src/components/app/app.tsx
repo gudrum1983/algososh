@@ -15,7 +15,7 @@ import {Path} from "../../types/path";
 function App() {
   return (
     <div className={styles.app}>
-      <BrowserRouter>
+      <BrowserRouter basename='/algososh/'>
         <Switch>
           <Route path="/" exact>
             <MainPage />
