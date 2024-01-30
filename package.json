@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.4",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "gh-pages": "^6.1.1"
   }
 }
