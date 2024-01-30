@@ -58,18 +58,18 @@ export const VisualContentList = <T, >({content}: TVisualContentListProps<T>): J
     return (
       <ul className={styles.containerResultList}>
         {content && content.containerList.map((element, index) =>
-          <>
             <li key={element ? element.id : index}>
-              {element && <CircleMemo
-                {...getElementState(content, element)}
-                letter={content.removeElement === element ? "" : element.letter}
-                index={index}
-                {...getElementHead(content, index, element)}
-                {...getElementTail(content, index, element)}
-              />}
+              <div className={styles.element}>
+                {element && <CircleMemo
+                  {...getElementState(content, element)}
+                  letter={content.removeElement === element ? "" : element.letter}
+                  index={index}
+                  {...getElementHead(content, index, element)}
+                  {...getElementTail(content, index, element)}
+                />}
+                {element && content.tail !== element && <div className={styles.arrows}/>}
+              </div>
             </li>
-            {element && content.tail !== element && <li key={`${index} + icon`} className={styles.arrows}/>}
-          </>
         )}
       </ul>
     );

@@ -5,6 +5,15 @@
   align-self: center;
 }
 
+.element{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+}
+
+
+
 .containerResultList {
   display: flex;
   flex-direction: row;

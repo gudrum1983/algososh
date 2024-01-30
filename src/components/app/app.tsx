@@ -8,13 +8,13 @@ import { StringPage } from "../../pages/string-page/string-page";
 import { SortingPage } from "../../pages/sorting-page/sorting-page";
 import { StackPage } from "../../pages/stack-page/stack-page";
 
-import "./app.css";
+import styles from "./app.module.css";
 
 import {Path} from "../../types/path";
 
 function App() {
   return (
-    <div className="app">
+    <div className={styles.app}>
       <BrowserRouter>
         <Switch>
           <Route path="/" exact>

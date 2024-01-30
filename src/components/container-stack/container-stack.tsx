@@ -35,6 +35,7 @@ export const ContainerStack: React.FC = () => {
   const delay: number = DELAY_IN_MS;
   const max: number = 4
   const isLimitText: boolean = true
+  const isCanDelete = stack && stack.getSize() !== 0
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -136,11 +137,11 @@ export const ContainerStack: React.FC = () => {
           <Input ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
           <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
-                  name={Buttons.addTail}/>
+                  name={Buttons.addTail} disabled={!values.inputValue}/>
           <Button text={"Удалить"} onClick={handlerOnClickDelete}
-                  isLoader={isLoader === Buttons.deleteTail} name={Buttons.deleteTail}/>
+                  isLoader={isLoader === Buttons.deleteTail} name={Buttons.deleteTail} disabled={!isCanDelete}/>
           <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
-                  isLoader={isLoader === Buttons.clear} name={Buttons.clear}/>
+                  isLoader={isLoader === Buttons.clear} name={Buttons.clear} disabled={!isCanDelete}/>
         </fieldset>
       </form>
       {snapshots &&
