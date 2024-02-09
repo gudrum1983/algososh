@@ -1,0 +1,10 @@
+.fieldset {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 12px;
+  border: none;
+  padding: 0;
+  max-width: 522px;
+  margin: 0 auto 120px;
+}
