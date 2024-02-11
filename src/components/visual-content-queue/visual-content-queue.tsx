@@ -1,9 +1,9 @@
 import React from "react";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
-import {TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 import styles from "./visual-content-queue.module.css"
-import {TElementQueue} from "../container-queue/container-queue";
+import {TElementQueue} from "../queue-algorithm-viewer/queue-algorithm-viewer";
+import {TNewSnapQueue} from "../queue-algorithm-viewer/utils";
 type TVisualContentQueueProps<T> = { content: T };
 
 export const VisualContentQueue = <T,>({content}: TVisualContentQueueProps<T>): JSX.Element => {

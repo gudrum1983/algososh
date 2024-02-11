@@ -1,4 +1,15 @@
-interface IQueueWithSnapshots<T> {
+import {ISnapshot, ISnapshotStorage} from "../../types/snapshots";
+
+export interface IStateQueue<T> {
+  container: Array<T | null>,
+  headIndex: number;
+  tailIndex: number;
+  size: number;
+  length: number,
+  activeIndex: number | null;
+}
+
+interface IQueue<T> {
   enqueue: (item: T) => void;
   dequeue: () => void;
   peak: () => T | null;
@@ -12,18 +23,9 @@ interface IQueueWithSnapshots<T> {
   clear: () => void;
   getCanAdd: () => boolean;
   getCanDelete: () => boolean;
+  save: () => ISnapshot<IStateQueue<T>>;
 }
-
-type TNewSnapQueue<T> = {
-  containerQueue: Array<T | null>,
-  head: number;
-  tail: number;
-  size: number;
-  length: number,
-  elementPointer: number | null;
-}
-
-class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
+export class Queue<T> implements IQueue<T> {
   private containerQueue: Array<T | null> = [];
   private head: number = 0;
   private tail: number = 0;
@@ -45,6 +47,15 @@ class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
     this.saveHistory()
   }
 
+  public save(): ISnapshot<IStateQueue<T>> {
+    return new QueueSnapshot<T>({
+      container: this.toArray(),
+      size: this.size,
+      tailIndex: this.tailIndex,
+      activeIndex: this.activeIndex,
+    });
+  }
+  
   enqueue = (item: T) => {
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
@@ -144,4 +155,60 @@ class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
     this.clearHistory()
     return temp
   }
+}
+
+export class QueueSnapshot<T> implements ISnapshot<IStateQueue<T>> {
+  private readonly state: IStateQueue<T> = {
+    container: [],
+    size: 0,
+    tailIndex: null,
+    activeIndex: null,
+  };
+
+  constructor({container, size, tailIndex, activeIndex}: IStateQueue<T>) {
+    this.state = {container, size, tailIndex, activeIndex}
+  }
+
+  public getState(): IStateQueue<T> {
+    return this.state;
+  }
+}
+
+export class QueueSnapshotStorage<T> implements ISnapshotStorage<ISnapshot<IStateQueue<T>>> {
+
+  private snapshots: Array<ISnapshot<IStateQueue<T>> | null> = [];
+  private originator: IQueue<T>;
+  private head: number = 0;
+  private length: number = 0;
+
+  constructor(originator: IQueue<T>) {
+    this.originator = originator;
+  }
+
+  isEmpty = () => this.length === 0;
+
+  createAndStoreSnapshot(): void {
+    const newSnapshot: ISnapshot<IStateQueue<T>> = this.originator.save()
+    this.snapshots.push(newSnapshot);
+    this.length++;
+  }
+
+  retrieveAndRemoveSnapshot = (): ISnapshot<IStateQueue<T>> | null => {
+    if (this.isEmpty()) {
+      throw new Error("No elements in the QueueCaretaker");
+    } else if (this.snapshots[this.head]) {
+      const currentSnapshot = this.snapshots[this.head]
+      this.snapshots[this.head] = null;
+      this.head++;
+      this.length--;
+      return currentSnapshot
+    }
+    return null;
+  };
+
+  clear = () => {
+    this.snapshots = [];
+    this.head = 0;
+    this.length = 0;
+  };
 }
