@@ -1,4 +1,4 @@
-export interface IQueueWithSnapshots<T> {
+interface IQueueWithSnapshots<T> {
   enqueue: (item: T) => void;
   dequeue: () => void;
   peak: () => T | null;
@@ -14,7 +14,7 @@ export interface IQueueWithSnapshots<T> {
   getCanDelete: () => boolean;
 }
 
-export type TNewSnapQueue<T> = {
+type TNewSnapQueue<T> = {
   containerQueue: Array<T | null>,
   head: number;
   tail: number;
@@ -23,7 +23,7 @@ export type TNewSnapQueue<T> = {
   elementPointer: number | null;
 }
 
-export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
+class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   private containerQueue: Array<T | null> = [];
   private head: number = 0;
   private tail: number = 0;

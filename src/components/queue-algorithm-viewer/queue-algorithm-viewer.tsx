@@ -1,20 +1,20 @@
 import React, {FormEvent, useRef, useState} from "react";
-import {IQueueWithSnapshots, QueueWithSnapshots, TNewSnapQueue} from "../../algorithms/queue-with-snaphots/gueue-with-snaphots";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {ElementStates} from "../../types/element-states";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
-import styles from "./container-queue.module.css";
+import styles from "./queue-algorithm-viewer.module.css";
 import {CircleBaseElement} from "../../types/base-element";
 import {nanoid} from "nanoid";
 import {Buttons} from "../../types/buttons";
+import {IQueueWithSnapshots, QueueWithSnapshots, TNewSnapQueue} from "./utils";
 
 type TFormData = {inputValue: string};
 export type TElementQueue = Pick<CircleBaseElement, "letter" | "state" | "id">
 export type TSnapshotQueue = TNewSnapQueue<TElementQueue>;
-export const ContainerQueue: React.FC = () => {
+export const QueueAlgorithmViewer: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [snapshots, setSnapshots] = useState<Array<TSnapshotQueue> | null>(null);
