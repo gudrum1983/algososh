@@ -2,7 +2,6 @@ import {Queue} from "../../utils/queue";
 import React, {useState} from "react";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {useLocation} from "react-router-dom";
-import {VisualContentList} from "../visual-content-list/visual-content-list";
 import {VisualContentString} from "../visual-content-string/visual-content-string";
 import {VisualContentFibonacci} from "../visual-content-fibonacci/visual-content-fibonacci";
 import {VisualContentSorting} from "../visual-content-sorting/visual-content-sorting";
@@ -72,7 +71,6 @@ export const StepByStepDisplay = <T, >({setLoader, steps, delay = DELAY_IN_MS}: 
 
   return (
     <>
-      {step && location.pathname === Path.list && <VisualContentList<T> content={step}/>}
       {step && location.pathname === Path.string && <VisualContentString<T> content={step}/>}
       {step && location.pathname === Path.fibonacci && <VisualContentFibonacci<T> content={step}/>}
       {step && location.pathname === Path.sorting && <VisualContentSorting<T> content={step}/>}

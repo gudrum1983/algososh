@@ -1,11 +1,11 @@
 import React from "react";
 import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
-import {ContainerList} from "../../components/container-list/container-list";
+import {LinkListAlgoritmViewer} from "../../components/link-list-algoritm-viewer/link-list-algoritm-viewer";
 
 export const ListPage: React.FC = () => {
   return (
     <SolutionLayout title="Связный список">
-      <ContainerList/>
+      <LinkListAlgoritmViewer/>
     </SolutionLayout>
   );
 };

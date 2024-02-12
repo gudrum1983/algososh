@@ -7,7 +7,8 @@ import styles from "./stack-algorithm-viewer.module.css";
 import {Buttons} from "../../types/buttons";
 import {ElementStates} from "../../types/element-states";
 import {Circle} from "../ui/circle/circle";
-import {Stack, StackSnapshotStorage, IStackState} from "./utils";
+import {Stack, IStackState} from "./utils-stack/stack";
+import {StackSnapshotStorage} from "./utils-stack/stack-snapshot-storage";
 
 type TFormData = {
   inputValue: string;
@@ -52,12 +53,8 @@ export const StackAlgorithmViewer: React.FC = () => {
     inputRef.current?.focus();
   }, [isLoader]);
 
-  //todo - Warning:(70, 6) ESLint: React Hook React.useEffect has missing dependencies: 'stackSnapshotStorage' and 'delay'.
-  // Either include them or remove the dependency array. (react-hooks/exhaustive-deps)
   React.useEffect(() => {
-
     let stepsTimeoutId: NodeJS.Timeout;
-
     if (stackSnapshotStorage) {
       if (!(stackSnapshotStorage.isEmpty())) {
         stepsTimeoutId = setTimeout(() => {

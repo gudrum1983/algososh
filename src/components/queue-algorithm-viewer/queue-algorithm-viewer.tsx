@@ -5,9 +5,10 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import styles from "./queue-algorithm-viewer.module.css";
 import {Buttons} from "../../types/buttons";
-import {IQueueState, Queue, QueueSnapshotStorage} from "./utils";
+import {IQueueState, Queue} from "./utils-queue/queue";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
+import {QueueSnapshotStorage} from "./utils-queue/queue-snapshot-storage";
 
 type TFormData = { inputValue: string };
 

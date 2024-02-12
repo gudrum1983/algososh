@@ -1,4 +1,5 @@
-import {ISnapshot, ISnapshotStorage} from "../../types/snapshots";
+import {ISnapshot} from "../../../types/snapshots";
+import {QueueSnapshot} from "./queue-snapshot-storage";
 
 export interface IQueueState<T> {
   container: Array<T | null>;
@@ -29,7 +30,6 @@ export class Queue<T> implements IQueue<T> {
   private length: number = 0;
   private activeIndex: number | null = null;
   private backup?: () => void;
-
 
   constructor(size: number) {
     this.size = size;
@@ -62,28 +62,28 @@ export class Queue<T> implements IQueue<T> {
     if (!this.backup) {
       throw new Error("Queue hasn't backup");
     }
-
     if (this.tailIndex === null && this.headIndex === null && this.nextTailIndex === null) {
       this.tailIndex = this.headIndex = this.nextTailIndex = 0;
     }
-      this.activeIndex = this.nextTailIndex
-      this.container[Number(this.nextTailIndex)] = item;
-      this.backup()
-      this.activeIndex = null;
-      this.headIndex === null && (this.headIndex = 0);
-      this.tailIndex = Number(this.nextTailIndex)
-      this.nextTailIndex = Number(this.nextTailIndex) + 1;
-      this.length++;
-      this.backup()
-
-
-
+    this.activeIndex = this.nextTailIndex
+    this.container[Number(this.nextTailIndex)] = item;
+    this.backup()
+    this.activeIndex = null;
+    this.headIndex === null && (this.headIndex = 0);
+    this.tailIndex = Number(this.nextTailIndex)
+    this.nextTailIndex = Number(this.nextTailIndex) + 1;
+    this.length++;
+    this.backup()
   };
 
   dequeue = () => {
     if (this.isEmpty()) {
       throw new Error("No elements in the queue");
-    } else if (this.backup && this.headIndex !== null) {
+    }
+    if (!this.backup) {
+      throw new Error("Queue hasn't backup");
+    }
+    if (this.headIndex !== null) {
       this.activeIndex = this.headIndex;
       this.backup();
       this.activeIndex = null;
@@ -97,80 +97,20 @@ export class Queue<T> implements IQueue<T> {
   };
 
   clear = () => {
-    if (this.backup) {
-      this.container = Array(this.size);
-      this.headIndex = null;
-      this.tailIndex = null;
-      this.nextTailIndex = null;
-      this.length = 0;
-      this.backup()
+    if (!this.backup) {
+      throw new Error("Queue hasn't backup");
     }
+    this.container = Array(this.size);
+    this.headIndex = null;
+    this.tailIndex = null;
+    this.nextTailIndex = null;
+    this.length = 0;
+    this.backup()
   };
 
   isEmpty = () => this.length === 0;
-
   getLength = () => this.length;
-  checkCanAdd = () => (this.size === this.nextTailIndex || this.headIndex === this.size - 1 )
+  checkCanAdd = () => (this.size === this.nextTailIndex || this.headIndex === this.size - 1)
   checkCanDelete = () => (this.length !== 0)
   checkCanClear = () => (this.headIndex !== null)
-
-
-}
-
-export class QueueSnapshot<T> implements ISnapshot<IQueueState<T>> {
-  private readonly state: IQueueState<T> = {
-    container: [],
-    length: 0,
-    size: 0,
-    headIndex: 0,
-    tailIndex: 0,
-    activeIndex: null,
-  };
-
-  constructor({container, size, tailIndex, headIndex, activeIndex, length}: IQueueState<T>) {
-    this.state = {container, size, tailIndex, headIndex, activeIndex, length}
-  }
-
-  public getState(): IQueueState<T> {
-    return this.state;
-  }
-}
-
-export class QueueSnapshotStorage<T> implements ISnapshotStorage<ISnapshot<IQueueState<T>>> {
-
-  private snapshots: Array<ISnapshot<IQueueState<T>> | null> = [];
-  private originator: Queue<T>;
-  private head: number = 0;
-  private length: number = 0;
-
-  constructor(originator: Queue<T>) {
-    this.originator = originator;
-  }
-
-  isEmpty = () => this.length === 0;
-
-  createAndStoreSnapshot(): void {
-    const newSnapshot: ISnapshot<IQueueState<T>> = this.originator.save()
-    this.snapshots.push(newSnapshot);
-    this.length++;
-  }
-
-  retrieveAndRemoveSnapshot = (): ISnapshot<IQueueState<T>> | null => {
-    if (this.isEmpty()) {
-      throw new Error("No elements in the QueueCaretaker");
-    } else if (this.snapshots[this.head]) {
-      const currentSnapshot = this.snapshots[this.head]
-      this.snapshots[this.head] = null;
-      this.head++;
-      this.length--;
-      return currentSnapshot
-    }
-    return null;
-  };
-
-  clear = () => {
-    this.snapshots = [];
-    this.head = 0;
-    this.length = 0;
-  };
 }
