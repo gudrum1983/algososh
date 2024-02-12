@@ -25,22 +25,27 @@ export const StackAlgorithmViewer: React.FC = () => {
   const {values, handleChange, setValues} = useForm<TFormData>(initialInputValue);
 
   const delay: number = DELAY_IN_MS;
-  const max: number = 4
-  const isLimitText: boolean = true
-  const isCanDelete = stack && stack.getSize() !== 0
+  const max: number = 4;
+  const isLimitText: boolean = true;
+  const isCanDelete = stack && stack.getSize() !== 0;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  function applySnapshotToStackState(snapshotStorage : StackSnapshotStorage<string>): void {
+    const snapshot = snapshotStorage && snapshotStorage.retrieveAndRemoveSnapshot();
+    const state = snapshot && snapshot.getState();
+    state && setStackState(state);
+  }
+
   React.useEffect(() => {
     const newStack = new Stack<string>();
-    const newStackSnapshotStorage = new StackSnapshotStorage<string>(newStack)
+    const newStackSnapshotStorage = new StackSnapshotStorage<string>(newStack);
     const backup = () => {
-      return newStackSnapshotStorage && newStackSnapshotStorage.createAndStoreSnapshot()
+      return newStackSnapshotStorage && newStackSnapshotStorage.createAndStoreSnapshot();
     }
-    newStack && newStack.setBackup(backup)
-
-    setStack(newStack)
-    setStackSnapshotStorage(newStackSnapshotStorage)
+    newStack && newStack.setBackup(backup);
+    setStack(newStack);
+    setStackSnapshotStorage(newStackSnapshotStorage);
   }, [])
 
   React.useEffect(() => {
@@ -53,75 +58,66 @@ export const StackAlgorithmViewer: React.FC = () => {
 
     let stepsTimeoutId: NodeJS.Timeout;
 
-    if (stackSnapshotStorage && !(stackSnapshotStorage.isEmpty())) {
-      stepsTimeoutId = setTimeout(() => {
-        const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
-        const step = memento && memento.getState()
-        step && setStackState(step);
-      }, delay);
+    if (stackSnapshotStorage) {
+      if (!(stackSnapshotStorage.isEmpty())) {
+        stepsTimeoutId = setTimeout(() => {
+          applySnapshotToStackState(stackSnapshotStorage);
+        }, delay);
+      } else {
+        setIsLoader(null);
+        stackSnapshotStorage.clear();
+      }
     }
-
-    if (stackSnapshotStorage && stackSnapshotStorage.isEmpty()) {
-      setIsLoader(null);
-      stackSnapshotStorage.clear();
-    }
-
     return () => {
       clearTimeout(stepsTimeoutId);
     };
-  }, [stackState]);
+  }, [stackState, delay, stackSnapshotStorage]);
 
   function disableFormSubmission(e: FormEvent): void {
-    e.preventDefault()
+    e.preventDefault();
   }
 
   function handlerOnClickAdd(): void {
-    setIsLoader(Buttons.addTail)
+    setIsLoader(Buttons.addTail);
     if (stack && stackSnapshotStorage) {
-      stack.push(values.inputValue)
-      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setStackState(step);
-      setValues(initialInputValue)
+      stack.push(values.inputValue);
+      applySnapshotToStackState(stackSnapshotStorage);
+      setValues(initialInputValue);
     }
   }
 
   function handlerOnClickClear(): void {
     if (stack && stackSnapshotStorage) {
-      const size = stack.getSize()
+      const size = stack.getSize();
       if (size > 0) {
-        stack.clearAll()
+        stack.clearAll();
       }
-      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setStackState(step);
+      applySnapshotToStackState(stackSnapshotStorage);
     }
   }
 
   function handlerOnClickDelete(): void {
-    setIsLoader(Buttons.deleteTail)
+    setIsLoader(Buttons.deleteTail);
     if (stack && stackSnapshotStorage) {
-      stack.pop()
-      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setStackState(step);
+      stack.pop();
+      applySnapshotToStackState(stackSnapshotStorage);
     }
   }
 
   const CircleMemo = React.memo(Circle);
+  const ButtonMemo = React.memo(Button);
 
-  
   return (
     <>
       <form className={styles.formStack} onSubmit={disableFormSubmission}>
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
           <Input ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail} disabled={!values.inputValue}/>
-          <Button text={"Удалить"} onClick={handlerOnClickDelete}
+          <ButtonMemo text={"Удалить"} onClick={handlerOnClickDelete}
                   isLoader={isLoader === Buttons.deleteTail} name={Buttons.deleteTail} disabled={!isCanDelete}/>
-          <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
+          <ButtonMemo extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear} disabled={!isCanDelete}/>
         </fieldset>
       </form>

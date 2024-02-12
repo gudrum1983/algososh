@@ -11,125 +11,98 @@ import {ElementStates} from "../../types/element-states";
 
 type TFormData = { inputValue: string };
 
-export const QueueAlgorithmViewer: React.FC = () => {
+export const QueueAlgorithmViewer = ():JSX.Element => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [queueSnapshotStorage, setQueueSnapshotStorage] = useState<QueueSnapshotStorage<string> | null>(null);
   const [queue, setQueue] = useState<Queue<string> | null>(null);
-  const [queueState, setQueueState] = useState<IQueueState<string> | null>(null)
+  const [queueState, setQueueState] = useState<IQueueState<string> | null>(null);
 
-  const initialInputValue = {inputValue: ""}
+  const initialInputValue = {inputValue: ""};
 
   const {values, handleChange, setValues} = useForm<TFormData>(initialInputValue);
 
   const delay = DELAY_IN_MS;
-  const max = 4
+  const max = 4;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  function applySnapshotToQueueState(snapshotStorage : QueueSnapshotStorage<string>): void {
+    const snapshot = snapshotStorage && snapshotStorage.retrieveAndRemoveSnapshot();
+    const state = snapshot && snapshot.getState();
+    state && setQueueState(state);
+  }
+
+
   React.useEffect(() => {
     const newQueue = new Queue<string>(7);
-    const newQueueSnapshotStorage = new QueueSnapshotStorage(newQueue)
-
-    const backup = () => {
-      return newQueueSnapshotStorage && newQueueSnapshotStorage.createAndStoreSnapshot()
-    }
-    newQueue && newQueue.setBackup(backup)
-    setQueue(newQueue)
-    setQueueSnapshotStorage(newQueueSnapshotStorage)
-
-    newQueueSnapshotStorage.createAndStoreSnapshot()
-    const initialState = newQueueSnapshotStorage.retrieveAndRemoveSnapshot()?.getState();
-    if (initialState) {
-      setQueueState(initialState)
-    }
-
-
-
-  }, [])
-
-/*  React.useEffect(() => {
-    if (queue && queueSnapshotStorage) {
-      queueSnapshotStorage.createAndStoreSnapshot()
-      const initialState = queueSnapshotStorage.retrieveAndRemoveSnapshot()?.getState();
-      if (initialState) {
-        setQueueState(initialState)
-      }
-    }
-  }, [queue])*/
+    const newQueueSnapshotStorage = new QueueSnapshotStorage(newQueue);
+    const backup = () => (newQueueSnapshotStorage && newQueueSnapshotStorage.createAndStoreSnapshot());
+    newQueue && newQueue.setBackup(backup);
+    setQueue(newQueue);
+    setQueueSnapshotStorage(newQueueSnapshotStorage);
+    newQueueSnapshotStorage.createAndStoreSnapshot();
+    applySnapshotToQueueState(newQueueSnapshotStorage);
+  }, []);
 
   React.useEffect(() => {
     inputRef.current?.focus();
   }, [isLoader, queueSnapshotStorage]);
 
-
   React.useEffect(() => {
-
     let stepsTimeoutId: NodeJS.Timeout;
-
-    if (queueSnapshotStorage && !(queueSnapshotStorage.isEmpty())) {
-      stepsTimeoutId = setTimeout(() => {
-        const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
-        const step = memento && memento.getState()
-        step && setQueueState(step);
-      }, delay);
+    if (queueSnapshotStorage) {
+      if (!(queueSnapshotStorage.isEmpty())) {
+        stepsTimeoutId = setTimeout(() => {
+          applySnapshotToQueueState(queueSnapshotStorage)
+        }, delay);
+      } else {
+        setIsLoader(null);
+        queueSnapshotStorage.clear();
+      }
     }
-
-    if (queueSnapshotStorage && queueSnapshotStorage.isEmpty()) {
-      setIsLoader(null);
-      queueSnapshotStorage.clear();
-    }
-
     return () => {
       clearTimeout(stepsTimeoutId);
     };
-  }, [queueState]);
-
+  }, [queueState, delay, queueSnapshotStorage]);
 
   function disableFormSubmission(e: FormEvent): void {
-    e.preventDefault()
+    e.preventDefault();
   }
 
   function handlerOnClickAdd(): void {
-    setIsLoader(Buttons.addTail)
+    setIsLoader(Buttons.addTail);
     if (queue && queueSnapshotStorage) {
-      queue.enqueue(values.inputValue)
-      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setQueueState(step);
-      setValues(initialInputValue)
+      queue.enqueue(values.inputValue);
+      applySnapshotToQueueState(queueSnapshotStorage);
+      setValues(initialInputValue);
     }
   }
-
 
   function handlerOnClickClear(): void {
-    setIsLoader(Buttons.clear)
-    if (queue && queue.checkCanClear() && queueSnapshotStorage) {
-      queue.clear()
-      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setQueueState(step);
-      setValues(initialInputValue)
+    setIsLoader(Buttons.clear);
+    if (queueSnapshotStorage && queue?.checkCanClear()) {
+      queue.clear();
+      applySnapshotToQueueState(queueSnapshotStorage);
+      setValues(initialInputValue);
     }
   }
 
-
   function handlerOnClickDelete(): void {
-    setIsLoader(Buttons.deleteHead)
+    setIsLoader(Buttons.deleteHead);
     if (queue && queueSnapshotStorage) {
-      const queueLength = queue.getLength()
+      const queueLength = queue.getLength();
       if (queueLength <= 0) {
         return
       }
-      queue.dequeue()
-      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
-      const step = memento && memento.getState()
-      step && setQueueState(step);
-      setValues(initialInputValue)
+      queue.dequeue();
+      applySnapshotToQueueState(queueSnapshotStorage);
+      setValues(initialInputValue);
     }
   }
 
   const CircleMemo = React.memo(Circle);
+  const ButtonMemo = React.memo(Button);
 
   return (
     <>
@@ -137,13 +110,13 @@ export const QueueAlgorithmViewer: React.FC = () => {
         <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
           <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail}
                   disabled={!values.inputValue || queue?.checkCanAdd()}/>
-          <Button text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
+          <ButtonMemo text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
                   name={Buttons.deleteHead}
                   disabled={!queue?.checkCanDelete()}/>
-          <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
+          <ButtonMemo extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear}
                   disabled={!queue?.checkCanClear()}/>
         </fieldset>
