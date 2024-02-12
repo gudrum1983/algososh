@@ -1,29 +1,26 @@
 import React, {FormEvent, useRef, useState} from "react";
 import useForm from "../../useForm";
 import {DELAY_IN_MS} from "../../constants/delays";
-import {ElementStates} from "../../types/element-states";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import styles from "./queue-algorithm-viewer.module.css";
-import {CircleBaseElement} from "../../types/base-element";
-import {nanoid} from "nanoid";
 import {Buttons} from "../../types/buttons";
-import {IQueueWithSnapshots, QueueWithSnapshots, TNewSnapQueue} from "./utils";
+import {IQueueState, Queue, QueueSnapshotStorage} from "./utils";
+import {Circle} from "../ui/circle/circle";
+import {ElementStates} from "../../types/element-states";
 
-type TFormData = {inputValue: string};
-export type TElementQueue = Pick<CircleBaseElement, "letter" | "state" | "id">
-export type TSnapshotQueue = TNewSnapQueue<TElementQueue>;
+type TFormData = { inputValue: string };
+
 export const QueueAlgorithmViewer: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
-  const [snapshots, setSnapshots] = useState<Array<TSnapshotQueue> | null>(null);
-  const [queue, setQueue] = useState<IQueueWithSnapshots<TElementQueue> | null>(null);
+  const [queueSnapshotStorage, setQueueSnapshotStorage] = useState<QueueSnapshotStorage<string> | null>(null);
+  const [queue, setQueue] = useState<Queue<string> | null>(null);
+  const [queueState, setQueueState] = useState<IQueueState<string> | null>(null)
 
+  const initialInputValue = {inputValue: ""}
 
-  const {values, handleChange} = useForm<TFormData>({
-    inputValue: "",
-  });
+  const {values, handleChange, setValues} = useForm<TFormData>(initialInputValue);
 
   const delay = DELAY_IN_MS;
   const max = 4
@@ -31,20 +28,63 @@ export const QueueAlgorithmViewer: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const newQueue = new QueueWithSnapshots<TElementQueue>(7);
+    const newQueue = new Queue<string>(7);
+    const newQueueSnapshotStorage = new QueueSnapshotStorage(newQueue)
+
+    const backup = () => {
+      return newQueueSnapshotStorage && newQueueSnapshotStorage.createAndStoreSnapshot()
+    }
+    newQueue && newQueue.setBackup(backup)
     setQueue(newQueue)
+    setQueueSnapshotStorage(newQueueSnapshotStorage)
+
+    newQueueSnapshotStorage.createAndStoreSnapshot()
+    const initialState = newQueueSnapshotStorage.retrieveAndRemoveSnapshot()?.getState();
+    if (initialState) {
+      setQueueState(initialState)
+    }
+
+
+
   }, [])
 
-  React.useEffect(() => {
-    if (queue) {
-      const steps = queue.getHistory()
-      setSnapshots(steps);
+/*  React.useEffect(() => {
+    if (queue && queueSnapshotStorage) {
+      queueSnapshotStorage.createAndStoreSnapshot()
+      const initialState = queueSnapshotStorage.retrieveAndRemoveSnapshot()?.getState();
+      if (initialState) {
+        setQueueState(initialState)
+      }
     }
-  }, [queue])
+  }, [queue])*/
 
   React.useEffect(() => {
     inputRef.current?.focus();
-  }, [isLoader, snapshots]);
+  }, [isLoader, queueSnapshotStorage]);
+
+
+  React.useEffect(() => {
+
+    let stepsTimeoutId: NodeJS.Timeout;
+
+    if (queueSnapshotStorage && !(queueSnapshotStorage.isEmpty())) {
+      stepsTimeoutId = setTimeout(() => {
+        const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
+        const step = memento && memento.getState()
+        step && setQueueState(step);
+      }, delay);
+    }
+
+    if (queueSnapshotStorage && queueSnapshotStorage.isEmpty()) {
+      setIsLoader(null);
+      queueSnapshotStorage.clear();
+    }
+
+    return () => {
+      clearTimeout(stepsTimeoutId);
+    };
+  }, [queueState]);
+
 
   function disableFormSubmission(e: FormEvent): void {
     e.preventDefault()
@@ -52,47 +92,44 @@ export const QueueAlgorithmViewer: React.FC = () => {
 
   function handlerOnClickAdd(): void {
     setIsLoader(Buttons.addTail)
-    if (queue) {
-      const newItem: TElementQueue =  {
-          letter: values.inputValue,
-          state: ElementStates.Changing,
-          id: nanoid(5),
-
-      }
-      queue.enqueue(newItem)
-      values.inputValue = ""
-      const steps = queue.getHistory()
-      setSnapshots(steps);
+    if (queue && queueSnapshotStorage) {
+      queue.enqueue(values.inputValue)
+      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
+      const step = memento && memento.getState()
+      step && setQueueState(step);
+      setValues(initialInputValue)
     }
   }
 
 
   function handlerOnClickClear(): void {
     setIsLoader(Buttons.clear)
-    if (queue) {
-      const size = queue.getSize()
-      if (size > 0) {
-        queue.clear()
-      }
-      const steps = queue.getHistory()
-      setSnapshots(steps);
+    if (queue && queue.checkCanClear() && queueSnapshotStorage) {
+      queue.clear()
+      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
+      const step = memento && memento.getState()
+      step && setQueueState(step);
+      setValues(initialInputValue)
     }
   }
 
 
   function handlerOnClickDelete(): void {
     setIsLoader(Buttons.deleteHead)
-    if (queue) {
+    if (queue && queueSnapshotStorage) {
       const queueLength = queue.getLength()
       if (queueLength <= 0) {
         return
       }
       queue.dequeue()
-      const steps = queue.getHistory()
-      setSnapshots(steps);
+      const memento = queueSnapshotStorage.retrieveAndRemoveSnapshot()
+      const step = memento && memento.getState()
+      step && setQueueState(step);
+      setValues(initialInputValue)
     }
   }
 
+  const CircleMemo = React.memo(Circle);
 
   return (
     <>
@@ -102,19 +139,28 @@ export const QueueAlgorithmViewer: React.FC = () => {
                  value={values.inputValue} name='inputValue'/>
           <Button text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail}
-                  disabled={!values.inputValue || queue?.getCanAdd()}/>
+                  disabled={!values.inputValue || queue?.checkCanAdd()}/>
           <Button text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
                   name={Buttons.deleteHead}
-                  disabled={!queue?.getCanDelete()}/>
+                  disabled={!queue?.checkCanDelete()}/>
           <Button extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear}
-                  disabled={!queue?.getSize()}/>
+                  disabled={!queue?.checkCanClear()}/>
         </fieldset>
       </form>
-      {snapshots &&
-        <StepByStepDisplay<TNewSnapQueue<TElementQueue>> steps={snapshots}
-                                                          setLoader={setIsLoader}
-                                                          delay={delay}/>}
+      {queueState &&
+        <ul className={styles.containerResultQueue}>
+          {queueState.container && queueState.container.map((element, index) =>
+            <li key={index}>
+              <CircleMemo index={index}
+                          {...(element && {letter: String(element)})}
+                          {...(index === queueState.activeIndex) && {state: ElementStates.Changing}}
+                          {...(index === queueState.tailIndex) && {tail: "tail"}}
+                          {...(index === queueState.headIndex) && {head: "head"}}
+              />
+            </li>
+          )}
+        </ul>}
     </>
   );
 };

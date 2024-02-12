@@ -7,7 +7,7 @@ import styles from "./stack-algorithm-viewer.module.css";
 import {Buttons} from "../../types/buttons";
 import {ElementStates} from "../../types/element-states";
 import {Circle} from "../ui/circle/circle";
-import {Stack, StackSnapshotStorage, IStateStack} from "./utils";
+import {Stack, StackSnapshotStorage, IStackState} from "./utils";
 
 type TFormData = {
   inputValue: string;
@@ -17,8 +17,8 @@ export const StackAlgorithmViewer: React.FC = () => {
 
   const [isLoader, setIsLoader] = useState<null | Buttons>(null);
   const [stack, setStack] = useState<Stack<string> | null>(null);
-  const [caretakerStack, setCaretakerStack] = useState<StackSnapshotStorage<string> | null>(null);
-  const [content, setContent] = useState<IStateStack<string> | null>(null)
+  const [stackSnapshotStorage, setStackSnapshotStorage] = useState<StackSnapshotStorage<string> | null>(null);
+  const [stackState, setStackState] = useState<IStackState<string> | null>(null)
 
   const initialInputValue = {inputValue: ""}
 
@@ -33,43 +33,43 @@ export const StackAlgorithmViewer: React.FC = () => {
 
   React.useEffect(() => {
     const newStack = new Stack<string>();
-    const newCaretakerStack = new StackSnapshotStorage<string>(newStack)
+    const newStackSnapshotStorage = new StackSnapshotStorage<string>(newStack)
     const backup = () => {
-      return newCaretakerStack && newCaretakerStack.createAndStoreSnapshot()
+      return newStackSnapshotStorage && newStackSnapshotStorage.createAndStoreSnapshot()
     }
     newStack && newStack.setBackup(backup)
 
     setStack(newStack)
-    setCaretakerStack(newCaretakerStack)
+    setStackSnapshotStorage(newStackSnapshotStorage)
   }, [])
 
   React.useEffect(() => {
     inputRef.current?.focus();
   }, [isLoader]);
 
-  //todo - Warning:(70, 6) ESLint: React Hook React.useEffect has missing dependencies: 'caretakerStack' and 'delay'.
+  //todo - Warning:(70, 6) ESLint: React Hook React.useEffect has missing dependencies: 'stackSnapshotStorage' and 'delay'.
   // Either include them or remove the dependency array. (react-hooks/exhaustive-deps)
   React.useEffect(() => {
 
     let stepsTimeoutId: NodeJS.Timeout;
 
-    if (caretakerStack && !(caretakerStack.isEmpty())) {
+    if (stackSnapshotStorage && !(stackSnapshotStorage.isEmpty())) {
       stepsTimeoutId = setTimeout(() => {
-        const memento = caretakerStack.retrieveAndRemoveSnapshot()
+        const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
         const step = memento && memento.getState()
-        step && setContent(step);
+        step && setStackState(step);
       }, delay);
     }
 
-    if (caretakerStack && caretakerStack.isEmpty()) {
+    if (stackSnapshotStorage && stackSnapshotStorage.isEmpty()) {
       setIsLoader(null);
-      caretakerStack.clear();
+      stackSnapshotStorage.clear();
     }
 
     return () => {
       clearTimeout(stepsTimeoutId);
     };
-  }, [content]);
+  }, [stackState]);
 
   function disableFormSubmission(e: FormEvent): void {
     e.preventDefault()
@@ -77,34 +77,34 @@ export const StackAlgorithmViewer: React.FC = () => {
 
   function handlerOnClickAdd(): void {
     setIsLoader(Buttons.addTail)
-    if (stack && caretakerStack) {
+    if (stack && stackSnapshotStorage) {
       stack.push(values.inputValue)
-      const memento = caretakerStack.retrieveAndRemoveSnapshot()
+      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
       const step = memento && memento.getState()
-      step && setContent(step);
+      step && setStackState(step);
       setValues(initialInputValue)
     }
   }
 
   function handlerOnClickClear(): void {
-    if (stack && caretakerStack) {
+    if (stack && stackSnapshotStorage) {
       const size = stack.getSize()
       if (size > 0) {
         stack.clearAll()
       }
-      const memento = caretakerStack.retrieveAndRemoveSnapshot()
+      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
       const step = memento && memento.getState()
-      step && setContent(step);
+      step && setStackState(step);
     }
   }
 
   function handlerOnClickDelete(): void {
     setIsLoader(Buttons.deleteTail)
-    if (stack && caretakerStack) {
+    if (stack && stackSnapshotStorage) {
       stack.pop()
-      const memento = caretakerStack.retrieveAndRemoveSnapshot()
+      const memento = stackSnapshotStorage.retrieveAndRemoveSnapshot()
       const step = memento && memento.getState()
-      step && setContent(step);
+      step && setStackState(step);
     }
   }
 
@@ -126,14 +126,14 @@ export const StackAlgorithmViewer: React.FC = () => {
         </fieldset>
       </form>
 
-      {content &&
+      {stackState &&
         <ul className={styles.containerResultStack}>
-          {content.container.map((element, index) =>
+          {stackState.container.map((element, index) =>
             <li key={index}>
               <CircleMemo letter={String(element)}
                           index={index}
-                          {...(index === content.activeIndex) && {state: ElementStates.Changing}}
-                          {...(index === content.tailIndex) && {head: "top"}}
+                          {...(index === stackState.activeIndex) && {state: ElementStates.Changing}}
+                          {...(index === stackState.tailIndex) && {head: "top"}}
               />
             </li>
           )}

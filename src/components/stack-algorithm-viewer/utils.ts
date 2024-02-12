@@ -1,6 +1,6 @@
 import {ISnapshotStorage, ISnapshot} from "../../types/snapshots";
 
-export interface IStateStack<T> {
+export interface IStackState<T> {
   container: Array<T>;
   size: number;
   tailIndex: number | null;
@@ -11,7 +11,7 @@ interface IStack<T> {
   push: (item: T) => void;
   pop: () => void;
   clearAll: () => void;
-  save: () => ISnapshot<IStateStack<T>>;
+  save: () => ISnapshot<IStackState<T>>;
 }
 
 export class Stack<T> implements IStack<T> {
@@ -23,13 +23,13 @@ export class Stack<T> implements IStack<T> {
 
   private getContainerLength = () => this.container.length;
 
-  private toArray(): T[] {
+  private toArray(): Array<T> {
     return [...this.container];
   }
 
   getSize = () => this.size;
 
-  public save(): ISnapshot<IStateStack<T>> {
+  public save(): ISnapshot<IStackState<T>> {
     return new StackSnapshot<T>({
       container: this.toArray(),
       size: this.size,
@@ -74,26 +74,26 @@ export class Stack<T> implements IStack<T> {
 
 }
 
-export class StackSnapshot<T> implements ISnapshot<IStateStack<T>> {
-  private readonly state: IStateStack<T> = {
+export class StackSnapshot<T> implements ISnapshot<IStackState<T>> {
+  private readonly state: IStackState<T> = {
     container: [],
     size: 0,
     tailIndex: null,
     activeIndex: null,
   };
 
-  constructor({container, size, tailIndex, activeIndex}: IStateStack<T>) {
+  constructor({container, size, tailIndex, activeIndex}: IStackState<T>) {
     this.state = {container, size, tailIndex, activeIndex}
   }
 
-  public getState(): IStateStack<T> {
+  public getState(): IStackState<T> {
     return this.state;
   }
 }
 
-export class StackSnapshotStorage<T> implements ISnapshotStorage<ISnapshot<IStateStack<T>>> {
+export class StackSnapshotStorage<T> implements ISnapshotStorage<ISnapshot<IStackState<T>>> {
 
-  private snapshots: Array<ISnapshot<IStateStack<T>> | null> = [];
+  private snapshots: Array<ISnapshot<IStackState<T>> | null> = [];
   private originator: IStack<T>;
   private head: number = 0;
   private length: number = 0;
@@ -105,12 +105,12 @@ export class StackSnapshotStorage<T> implements ISnapshotStorage<ISnapshot<IStat
   isEmpty = () => this.length === 0;
 
   createAndStoreSnapshot(): void {
-    const newSnapshot: ISnapshot<IStateStack<T>> = this.originator.save()
+    const newSnapshot: ISnapshot<IStackState<T>> = this.originator.save()
     this.snapshots.push(newSnapshot);
     this.length++;
   }
 
-  retrieveAndRemoveSnapshot = (): ISnapshot<IStateStack<T>> | null => {
+  retrieveAndRemoveSnapshot = (): ISnapshot<IStackState<T>> | null => {
     if (this.isEmpty()) {
       throw new Error("No elements in the QueueCaretaker");
     } else if (this.snapshots[this.head]) {

@@ -23,7 +23,7 @@ type TNewSnapQueue<T> = {
   elementPointer: number | null;
 }
 
-class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
+export class QueueWithSnapshots<T> implements IQueueWithSnapshots<T> {
   private containerQueue: Array<T | null> = [];
   private head: number = 0;
   private tail: number = 0;
