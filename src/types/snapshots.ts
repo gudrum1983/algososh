@@ -8,4 +8,3 @@ export interface ISnapshotStorage<T> {
   clear: () => void;
   isEmpty:() => boolean;
 }
-

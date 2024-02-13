@@ -11,10 +11,6 @@ export function  cloneSnapElements(elements: Array<ICircleElement>): Array<ICirc
   return elements.map(el => el.getElement());
 }
 
-/*export function createDefaultCircleElements(elements: Array<ICircleComponent>): Array<ICircleElement> {
-  return elements.map((item) => new CircleElement(item.letter, item.index, item.id));
-}*/
-
 export function createDefaultColumnElements(elements: Array<IColumnComponent>): Array<IColumnElement> {
   return elements.map((item) => new ColumnElement(item.index, item.id));
 }
@@ -28,14 +24,6 @@ export function createDefaultColumnElements2(elements: Array<number>): Array<ICo
 }
 
 export function cloneSnapElementsColumn(elements: Array<IColumnElement>): Array<IColumnComponent> {
-  return elements.map(el => el.getElement());
-}
-
-type ElementWithGetElement<T> = T & {getElement: () => T};
-
-export function cloneSnapElements2<T extends ICircleComponent | IColumnComponent>(
-  elements: Array<ElementWithGetElement<T>>
-): Array<T> {
   return elements.map(el => el.getElement());
 }
 

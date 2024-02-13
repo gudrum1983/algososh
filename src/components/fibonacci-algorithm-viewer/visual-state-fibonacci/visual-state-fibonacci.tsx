@@ -1,17 +1,17 @@
 import React from "react";
 import {Circle} from "../../ui/circle/circle";
-import styles from "./visual-content-fibonacci.module.css"
+import styles from "./visual-state-fibonacci.module.css"
 import {ICircleComponent} from "../../../utils/circle";
 
-type TVisualContentListProps<T extends ICircleComponent> = { content: Array<T> };
-export const VisualContentFibonacci = <T extends ICircleComponent, >({content}: TVisualContentListProps<T>): JSX.Element => {
+type TVisualStateFibonacciProps<T extends ICircleComponent> = { state: Array<T> };
+export const VisualStateFibonacci = <T extends ICircleComponent, >({state}: TVisualStateFibonacciProps<T>): JSX.Element => {
 
   const CircleMemo = React.memo(Circle);
 
-  if (content) {
+  if (state) {
     return (
       <ul className={styles.containerResultFibonacci}>
-        {content.map((element) =>
+        {state.map((element) =>
           <li key={element.index}>
             <CircleMemo extraClass={styles.elementFibonacci} index={element.index} letter={`${element.letter}`}/>
           </li>

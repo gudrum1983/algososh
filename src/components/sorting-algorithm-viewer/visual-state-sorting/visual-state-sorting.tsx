@@ -1,18 +1,18 @@
 import React from "react";
 import {Column} from "../../ui/column/column";
-import styles from "./visual-content-sorting.module.css"
+import styles from "./visual-state-sorting.module.css"
 import {IColumnComponent} from "../../../utils/column";
 
-type TVisualContentListProps<T extends IColumnComponent> = { content: Array<T>};
+type TVisualStateSortingProps<T extends IColumnComponent> = { state: Array<T>};
 
-export const VisualContentSorting = <T extends IColumnComponent, >({content}: TVisualContentListProps<T>): JSX.Element => {
+export const VisualStateSorting = <T extends IColumnComponent, >({state}: TVisualStateSortingProps<T>): JSX.Element => {
 
   const ColumnMemo = React.memo(Column);
 
-  if (content) {
+  if (state) {
     return (
       <ul className={styles.containerResultSorting}>
-        {content.map((element) =>
+        {state.map((element) =>
           <li key={element.id}>
             <ColumnMemo state={element.state} index={element.index}/>
           </li>

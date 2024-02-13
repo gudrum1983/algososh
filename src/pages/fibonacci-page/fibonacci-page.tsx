@@ -1,11 +1,11 @@
 import React from "react";
 import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
-import {ContainerFibonacci} from "../../components/fibonacci-algorithm-viewer/container-fibonacci";
+import {FibonacciAlgorithmViewer} from "../../components/fibonacci-algorithm-viewer/fibonacci-algorithm-viewer";
 
 export const FibonacciPage: React.FC = () => {
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
-      <ContainerFibonacci/>
+      <FibonacciAlgorithmViewer/>
     </SolutionLayout>
   );
 };

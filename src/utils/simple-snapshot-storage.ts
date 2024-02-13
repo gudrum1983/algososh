@@ -1,4 +1,6 @@
 import {ISnapshot} from "../types/snapshots";
+import {ICircleComponent} from "./circle";
+import {IColumnComponent} from "./column";
 
 export interface ISimpleContent<T> {
   getState: () => T;
@@ -31,8 +33,6 @@ export class SimpleContent<T> implements ISimpleContent<T> {
   }
 }
 
-
-//T - это массив Array<ICircleComponent>
 export class SimpleSnapshot<T> implements ISnapshot<T> {
   private readonly state: T;
 
@@ -89,4 +89,9 @@ export class SimpleSnapshotStorage<T> implements ISimpleSnapshotStorage {
     this.head = 0;
     this.length = 0;
   };
+}
+
+export type TSimpleStateAndSnapshotStirage<T extends ICircleComponent & IColumnComponent> = {
+  state: SimpleContent<Array<T>>;
+  snapshotStorage: SimpleSnapshotStorage<Array<T>>
 }
