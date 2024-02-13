@@ -4,21 +4,18 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {ColumnBaseElement} from "../../types/base-element";
 import useForm from "../../useForm";
 import styles from "./container-sorting.module.css";
-import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {BUBBLE, SELECTION, TSortingMethod} from "../../types/sorting-method";
 import {Direction} from "../../types/direction";
 import {randomNumbers} from "../../utils/random-numbers";
-import {
-  createSelectSortingSnapshots
-} from "../../algorithms/create-select-sorting-snapshots/create-select-sorting-snapshots";
-import {
-  createBubbleSortingSnapshots
-} from "../../algorithms/create-bubble-sorting-snapshots/create-bubble-sorting-snapshots";
+import {createSelectSortingSnapshots} from "./create-select-sorting-snapshots/create-select-sorting-snapshots";
+import {createBubbleSortingSnapshots} from "./create-bubble-sorting-snapshots/create-bubble-sorting-snapshots";
 import {ElementStates} from "../../types/element-states";
-import {nanoid} from "nanoid";
-import {VisualContentSorting} from "../visual-content-sorting/visual-content-sorting";
+import {VisualContentSorting} from "./visual-content-sorting/visual-content-sorting";
 import {Buttons} from "../../types/buttons";
+import {IColumnComponent} from "../../utils/column";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
+import { createDefaultColumnElements2} from "../../utils/utils";
 
 type TFormData = { inputValue: string; typeSort: string };
 export type TElementSorting = Pick<ColumnBaseElement, "index" | "state" | "id">
@@ -26,9 +23,9 @@ export type TSnapshotSorting = { containerSorting: Array<TElementSorting> };
 
 export const ContainerSorting = () => {
 
-  const [initialElements, setInitialElements] = useState<Array<TElementSorting> | null>(null);
+  const [initialElements, setInitialElements] = useState<Array<IColumnComponent> | null>(null);
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
-  const [snapshots, setSnapshots] = useState<Array<TSnapshotSorting> | null>(null);
+  const [snapshots, setSnapshots] = useState<Array<Array<IColumnComponent>> | null>(null);
 
   const inputInitialState = {inputValue: "", typeSort: SELECTION};
   const {values, handleChange} = useForm<TFormData>(inputInitialState);
@@ -37,11 +34,7 @@ export const ContainerSorting = () => {
 
   function createNewElements() {
     const newArr = randomNumbers();
-    const elements = newArr.map((item): TElementSorting => ({
-      index: item,
-      state: ElementStates.Default,
-      id: nanoid(5)
-    }))
+    const elements = createDefaultColumnElements2(newArr);
     setInitialElements(elements);
   }
 
@@ -69,10 +62,11 @@ export const ContainerSorting = () => {
       return;
     }
 
-    let sortingSnapshots: Array<TSnapshotSorting> = [{containerSorting: initialElements}];
+    let sortingSnapshots: Array<Array<IColumnComponent>> = [initialElements];
 
     if (type === SELECTION) {
       sortingSnapshots = createSelectSortingSnapshots(initialElements, direction);
+
     }
 
     if (type === BUBBLE) {
@@ -81,7 +75,7 @@ export const ContainerSorting = () => {
 
     setSnapshots(sortingSnapshots);
 
-    const defaultStateElements = sortingSnapshots[sortingSnapshots.length - 1].containerSorting.map(el => ({
+    const defaultStateElements = sortingSnapshots[sortingSnapshots.length - 1].map(el => ({
       ...el,
       state: ElementStates.Default,
     }))
@@ -114,10 +108,9 @@ export const ContainerSorting = () => {
                   text={"Новый массив"}/>
         </fieldset>
       </form>
-      {initialElements && !snapshots && <VisualContentSorting content={{containerSorting: initialElements}}/>}
+      {initialElements && !snapshots && <VisualContentSorting content={initialElements}/>}
       {snapshots &&
-        <StepByStepDisplay<TSnapshotSorting> steps={snapshots} setLoader={setIsLoader}
-                                             delay={delay}/>}
+        <StepByStepDisplay<IColumnComponent> steps={snapshots} setLoader={setIsLoader} delay={delay}/>}
     </>
   );
 };

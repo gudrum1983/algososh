@@ -2,23 +2,21 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import React, {FormEvent, useRef, useState} from "react";
 import {SHORT_DELAY_IN_MS} from "../../constants/delays";
-import {
-  createFibonacciAndSnapshots
-} from "../../algorithms/create-fibonacci-and-snapshots/create-fibonacci-and-snapshots";
-import {CircleBaseElement} from "../../types/base-element";
 import useForm from "../../useForm";
 import styles from "./container-fibonacci.module.css";
-import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {Buttons} from "../../types/buttons";
+import {ICircleComponent} from "../../utils/circle";
+import {
+  createFibonacciAndSnapshots
+} from "./create-fibonacci-and-snapshots/create-fibonacci-and-snapshots";
+import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 
 type TFormData = { inputValue: string; };
-export type TElementFibonacci = Pick<CircleBaseElement, "letter" | "index" | "id">
-export type TSnapshotFibonacci = { containerFibonacci: Array<TElementFibonacci> };
 
-export const ContainerFibonacci = () => {
+export const ContainerFibonacci = (): JSX.Element => {
 
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
-  const [snapshots, setSnapshots] = useState<Array<TSnapshotFibonacci> | null>(null);
+  const [snapshots, setSnapshots] = useState<Array<Array<ICircleComponent>> | null>(null);
   const [memo, setMemo] = useState<Record<number, number> | null>(null);
 
   const inputInitialState = {inputValue: ""};
@@ -58,13 +56,12 @@ export const ContainerFibonacci = () => {
                  isLimitText={isLimitText} name={"inputValue"} tabIndex={0} value={values.inputValue}
                  onChange={handleChange} min={`${min}`} step={`${stepNumber}`}/>
           <Button type={"submit"} text={"Рассчитать"} isLoader={isLoader === Buttons.fibonacci} disabled={!isCorrectNumber}
-          name={Buttons.fibonacci}/>
+                  name={Buttons.fibonacci}/>
         </fieldset>
       </form>
 
-      {snapshots &&
-        <StepByStepDisplay<TSnapshotFibonacci> steps={snapshots} setLoader={setIsLoader}
-                                               delay={delay}/>}
+      {snapshots &&  <StepByStepDisplay<ICircleComponent> steps={snapshots} setLoader={setIsLoader}
+                                                          delay={delay}/>}
     </>
   );
 };

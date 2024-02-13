@@ -1,6 +1,6 @@
 import React from "react";
 import {SolutionLayout} from "../../components/ui/solution-layout/solution-layout";
-import {ContainerSorting} from "../../components/container-sorting/container-sorting";
+import {ContainerSorting} from "../../components/sorting-algorithm-viewer/container-sorting";
 
 export const SortingPage: React.FC = () => {
   return (
