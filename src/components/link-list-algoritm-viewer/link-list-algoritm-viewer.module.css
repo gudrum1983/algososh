@@ -1,0 +1,51 @@
+.fieldset{
+  display: grid;
+  grid-template-columns: 204px repeat(5, 1fr);
+  column-gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.fieldset2{
+  display: grid;
+  grid-template-columns: 204px repeat(2, 2fr);
+  column-gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.formList {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  margin: 0 auto 120px;
+  flex-direction: column;
+  max-width: 952px;
+}
+
+.arrows {
+  background-image: url("../../images/icons/ChevronRight.svg") ;
+  width: 24px;
+  height: 24px;
+  align-self: center;
+}
+
+.element{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+}
+
+.containerResultList {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 16px;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}

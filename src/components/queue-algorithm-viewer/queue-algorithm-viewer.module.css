@@ -1,0 +1,28 @@
+.fieldset{
+  display: grid;
+  grid-template-columns: 204px repeat(5, 1fr);
+  column-gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.formQueue {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  margin: 0 auto 52px;
+  flex-direction: column;
+  max-width: 829px;
+}
+
+.containerResultQueue {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 16px;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
