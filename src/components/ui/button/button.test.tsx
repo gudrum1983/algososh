@@ -4,8 +4,9 @@ import {fireEvent, render, screen} from "@testing-library/react";
 const TestRenderer = require('react-test-renderer');
 
 describe('test Button component', () => {
-  const id: string = "ActiveButtonWithText";
+
   it('should render an active button with text', () => {
+    const id: string = "ActiveButtonWithText";
     const tree = TestRenderer
       .create(<Button
         data-testid={id}
