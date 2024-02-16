@@ -1,18 +1,18 @@
 import {cloneSnapElements, swap} from "../../utils/utils";
 import {CircleElement, ICircleComponent, ICircleElement} from "../../utils/circle";
 import {
-  SimpleContent,
-  SimpleSnapshotStorage,
-  TSimpleStateAndSnapshotStirage
-} from "../../utils/simple-snapshot-storage";
+  Originator,
+  Caretaker,
+  TStateAndSnapshotStorage
+} from "../../utils/memento";
 
-export const createStringReverseSnapshots = (string: string):TSimpleStateAndSnapshotStirage<ICircleComponent>  => {
+export const createStringReverseSnapshots = (string: string):TStateAndSnapshotStorage<ICircleComponent>  => {
 
   const elements: Array<ICircleElement> = string.split('').map((item, index) => new CircleElement(item, index));
 
   const initialState: Array<ICircleComponent> = cloneSnapElements(elements);
-  const state = new SimpleContent<Array<ICircleComponent>>(initialState);
-  const snapshotStorage = new SimpleSnapshotStorage<Array<ICircleComponent>>(state);
+  const state = new Originator<Array<ICircleComponent>>(initialState);
+  const snapshotStorage = new Caretaker<Array<ICircleComponent>>(state);
 
   let startIndex = 0;
   let endIndex = elements.length - 1;

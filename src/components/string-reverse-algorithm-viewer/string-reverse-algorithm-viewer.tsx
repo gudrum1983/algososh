@@ -7,7 +7,7 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {ICircleComponent} from "../../utils/circle";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
-import {TSimpleStateAndSnapshotStirage} from "../../utils/simple-snapshot-storage";
+import {TStateAndSnapshotStorage} from "../../utils/memento";
 
 type TFormData = { inputValue: string; };
 export const StringReverseAlgorithmViewer = (): JSX.Element => {
@@ -17,7 +17,7 @@ export const StringReverseAlgorithmViewer = (): JSX.Element => {
 
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
 
-  const stateAndSnapshotsForVisualization = useRef<TSimpleStateAndSnapshotStirage<ICircleComponent> | null>(null);
+  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<ICircleComponent> | null>(null);
 
   const inputInitialValue = {inputValue: ""};
   const {values, handleChange} = useForm<TFormData>(inputInitialValue);

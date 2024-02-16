@@ -9,7 +9,7 @@ import {ICircleComponent} from "../../utils/circle";
 import {createFibonacciAndSnapshots} from "./utils";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 
-import {TSimpleStateAndSnapshotStirage} from "../../utils/simple-snapshot-storage";
+import {TStateAndSnapshotStorage} from "../../utils/memento";
 
 type TFormData = { inputValue: string; };
 
@@ -17,7 +17,7 @@ export const FibonacciAlgorithmViewer = (): JSX.Element => {
 
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
 
-  const stateAndSnapshotsForVisualization = useRef<TSimpleStateAndSnapshotStirage<ICircleComponent> | null>(null);
+  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<ICircleComponent> | null>(null);
   const memoFibonacci = useRef<Record<number, number>>({});
 
   const inputInitialState = {inputValue: ""};

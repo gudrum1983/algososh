@@ -1,15 +1,15 @@
 import {CircleElement, ICircleComponent} from "../../utils/circle";
 import {
-  SimpleContent,
-  SimpleSnapshotStorage,
-  TSimpleStateAndSnapshotStirage
-} from "../../utils/simple-snapshot-storage";
+  Originator,
+  Caretaker,
+  TStateAndSnapshotStorage
+} from "../../utils/memento";
 
 export function createFibonacciAndSnapshots(index: number, fibonacciCache: React.MutableRefObject<Record<number, number>>)
-  : TSimpleStateAndSnapshotStirage<ICircleComponent> {
+  : TStateAndSnapshotStorage<ICircleComponent> {
 
-  const state = new SimpleContent<Array<ICircleComponent>>([]);
-  const snapshotStorage = new SimpleSnapshotStorage<Array<ICircleComponent>>(state);
+  const state = new Originator<Array<ICircleComponent>>([]);
+  const snapshotStorage = new Caretaker<Array<ICircleComponent>>(state);
 
   if (!fibonacciCache.current.hasOwnProperty(1)) {
     fibonacciCache.current = {0: 1, 1: 1};

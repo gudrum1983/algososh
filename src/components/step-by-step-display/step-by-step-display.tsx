@@ -9,13 +9,13 @@ import {VisualStateString} from "../string-reverse-algorithm-viewer/visual-state
 import {VisualStateFibonacci} from "../fibonacci-algorithm-viewer/visual-state-fibonacci/visual-state-fibonacci";
 import {IColumnComponent} from "../../utils/column";
 import {VisualStateSorting} from "../sorting-algorithm-viewer/visual-state-sorting/visual-state-sorting";
-import {SimpleContent, SimpleSnapshotStorage} from "../../utils/simple-snapshot-storage";
+import {Caretaker, Originator} from "../../utils/memento";
 
 type TSteps<T extends ICircleComponent & IColumnComponent> = {
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<null | Buttons>>,
-  state: SimpleContent<T[]>;
-  snapshotStorage: SimpleSnapshotStorage<T[]>
+  state: Originator<T[]>;
+  snapshotStorage: Caretaker<T[]>
 };
 
 export const StepByStepDisplay = <T extends ICircleComponent & IColumnComponent, >({
@@ -29,34 +29,31 @@ export const StepByStepDisplay = <T extends ICircleComponent & IColumnComponent,
 
   const [step, setStep] = useState<Array<T> | null>(null);
 
+  const updateStep = () => {
+    snapshotStorage.retrieveAndRemoveSnapshot();
+    const currentStep = state.getState();
+    currentStep && setStep(currentStep);
+  };
+
   React.useEffect(() => {
     if (state) {
-      snapshotStorage.retrieveAndRemoveSnapshot();
-      const currentStep = state.getState();
-      currentStep && setStep(currentStep);
+      updateStep();
     }
-
   }, [state, snapshotStorage]);
 
   React.useEffect(() => {
 
     const isEmpty = snapshotStorage.isEmpty();
     let stepsTimeoutId: NodeJS.Timeout;
-
     if (!isEmpty) {
       stepsTimeoutId = setTimeout(() => {
-        snapshotStorage.retrieveAndRemoveSnapshot();
-        const currentStep = state.getState();
-        currentStep && setStep(currentStep);
+        updateStep();
       }, delay);
-    }
-
-    if (isEmpty) {
+    } else {
       setLoader(null);
       snapshotStorage.clear();
       startConfetti();
     }
-
     return () => {
       clearTimeout(stepsTimeoutId);
     };
