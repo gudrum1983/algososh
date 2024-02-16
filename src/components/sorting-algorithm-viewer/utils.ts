@@ -1,7 +1,7 @@
 import {cloneSnapElementsColumn, createDefaultColumnElements, swap} from "../../utils/utils";
 import {Direction} from "../../types/direction";
 import {IColumnComponent} from "../../utils/column";
-import {ICircleComponent} from "../../utils/circle";
+import {IStateCircleElement} from "../../utils/circle";
 import {
   Originator,
   Caretaker,
@@ -9,7 +9,7 @@ import {
 } from "../../utils/memento";
 
 
-export const createSelectionSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<ICircleComponent> => {
+export const createSelectionSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
 
   const elements = createDefaultColumnElements(initElements);
 
@@ -55,7 +55,7 @@ export const createSelectionSortingSnapshots = (initElements: Array<IColumnCompo
 
   return {state, snapshotStorage}
 }
-export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<ICircleComponent> => {
+export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
 
   const elements = createDefaultColumnElements(initElements);
 

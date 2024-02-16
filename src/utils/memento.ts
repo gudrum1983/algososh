@@ -1,4 +1,4 @@
-import {ICircleComponent} from "./circle";
+import {IStateCircleElement} from "./circle";
 import {IColumnComponent} from "./column";
 
 /**
@@ -91,6 +91,10 @@ export class Caretaker<T> {
     }
   };
 
+  showAllMementos(): Array<Memento<T> | null> {
+    return this.mementos;
+  };
+
   clear = () => {
     this.mementos = [];
     this.head = 0;
@@ -98,7 +102,7 @@ export class Caretaker<T> {
   };
 }
 
-export type TStateAndSnapshotStorage<T extends ICircleComponent & IColumnComponent> = {
+export type TStateAndSnapshotStorage<T extends IStateCircleElement & IColumnComponent> = {
   state: Originator<Array<T>>;
   snapshotStorage: Caretaker<Array<T>>
 }

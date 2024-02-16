@@ -5,19 +5,20 @@ import useForm from "../../useForm";
 import {createStringReverseSnapshots} from "./utils";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {ICircleComponent} from "../../utils/circle";
+import {IStateCircleElement} from "../../utils/circle";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {TStateAndSnapshotStorage} from "../../utils/memento";
 
 type TFormData = { inputValue: string; };
 export const StringReverseAlgorithmViewer = (): JSX.Element => {
 
+
   const maxLength: number = 11;
   const isLimitText: boolean = true;
 
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
 
-  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<ICircleComponent> | null>(null);
+  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<IStateCircleElement> | null>(null);
 
   const inputInitialValue = {inputValue: ""};
   const {values, handleChange} = useForm<TFormData>(inputInitialValue);
@@ -30,11 +31,14 @@ export const StringReverseAlgorithmViewer = (): JSX.Element => {
   function handleOnSubmitReverseString(e: FormEvent): void {
     e.preventDefault();
     stateAndSnapshotsForVisualization.current = createStringReverseSnapshots(values.inputValue);
+
     setIsLoader(Buttons.reverse);
   }
 
   const state = stateAndSnapshotsForVisualization.current && stateAndSnapshotsForVisualization.current.state;
   const snapshotStorage = stateAndSnapshotsForVisualization.current && stateAndSnapshotsForVisualization.current.snapshotStorage;
+
+
 
   const ButtonMemo = React.memo(Button);
 
@@ -49,8 +53,8 @@ export const StringReverseAlgorithmViewer = (): JSX.Element => {
         </fieldset>
       </form>
       {state && snapshotStorage &&
-        <StepByStepDisplay<ICircleComponent> state={state} snapshotStorage={snapshotStorage}
-                                             setLoader={setIsLoader}/>}
+        <StepByStepDisplay<IStateCircleElement> state={state} snapshotStorage={snapshotStorage}
+                                                setLoader={setIsLoader}/>}
     </>
   );
 };

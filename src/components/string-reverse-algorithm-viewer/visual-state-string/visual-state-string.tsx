@@ -1,11 +1,11 @@
 import React from "react";
 import {Circle} from "../../ui/circle/circle";
 import styles from "./visual-state-string.module.css"
-import {ICircleComponent} from "../../../utils/circle";
+import {IStateCircleElement} from "../../../utils/circle";
 
-type TVisualStateStringProps<T extends ICircleComponent> = { state: Array<T> };
+type TVisualStateStringProps<T extends IStateCircleElement> = { state: Array<T> };
 
-export const VisualStateString = <T extends ICircleComponent, >({state}: TVisualStateStringProps<T>): JSX.Element => {
+export const VisualStateString = <T extends IStateCircleElement, >({state}: TVisualStateStringProps<T>): JSX.Element => {
 
   const CircleMemo = React.memo(Circle);
 

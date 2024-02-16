@@ -4,21 +4,21 @@ import {useLocation} from "react-router-dom";
 import {startConfetti} from "../confetti/confetti";
 import {Buttons} from "../../types/buttons";
 import {Path} from "../../types/path";
-import {ICircleComponent} from "../../utils/circle";
+import {IStateCircleElement} from "../../utils/circle";
 import {VisualStateString} from "../string-reverse-algorithm-viewer/visual-state-string/visual-state-string";
 import {VisualStateFibonacci} from "../fibonacci-algorithm-viewer/visual-state-fibonacci/visual-state-fibonacci";
 import {IColumnComponent} from "../../utils/column";
 import {VisualStateSorting} from "../sorting-algorithm-viewer/visual-state-sorting/visual-state-sorting";
 import {Caretaker, Originator} from "../../utils/memento";
 
-type TSteps<T extends ICircleComponent & IColumnComponent> = {
+type TSteps<T extends IStateCircleElement & IColumnComponent> = {
   delay?: number,
   setLoader: React.Dispatch<React.SetStateAction<null | Buttons>>,
   state: Originator<T[]>;
   snapshotStorage: Caretaker<T[]>
 };
 
-export const StepByStepDisplay = <T extends ICircleComponent & IColumnComponent, >({
+export const StepByStepDisplay = <T extends IStateCircleElement & IColumnComponent, >({
                                                                                      setLoader,
                                                                                      state,
                                                                                      snapshotStorage,

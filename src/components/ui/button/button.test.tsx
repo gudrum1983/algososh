@@ -5,44 +5,38 @@ const TestRenderer = require('react-test-renderer');
 
 describe('test Button component', () => {
 
+  const text: string = "text";
+
   it('should render an active button with text', () => {
-    const id: string = "ActiveButtonWithText";
     const tree = TestRenderer
       .create(<Button
-        data-testid={id}
-        text={id}
+        text={text}
         disabled={false}/>)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('should render an active button without text', () => {
-    const id = "ActiveButtonWithoutText";
     const tree = TestRenderer
       .create(<Button
-        data-testid={id}
         disabled={false}/>)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('should render a button with a loading indicator', () => {
-    const id = "ButtonWithLoadingIndicator";
     const tree = TestRenderer
       .create(<Button
-        data-testid={id}
-        text={id}
+        text={text}
         isLoader={true}/>)
       .toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('should render a disabled button with text', () => {
-    const id = "DisabledButton";
     const tree = TestRenderer
       .create(<Button
-        data-testid={id}
-        text={id}
+        text={text}
         disabled={true}/>)
       .toJSON();
     expect(tree).toMatchSnapshot();

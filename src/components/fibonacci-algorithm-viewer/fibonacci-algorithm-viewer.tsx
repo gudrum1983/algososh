@@ -5,7 +5,7 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import useForm from "../../useForm";
 import styles from "./fibonacci-algorithm-viewer.module.css";
 import {Buttons} from "../../types/buttons";
-import {ICircleComponent} from "../../utils/circle";
+import {IStateCircleElement} from "../../utils/circle";
 import {createFibonacciAndSnapshots} from "./utils";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 
@@ -17,7 +17,7 @@ export const FibonacciAlgorithmViewer = (): JSX.Element => {
 
   const [isLoader, setIsLoader] = useState<Buttons | null>(null);
 
-  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<ICircleComponent> | null>(null);
+  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<IStateCircleElement> | null>(null);
   const memoFibonacci = useRef<Record<number, number>>({});
 
   const inputInitialState = {inputValue: ""};
@@ -62,8 +62,8 @@ export const FibonacciAlgorithmViewer = (): JSX.Element => {
         </fieldset>
       </form>
 
-      {state && snapshotStorage && <StepByStepDisplay<ICircleComponent> state={state} snapshotStorage={snapshotStorage}
-                                                                        setLoader={setIsLoader} delay={delay}/>}
+      {state && snapshotStorage && <StepByStepDisplay<IStateCircleElement> state={state} snapshotStorage={snapshotStorage}
+                                                                           setLoader={setIsLoader} delay={delay}/>}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import {CircleElement, ICircleComponent} from "../../utils/circle";
+import {CircleElement, IStateCircleElement} from "../../utils/circle";
 import {
   Originator,
   Caretaker,
@@ -6,10 +6,10 @@ import {
 } from "../../utils/memento";
 
 export function createFibonacciAndSnapshots(index: number, fibonacciCache: React.MutableRefObject<Record<number, number>>)
-  : TStateAndSnapshotStorage<ICircleComponent> {
+  : TStateAndSnapshotStorage<IStateCircleElement> {
 
-  const state = new Originator<Array<ICircleComponent>>([]);
-  const snapshotStorage = new Caretaker<Array<ICircleComponent>>(state);
+  const state = new Originator<Array<IStateCircleElement>>([]);
+  const snapshotStorage = new Caretaker<Array<IStateCircleElement>>(state);
 
   if (!fibonacciCache.current.hasOwnProperty(1)) {
     fibonacciCache.current = {0: 1, 1: 1};

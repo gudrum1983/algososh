@@ -3,7 +3,6 @@
 exports[`test Button component should render a button with a loading indicator 1`] = `
 <button
   className="text text_type_button text_color_primary button undefined loader "
-  data-testid="ButtonWithLoadingIndicator"
   disabled={true}
   type="button"
 >
@@ -18,14 +17,13 @@ exports[`test Button component should render a button with a loading indicator 1
 exports[`test Button component should render a disabled button with text 1`] = `
 <button
   className="text text_type_button text_color_primary button undefined false "
-  data-testid="DisabledButton"
   disabled={true}
   type="button"
 >
   <p
     className="text undefined"
   >
-    DisabledButton
+    text
   </p>
 </button>
 `;
@@ -33,14 +31,13 @@ exports[`test Button component should render a disabled button with text 1`] = `
 exports[`test Button component should render an active button with text 1`] = `
 <button
   className="text text_type_button text_color_primary button undefined false "
-  data-testid="ActiveButtonWithText"
   disabled={false}
   type="button"
 >
   <p
     className="text undefined"
   >
-    ActiveButtonWithText
+    text
   </p>
 </button>
 `;
@@ -48,7 +45,6 @@ exports[`test Button component should render an active button with text 1`] = `
 exports[`test Button component should render an active button without text 1`] = `
 <button
   className="text text_type_button text_color_primary button undefined false "
-  data-testid="ActiveButtonWithoutText"
   disabled={false}
   type="button"
 >

@@ -1,5 +1,5 @@
 import {ElementStates} from "../types/element-states";
-import {ICircleComponent, ICircleElement} from "./circle";
+import {IStateCircleElement, ICircleElement} from "./circle";
 import {ColumnElement, IColumnComponent, IColumnElement} from "./column";
 import {nanoid} from "nanoid";
 
@@ -7,7 +7,7 @@ export function cloneElements<T>(elements: Array<T>): Array<T> {
   return elements.map(el => ({...el}));
 }
 
-export function  cloneSnapElements(elements: Array<ICircleElement>): Array<ICircleComponent> {
+export function  cloneSnapElements(elements: Array<ICircleElement>): Array<IStateCircleElement> {
   return elements.map(el => el.getElement());
 }
 
