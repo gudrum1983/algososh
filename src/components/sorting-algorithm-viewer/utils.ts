@@ -11,6 +11,11 @@ import {
 
 export const createSelectionSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
 
+  if (initElements.length === 0){
+    throw new Error("Array cannot be empty");
+  }
+
+
   const elements = createDefaultColumnElements(initElements);
 
   const state = new Originator<Array<IColumnComponent>>(initElements);
@@ -57,6 +62,10 @@ export const createSelectionSortingSnapshots = (initElements: Array<IColumnCompo
 }
 export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
 
+  if (initElements.length === 0){
+    throw new Error("Array cannot be empty");
+  }
+
   const elements = createDefaultColumnElements(initElements);
 
   const state = new Originator<Array<IColumnComponent>>(initElements);
@@ -91,13 +100,12 @@ export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponen
 
     if (!swapped) {
       let index = length - startIndex - 1;
-
       for (let i = index; i >= 0; i--) {
         elements[i].setModifiedState()
       }
       state.setState(cloneSnapElementsColumn(elements));
       snapshotStorage.createAndStoreSnapshot();
-      return {state, snapshotStorage}
+      break
     }
     elements[length - startIndex - 1].setModifiedState()
     state.setState(cloneSnapElementsColumn(elements));

@@ -1,10 +1,10 @@
 import {cloneSnapElements, swap} from "../../utils/utils";
-import {CircleElement, IStateCircleElement, ICircleElement} from "../../utils/circle";
+import {CircleElement, ICircleElement, IStateCircleElement} from "../../utils/circle";
 import {Caretaker, Originator, TStateAndSnapshotStorage} from "../../utils/memento";
 
 export const createStringReverseSnapshots = (string: string): TStateAndSnapshotStorage<IStateCircleElement> => {
 
-  if (string === ''){
+  if (string === '') {
     throw new Error("String cannot be empty");
   }
 
@@ -22,13 +22,13 @@ export const createStringReverseSnapshots = (string: string): TStateAndSnapshotS
     const end = elements[endIndex];
     const nextStartIndex = startIndex + 1;
     const prevEndIndex = endIndex - 1;
-     if (startIndex === endIndex) {
+    if (startIndex === endIndex) {
       start.setModifiedState();
       state.setState(cloneSnapElements(elements));
       snapshotStorage.createAndStoreSnapshot();
-       console.log({state});
-       console.log({snapshotStorage});
-       debugger
+      console.log({state});
+      console.log({snapshotStorage});
+      debugger
       return {state, snapshotStorage};
     }
 
@@ -46,11 +46,7 @@ export const createStringReverseSnapshots = (string: string): TStateAndSnapshotS
     end.setModifiedState();
 
     if (nextStartIndex >= endIndex) {
-      state.setState(cloneSnapElements(elements));
-      snapshotStorage.createAndStoreSnapshot();
-      console.log({state});
-      console.log({snapshotStorage});
-      return {state, snapshotStorage};
+      break;
     }
 
     const nextStart = elements[nextStartIndex];
@@ -62,6 +58,8 @@ export const createStringReverseSnapshots = (string: string): TStateAndSnapshotS
     endIndex--;
     startIndex++;
   }
-
+  state.setState(cloneSnapElements(elements));
+  snapshotStorage.createAndStoreSnapshot();
   return {state, snapshotStorage};
+
 };

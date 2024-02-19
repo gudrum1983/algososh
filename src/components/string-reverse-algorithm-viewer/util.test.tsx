@@ -6,7 +6,7 @@ jest.mock('nanoid', () => {
 
 describe('test of reversing a string with an even number of characters', () => {
 
-  const testString = 'A+b=2C';
+  const testString: string = 'A+b=2C';
   const result = createStringReverseSnapshots(testString);
   const {state, snapshotStorage} = result;
 
