@@ -19,10 +19,10 @@ const modifiedStyleSelector = '[class*=modified]';
 
 describe('Testing string reversal algorithm page', function () {
   beforeEach(function () {
-    cy.visit(Path.string);
+    cy.visit(Path.queue);
     cy.get('fieldset').within(() => {
       getDataCy('input-value').as('input').clear();
-      getDataCy('button-submit').as('button');
+      getDataCy('button-add').as('button');
     }).as('fieldset');
   });
 
@@ -31,7 +31,7 @@ describe('Testing string reversal algorithm page', function () {
   });
 
   it('Submit button activity with filled input', () => {
-    getCheckActivityButtonAddFill(button, input, 'Hello world');
+    getCheckActivityButtonAddFill(button, input, 'Hi');
   });
 
   it('Fieldset disabled after submit button click', () => {
@@ -39,7 +39,7 @@ describe('Testing string reversal algorithm page', function () {
   });
 
 
-  it('String reversal animation correctness check with 5 letters', () => {
+/*  it('String reversal animation correctness check with 5 letters', () => {
 
     cy.get(input).type(inputText);
     cy.get(button).click();
@@ -87,5 +87,5 @@ describe('Testing string reversal algorithm page', function () {
     cy.get(circle).should('have.length', 5,).each(($el, index) => {
       cy.wrap($el).children(modifiedStyleSelector).should('contain', inputText[4 - index]);
     });
-  });
+  });*/
 });

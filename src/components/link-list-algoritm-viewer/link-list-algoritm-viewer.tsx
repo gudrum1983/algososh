@@ -179,24 +179,24 @@ export const LinkListAlgoritmViewer: React.FC = () => {
   return (
     <>
       <form className={styles.formList} onSubmit={disableFormSubmission}>
-        <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input maxLength={maxInput} isLimitText={true} onChange={handleChange}
+        <fieldset data-cy="fieldset-value" className={styles.fieldset} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-value" maxLength={maxInput} isLimitText={true} onChange={handleChange}
                  value={values.inputValue} name='inputValue'/>
-          <ButtonMemo text={"Добавить в head"} onClick={addHead} isLoader={isLoader === Buttons.addHead}
+          <ButtonMemo  data-cy="button-add-head" text={"Добавить в head"} onClick={addHead} isLoader={isLoader === Buttons.addHead}
                   disabled={!isCorrectValue} linkedList={"small"} name={Buttons.addHead}/>
-          <ButtonMemo text={"Добавить в tail"} onClick={addTail} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo data-cy="button-add-tail" text={"Добавить в tail"} onClick={addTail} isLoader={isLoader === Buttons.addTail}
                   disabled={!isCorrectValue} linkedList={"small"} name={Buttons.addTail}/>
           <ButtonMemo text={"Удалить из head"} onClick={deleteHead} isLoader={isLoader === Buttons.deleteHead}
                   disabled={!isCorrectSize} linkedList={"small"} name={Buttons.deleteHead}/>
           <ButtonMemo text={"Удалить из tail"} onClick={deleteTail} isLoader={isLoader === Buttons.deleteTail}
                   disabled={!isCorrectSize} linkedList={"small"} name={Buttons.deleteTail}/>
         </fieldset>
-        <fieldset className={styles.fieldset2} disabled={Boolean(isLoader)}>
-          <Input onChange={handleChange} max={9} min={0} type={"number"}
+        <fieldset data-cy="fieldset-index" className={styles.fieldset2} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-index" onChange={handleChange} max={9} min={0} type={"number"}
                  value={values.inputIndex} name='inputIndex'/>
-          <ButtonMemo text={"Добавить по индексу"} onClick={addByIndex} isLoader={isLoader === Buttons.addByIndex}
+          <ButtonMemo data-cy="button-add-by-index" text={"Добавить по индексу"} onClick={addByIndex} isLoader={isLoader === Buttons.addByIndex}
                   disabled={!isCorrectNumber || !isCorrectValue} linkedList={"big"} name={Buttons.addByIndex}/>
-          <ButtonMemo text={"Удалить по индексу"} onClick={deleteByIndex} linkedList={"big"}
+          <ButtonMemo data-cy="button-delete-by-index" text={"Удалить по индексу"} onClick={deleteByIndex} linkedList={"big"}
                   isLoader={isLoader === Buttons.deleteByIndex}
                   disabled={!isCorrectNumber || !isCorrectValueIndex || !isCorrectSize} name={Buttons.deleteByIndex}/>
         </fieldset>

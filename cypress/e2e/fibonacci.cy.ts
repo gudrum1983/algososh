@@ -6,6 +6,7 @@ import {
   getDataCy
 } from '../support/commands';
 import {Alias} from '../support/@types/selectors';
+import {Path} from "../../src/types/path";
 
 const fibonacciNumbers = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765];
 const maxValue = 19
@@ -16,7 +17,7 @@ const circle: Alias = '@circle';
 
 describe('Testing fibonacci number finder algorithm page', function () {
   beforeEach(function () {
-    cy.visit('/fibonacci');
+    cy.visit(Path.fibonacci);
     cy.get('fieldset').within(() => {
       getDataCy('input-value').as('input').clear();
       getDataCy('button-submit').as('button');

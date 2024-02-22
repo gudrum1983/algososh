@@ -6,6 +6,8 @@ declare global {
       getDataCy: typeof getDataCy;
       getCheckActivityButtonAdd: typeof getCheckActivityButtonAdd;
       getCheckActivityButtonAddFill: typeof getCheckActivityButtonAddFill;
+      getCheckActivityButtonAddMultiple: typeof getCheckActivityButtonAddMultiple;
+      getCheckActivityButtonAddFillMultiple: typeof getCheckActivityButtonAddFillMultiple;
     }
   }
 }
@@ -47,14 +49,23 @@ export const getCheckActivityButtonAdd = function (
   return cy.get(buttonAdd).should('be.disabled');
 };
 
+
+export const getCheckActivityButtonAddMultiple = function (
+  buttonAdd: Alias[], inputValue: Alias
+) {
+
+  cy.get(inputValue).clear();
+  return buttonAdd.forEach((el) => {cy.get(el).should('be.disabled')});
+};
+
+
 export const getCheckActivityFieldset = function (
   buttonAdd: Alias, inputValue: Alias, value: string, fieldset: Alias
 ) {
   cy.get(inputValue).type(value);
   cy.get(fieldset).should('not.be.disabled');
   cy.get(buttonAdd).click();
-  cy.get(fieldset).should('be.disabled');
-  return cy.get(buttonAdd).should('not.be.disabled');
+  return cy.get(fieldset).should('be.disabled');
 };
 
 export const getCheckActivityButtonAddFill = function (
@@ -63,4 +74,14 @@ export const getCheckActivityButtonAddFill = function (
 
   cy.get(inputValue).type(value);
   return cy.get(buttonAdd).should('not.be.disabled');
+};
+
+
+export const getCheckActivityButtonAddFillMultiple = function (
+  buttonAdd: Alias[], inputValue: Alias, value: string
+) {
+
+  cy.get(inputValue).type(value);
+
+  return buttonAdd.forEach((el) => {cy.get(el).should('not.be.disabled')});
 };

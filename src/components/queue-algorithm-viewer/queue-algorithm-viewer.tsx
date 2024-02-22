@@ -108,10 +108,10 @@ export const QueueAlgorithmViewer = ():JSX.Element => {
   return (
     <>
       <form className={styles.formQueue} onSubmit={disableFormSubmission}>
-        <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange} tabIndex={0}
+        <fieldset data-cy="fieldset" className={styles.fieldset} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-value" ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <ButtonMemo text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo data-cy="button-add" text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail}
                   disabled={!values.inputValue || queue?.checkCanAdd()}/>
           <ButtonMemo text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
