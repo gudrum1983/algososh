@@ -1,37 +1,38 @@
-/// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+import {Selectors} from './@types/selectors';
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      getDataCy: typeof getDataCy;
+    }
+  }
+}
+
+/**
+ * Gets element using data-cy selector
+ * @param input data-cy attribute value
+ * @example
+ * // this command
+ * cy.getDataCy('header')
+ * // will select this element
+ * <div data-cy="header">
+ * </div>
+ *
+ */
+export const getDataCy = function (
+  input: Selectors
+) {
+
+  Cypress.log({
+    consoleProps() {
+      return {
+        selector: input,
+      };
+    },
+    displayName: 'getDataCy',
+    name: 'Get by [data-cy] attribute',
+  });
+
+  return cy.get(`[data-cy='${input}']`);
+
+};

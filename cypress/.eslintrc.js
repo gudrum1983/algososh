@@ -1,4 +1,4 @@
 module.exports = {
-  "plugins": ["cypress"],
-  "extends": ["plugin:cypress/recommended"]
+  "plugins": ["cypress", '@typescript-eslint'],
+  "extends": ["plugin:cypress/recommended"],
 }

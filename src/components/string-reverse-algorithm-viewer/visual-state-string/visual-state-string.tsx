@@ -12,7 +12,7 @@ export const VisualStateString = <T extends IStateCircleElement, >({state}: TVis
   if (state) {
     return (
       <ul className={styles.containerResultString}>
-        {state.map((element) =>
+        {state.map((element: T) =>
           <li key={element.index}>
             <CircleMemo state={element.state} letter={element.letter}/>
           </li>

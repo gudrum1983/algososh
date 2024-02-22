@@ -45,10 +45,10 @@ export const StringReverseAlgorithmViewer = (): JSX.Element => {
   return (
     <>
       <form onSubmit={handleOnSubmitReverseString}>
-        <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} maxLength={maxLength} isLimitText={isLimitText} onChange={handleChange}
+        <fieldset data-cy="fieldset" className={styles.fieldset} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-value" ref={inputRef} maxLength={maxLength} isLimitText={isLimitText} onChange={handleChange}
                  name={"inputValue"} value={values.inputValue}/>
-          <ButtonMemo type={"submit"} text={"Развернуть"} isLoader={isLoader === Buttons.reverse}
+          <ButtonMemo data-cy="button-submit" type={"submit"} text={"Развернуть"} isLoader={isLoader === Buttons.reverse}
                   disabled={!values.inputValue} name={Buttons.reverse}/>
         </fieldset>
       </form>
