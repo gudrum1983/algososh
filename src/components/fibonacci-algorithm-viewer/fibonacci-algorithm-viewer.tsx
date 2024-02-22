@@ -52,11 +52,11 @@ export const FibonacciAlgorithmViewer = (): JSX.Element => {
   return (
     <>
       <form onSubmit={handleOnSubmitCreateFibonacci}>
-        <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} max={`${max}`} type={"number"} placeholder={`Введите число от ${min} до ${max}`}
+        <fieldset data-cy="fieldset" className={styles.fieldset} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-value" ref={inputRef} max={`${max}`} type={"number"} placeholder={`Введите число от ${min} до ${max}`}
                  isLimitText={isLimitText} name={"inputValue"} tabIndex={0} value={values.inputValue}
                  onChange={handleChange} min={`${min}`} step={`${stepNumber}`}/>
-          <ButtonMemo type={"submit"} text={"Рассчитать"} isLoader={isLoader === Buttons.fibonacci}
+          <ButtonMemo data-cy="button-submit" type={"submit"} text={"Рассчитать"} isLoader={isLoader === Buttons.fibonacci}
                   disabled={!isCorrectNumber}
                   name={Buttons.fibonacci}/>
         </fieldset>

@@ -5,3 +5,9 @@ export type Selectors =
   | "fieldset"
   | "main-page"
   | "navigation"
+
+export type Alias =
+  | "@input"
+  | "@button"
+  | "@fieldset"
+  | "@circle"
