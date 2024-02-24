@@ -9,6 +9,7 @@ export type Selectors =
   | "button-add-tail"
   | "button-delete-tail"
   | "button-delete-head"
+  | "button-delete"
   | "button-clear"
   | "button-add-head"
   | "button-add"
@@ -16,6 +17,7 @@ export type Selectors =
   | "fieldset-index"
   | "button-add-by-index"
   | "button-delete-by-index"
+  | "letter"
 
 export type Alias =
   | "@input"

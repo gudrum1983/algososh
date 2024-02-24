@@ -47,6 +47,7 @@ describe('Testing string reversal algorithm page', function () {
       cy.get(buttonAdd).click();
       getDataCy("circle").as("circle");
     }
+    cy.get(circle).should("have.length", 3);
     cy.get(buttonClear).click();
     cy.get(circle).should("have.length", 0);
   });
@@ -62,7 +63,7 @@ describe('Testing string reversal algorithm page', function () {
     }
   });
 
-  it.only('Button delete correct animation', () => {
+  it('Button delete correct animation', () => {
     const testValues = ['Hi', 'dear', 'revi', 'ewer'];
     const length = testValues.length;
     for (let index in testValues) {

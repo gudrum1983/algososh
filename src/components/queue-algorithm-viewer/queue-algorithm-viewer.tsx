@@ -111,13 +111,13 @@ export const QueueAlgorithmViewer = ():JSX.Element => {
         <fieldset data-cy="fieldset" className={styles.fieldset} disabled={Boolean(isLoader)}>
           <Input data-cy="input-value" ref={inputRef} maxLength={max} isLimitText={true} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <ButtonMemo data-cy="button-add" text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo data-cy="button-add-tail" text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail}
                   disabled={!values.inputValue || queue?.checkCanAdd()}/>
-          <ButtonMemo text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
+          <ButtonMemo data-cy="button-delete-tail" text={"Удалить"} onClick={handlerOnClickDelete} isLoader={isLoader === Buttons.deleteHead}
                   name={Buttons.deleteHead}
                   disabled={!queue?.checkCanDelete()}/>
-          <ButtonMemo extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
+          <ButtonMemo data-cy="button-clear" extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear}
                   disabled={!queue?.checkCanClear()}/>
         </fieldset>
