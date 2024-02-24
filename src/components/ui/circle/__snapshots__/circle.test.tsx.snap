@@ -3,6 +3,7 @@
 exports[`test Circle component should render a circle in changing state 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -12,6 +13,7 @@ exports[`test Circle component should render a circle in changing state 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -28,6 +30,7 @@ exports[`test Circle component should render a circle in changing state 1`] = `
 exports[`test Circle component should render a circle in default state 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -37,6 +40,7 @@ exports[`test Circle component should render a circle in default state 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -53,6 +57,7 @@ exports[`test Circle component should render a circle in default state 1`] = `
 exports[`test Circle component should render a circle in modified state 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -62,6 +67,7 @@ exports[`test Circle component should render a circle in modified state 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -78,12 +84,14 @@ exports[`test Circle component should render a circle in modified state 1`] = `
 exports[`test Circle component should render a circle with a circle header 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
   >
     <div
       className="content "
+      data-cy="circle"
     >
       <div
         className="text text_type_input text_color_input mb-4 absolute head element"
@@ -93,6 +101,7 @@ exports[`test Circle component should render a circle with a circle header 1`] =
       >
         <p
           className="text text_type_circle text_color_input letter"
+          data-cy="letter"
         >
           head
         </p>
@@ -110,6 +119,7 @@ exports[`test Circle component should render a circle with a circle header 1`] =
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -126,12 +136,14 @@ exports[`test Circle component should render a circle with a circle header 1`] =
 exports[`test Circle component should render a circle with a circle tail 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
   >
     <div
       className="content "
+      data-cy="circle"
     >
       <div
         className="text text_type_input text_color_input mb-4 absolute head element"
@@ -141,6 +153,7 @@ exports[`test Circle component should render a circle with a circle tail 1`] = `
       >
         <p
           className="text text_type_circle text_color_input letter"
+          data-cy="letter"
         >
           tail
         </p>
@@ -158,6 +171,7 @@ exports[`test Circle component should render a circle with a circle tail 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -174,6 +188,7 @@ exports[`test Circle component should render a circle with a circle tail 1`] = `
 exports[`test Circle component should render a circle with a text header 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head string"
@@ -185,6 +200,7 @@ exports[`test Circle component should render a circle with a text header 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -201,6 +217,7 @@ exports[`test Circle component should render a circle with a text header 1`] = `
 exports[`test Circle component should render a circle with a text tail 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -210,6 +227,7 @@ exports[`test Circle component should render a circle with a text tail 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -228,6 +246,7 @@ exports[`test Circle component should render a circle with a text tail 1`] = `
 exports[`test Circle component should render a circle with index 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -237,6 +256,7 @@ exports[`test Circle component should render a circle with index 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -255,6 +275,7 @@ exports[`test Circle component should render a circle with index 1`] = `
 exports[`test Circle component should render a circle with letter 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -264,6 +285,7 @@ exports[`test Circle component should render a circle with letter 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
@@ -280,6 +302,7 @@ exports[`test Circle component should render a circle with letter 1`] = `
 exports[`test Circle component should render a circle without letter 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -289,6 +312,7 @@ exports[`test Circle component should render a circle without letter 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
@@ -303,6 +327,7 @@ exports[`test Circle component should render a circle without letter 1`] = `
 exports[`test Circle component should render a small circle 1`] = `
 <div
   className="content "
+  data-cy="circle"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
@@ -312,6 +337,7 @@ exports[`test Circle component should render a small circle 1`] = `
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       text
     </p>
