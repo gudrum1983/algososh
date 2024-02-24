@@ -186,9 +186,9 @@ export const LinkListAlgoritmViewer: React.FC = () => {
                   disabled={!isCorrectValue} linkedList={"small"} name={Buttons.addHead}/>
           <ButtonMemo data-cy="button-add-tail" text={"Добавить в tail"} onClick={addTail} isLoader={isLoader === Buttons.addTail}
                   disabled={!isCorrectValue} linkedList={"small"} name={Buttons.addTail}/>
-          <ButtonMemo text={"Удалить из head"} onClick={deleteHead} isLoader={isLoader === Buttons.deleteHead}
+          <ButtonMemo data-cy="button-delete-head" text={"Удалить из head"} onClick={deleteHead} isLoader={isLoader === Buttons.deleteHead}
                   disabled={!isCorrectSize} linkedList={"small"} name={Buttons.deleteHead}/>
-          <ButtonMemo text={"Удалить из tail"} onClick={deleteTail} isLoader={isLoader === Buttons.deleteTail}
+          <ButtonMemo data-cy="button-delete-tail" text={"Удалить из tail"} onClick={deleteTail} isLoader={isLoader === Buttons.deleteTail}
                   disabled={!isCorrectSize} linkedList={"small"} name={Buttons.deleteTail}/>
         </fieldset>
         <fieldset data-cy="fieldset-index" className={styles.fieldset2} disabled={Boolean(isLoader)}>
@@ -203,7 +203,7 @@ export const LinkListAlgoritmViewer: React.FC = () => {
       </form>
 
       {linkListSnapshotStorage &&
-        <ul className={styles.containerResultList}>
+        <ul data-cy='list' className={styles.containerResultList}>
           {linkListState && linkListState.container.map((element, index) =>
             <li key={element ? element.id : index}>
               <div className={styles.element}>

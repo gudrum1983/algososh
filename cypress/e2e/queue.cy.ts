@@ -47,7 +47,7 @@ describe('Testing string reversal algorithm page', function () {
     getCheckActivityFieldset(buttonAdd, input, 'Hi', fieldset);
   });
 
-  it.only('Button clear correct', () => {
+  it('Button clear correct', () => {
     for (let value of testValues) {
       cy.get(input).should('not.be.disabled').type(value);
       cy.get(buttonAdd).should('not.be.disabled').click();
@@ -100,7 +100,7 @@ describe('Testing string reversal algorithm page', function () {
         cy.get(circle).eq(index - 1).children(tailStyleSelector).as('prevTail').should('contain.text', 'tail');
         cy.get('@current').children(defaultStyleSelector);
         cy.get('@current').children(tailStyleSelector).should('contain.text', 'tail');
-        cy.get('@prevTail').should("not.contain.text");
+        cy.get('@prevTail').should("not.contain.text", "tail");
       }
     });
   });
@@ -120,19 +120,19 @@ describe('Testing string reversal algorithm page', function () {
         cy.get("@current").children(headStyleSelector).as('head').should('contain.text', 'head');
         cy.get('@current').children(tailStyleSelector).as('tail').should('contain.text', 'tail');
         cy.get(circle).eq(i + 1).as('next');
-        cy.get('@next').children(headStyleSelector).as('nextHead').should("not.contain.text");
-        cy.get('@next').children(tailStyleSelector).as('nextTail').should("not.contain.text");
+        cy.get('@next').children(headStyleSelector).as('nextHead').should("not.contain.text", 'head');
+        cy.get('@next').children(tailStyleSelector).as('nextTail').should("not.contain.text", 'tail');
         cy.get('@current').children(defaultStyleSelector);
-        cy.get('@head').should("not.contain.text");
-        cy.get('@tail').should("not.contain.text");
+        cy.get('@head').should("not.contain.text", 'head');
+        cy.get('@tail').should("not.contain.text", 'tail');
         cy.get('@nextHead').should('contain.text', 'head');
-        cy.get('@nextTail').should("not.contain.text");
+        cy.get('@nextTail').should("not.contain.text", 'tail');
       } else {
         cy.get(circle).eq(i).as('current').children(changingStyleSelector);
         cy.get("@current").children(headStyleSelector).as('head').should('contain.text', 'head');
-        cy.get(circle).eq(i + 1).children(headStyleSelector).as('nextHead').should("not.contain.text");
+        cy.get(circle).eq(i + 1).children(headStyleSelector).as('nextHead').should("not.contain.text", 'head');
         cy.get('@current').children(defaultStyleSelector);
-        cy.get('@head').should("not.contain.text");
+        cy.get('@head').should("not.contain.text", 'head');
         cy.get('@nextHead').should('contain.text', 'head');
       }
       cy.get(fieldset).should('not.be.disabled');

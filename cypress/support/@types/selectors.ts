@@ -18,6 +18,7 @@ export type Selectors =
   | "button-add-by-index"
   | "button-delete-by-index"
   | "letter"
+  | "list"
 
 export type Alias =
   | "@input"

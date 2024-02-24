@@ -7,15 +7,14 @@ import {
 } from '../support/commands';
 import {Alias} from '../support/@types/selectors';
 import {Path} from "../../src/types/path";
+import {changingStyleSelector, defaultStyleSelector, modifiedStyleSelector} from "../support/constants";
 
 const inputText = 'Hello';
 const input: Alias = '@input';
 const button: Alias = '@button';
 const fieldset: Alias = '@fieldset';
 const circle: Alias = '@circle';
-const defaultStyleSelector = '[class*=default]';
-const changingStyleSelector = '[class*=changing]';
-const modifiedStyleSelector = '[class*=modified]';
+
 
 describe('Testing string reversal algorithm page', function () {
   beforeEach(function () {
@@ -42,7 +41,7 @@ describe('Testing string reversal algorithm page', function () {
   it('String reversal animation correctness check with 5 letters', () => {
 
     cy.get(input).type(inputText);
-    cy.get(button).click();
+    cy.get(button).should('not.be.disabled').click();
     getDataCy('circle').as('circle');
 
 
@@ -50,7 +49,8 @@ describe('Testing string reversal algorithm page', function () {
       cy.wrap($el).children(defaultStyleSelector).should('contain', inputText[index]);
     });
 
-    cy.wait(1000);
+    cy.get(circle).children(changingStyleSelector).should('have.length', 2)
+
 
     cy.get(circle).should('have.length', 5,).each(($el, index) => {
       if ([0, 4].includes(index)) {
@@ -60,7 +60,7 @@ describe('Testing string reversal algorithm page', function () {
       }
     });
 
-    cy.wait(1000);
+    cy.get(circle).children(modifiedStyleSelector).should('have.length', 2)
 
     cy.get(circle).should('have.length', 5,).each(($el, index) => {
       if ([0, 4].includes(index)) {
@@ -72,7 +72,7 @@ describe('Testing string reversal algorithm page', function () {
       }
     });
 
-    cy.wait(1000);
+    cy.get(circle).children(modifiedStyleSelector).should('have.length', 4)
 
     cy.get(circle).should('have.length', 5,).each(($el, index) => {
       if (index === 2) {
@@ -82,7 +82,7 @@ describe('Testing string reversal algorithm page', function () {
       }
     });
 
-    cy.wait(1000);
+    cy.get(circle).children(modifiedStyleSelector).should('have.length', 5)
 
     cy.get(circle).should('have.length', 5,).each(($el, index) => {
       cy.wrap($el).children(modifiedStyleSelector).should('contain', inputText[4 - index]);

@@ -6,7 +6,7 @@ declare global {
       getDataCy: typeof getDataCy;
       getCheckActivityButtonAdd: typeof getCheckActivityButtonAdd;
       getCheckActivityButtonAddFill: typeof getCheckActivityButtonAddFill;
-      getCheckActivityButtonAddMultiple: typeof getCheckActivityButtonAddMultiple;
+      getCheckActivityButtonAddMultiple: typeof getCheckDisableButtonAddMultiple;
       getCheckActivityButtonAddFillMultiple: typeof getCheckActivityButtonAddFillMultiple;
     }
   }
@@ -41,24 +41,6 @@ export const getDataCy = function (
 
 };
 
-export const getAlias = function (
-  input: Selectors
-) {
-
-  Cypress.log({
-    consoleProps() {
-      return {
-        selector: input,
-      };
-    },
-    displayName: 'getAlias',
-    name: 'Get by [Alias] attribute',
-  });
-
-  return cy.get(`@${input}`);
-
-};
-
 export const getCheckActivityButtonAdd = function (
   buttonAdd: Alias, inputValue: Alias
 ) {
@@ -68,7 +50,7 @@ export const getCheckActivityButtonAdd = function (
 };
 
 
-export const getCheckActivityButtonAddMultiple = function (
+export const getCheckDisableButtonAddMultiple = function (
   buttonAdd: Alias[], inputValue: Alias
 ) {
 
