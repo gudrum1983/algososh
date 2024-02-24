@@ -26,9 +26,6 @@ export const createStringReverseSnapshots = (string: string): TStateAndSnapshotS
       start.setModifiedState();
       state.setState(cloneSnapElements(elements));
       snapshotStorage.createAndStoreSnapshot();
-      console.log({state});
-      console.log({snapshotStorage});
-      debugger
       return {state, snapshotStorage};
     }
 
