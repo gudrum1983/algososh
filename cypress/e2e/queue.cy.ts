@@ -1,143 +1,142 @@
 /// <reference types='cypress' />
 import {
-  getCheckActivityButtonAdd,
-  getCheckActivityButtonAddFill,
-  getCheckActivityFieldset,
+  checkActivityButtonsWithNonEmptyInput,
+  checkDisabledButtonsWithEmptyInput,
+  checkDisabledFieldsetAfterClickButton,
+  getAlias,
   getDataCy
 } from '../support/commands';
-import {Alias} from '../support/@types/selectors';
-import {Path} from "../../src/types/path";
+import {Path} from '../../src/types/path';
+import {
+  buttonAdd,
+  buttonClear,
+  buttonDelete,
+  changingStyleSelector,
+  circle,
+  current,
+  defaultStyleSelector,
+  fieldset,
+  first,
+  head,
+  headStyleSelector,
+  input,
+  tail,
+  tailStyleSelector
+} from '../support/constants';
 
 const testValues = ['Hi', 'dear', 'revi', 'ewer'];
 const length: number = testValues.length;
 
-const input: Alias = '@input';
-const buttonAdd: Alias = '@buttonAdd';
-const buttonDelete: Alias = '@buttonDelete';
-const buttonClear: Alias = '@buttonClear';
-const fieldset: Alias = '@fieldset';
-const circle: Alias = '@circle';
-const defaultStyleSelector = '[class*=default]';
-const changingStyleSelector = '[class*=changing]';
-const headStyleSelector = '[class*=head]';
-const tailStyleSelector = '[class*=tail]';
-
-describe('Testing string reversal algorithm page', function () {
+describe('Testing queue algorithm page', function () {
   beforeEach(function () {
     cy.visit(Path.queue);
-    cy.get('fieldset').within(() => {
-      getDataCy('input-value').as('input').clear();
-      getDataCy('button-add-tail').as('buttonAdd');
-      getDataCy('button-delete-tail').as('buttonDelete');
-      getDataCy('button-clear').as('buttonClear');
-    }).as('fieldset');
+    getDataCy('fieldset').within(() => {
+      getDataCy('input-value').as(input).clear();
+      getDataCy('button-add-tail').as(buttonAdd);
+      getDataCy('button-delete-tail').as(buttonDelete);
+      getDataCy('button-clear').as(buttonClear);
+    }).as(fieldset);
 
-    getDataCy("circle").as('circle');
+    getDataCy('circle').as(circle);
   });
 
   it('Submit button disabled with empty input', () => {
-    getCheckActivityButtonAdd(buttonAdd, input);
+    checkDisabledButtonsWithEmptyInput([buttonAdd], input);
   });
 
   it('Submit button activity with filled input', () => {
-    getCheckActivityButtonAddFill(buttonAdd, input, 'Hi');
+    checkActivityButtonsWithNonEmptyInput([buttonAdd], input, 'Hi');
   });
 
   it('Fieldset disabled after submit button click', () => {
-    getCheckActivityFieldset(buttonAdd, input, 'Hi', fieldset);
+    checkDisabledFieldsetAfterClickButton(buttonAdd, input, 'Hi', fieldset);
   });
 
-  it('Button clear correct', () => {
+  it('Correct animation of clearing the queue', () => {
     for (let value of testValues) {
-      cy.get(input).should('not.be.disabled').type(value);
-      cy.get(buttonAdd).should('not.be.disabled').click();
-      cy.get(fieldset).should('not.be.disabled');
+      getAlias(input).should('not.be.disabled').type(value);
+      getAlias(buttonAdd).should('not.be.disabled').click();
+      getAlias(fieldset).should('not.be.disabled');
     }
-    cy.get(circle).each(($el, index) => {
+    getAlias(circle).each(($el, index) => {
       if (index === 0) {
         cy.wrap($el).children(headStyleSelector).as('head').should('contain.text', 'head');
       } else if (index === (length - 1)) {
         cy.wrap($el).children(tailStyleSelector).should('contain.text', 'tail');
       }
     });
-    // Найти все элементы, которые нужно проверить
-    getDataCy('letter').then(($elements) => {
-      // Фильтровать элементы, у которых нет значения
-      const nonEmptyElements = $elements.filter((index, element) => {
-        return Cypress.$(element).text().trim() !== '';
-      });
-      // Проверить, что количество пустых элементов соответствует ожидаемому
-      cy.wrap(nonEmptyElements).should("have.length", 4);
-    });
-    cy.get(buttonClear).click();
 
     getDataCy('letter').then(($elements) => {
-      // Фильтровать элементы, у которых нет значения
       const nonEmptyElements = $elements.filter((index, element) => {
         return Cypress.$(element).text().trim() !== '';
       });
-      // Проверить, что количество пустых элементов соответствует ожидаемому
-      cy.wrap(nonEmptyElements).should("have.length", 0);
+      cy.wrap(nonEmptyElements).should('have.length', 4);
     });
-    cy.get("@circle").children(headStyleSelector).contains('head').should("have.length", 0);
-    cy.get("@circle").children(tailStyleSelector).contains('tail').should("have.length", 0);
+    getAlias(buttonClear).click();
+
+    getDataCy('letter').then(($elements) => {
+      const nonEmptyElements = $elements.filter((index, element) => {
+        return Cypress.$(element).text().trim() !== '';
+      });
+      cy.wrap(nonEmptyElements).should('have.length', 0);
+    });
+    getAlias(circle).children(headStyleSelector).contains('head').should('have.length', 0);
+    getAlias(circle).children(tailStyleSelector).contains('tail').should('have.length', 0);
 
   });
 
-  it('Button add correct', () => {
+  it('Correct animation of adding to the queue', () => {
     testValues.forEach((value, index) => {
-      cy.get(input).should('not.be.disabled').type(value);
-      cy.get(buttonAdd).should('not.be.disabled').click();
+      getAlias(input).should('not.be.disabled').type(value);
+      getAlias(buttonAdd).should('not.be.disabled').click();
       if (index === 0) {
-        cy.get(circle).first().as('first').children(changingStyleSelector);
-        cy.get('@first').children(headStyleSelector).as('head').should('contain.text', 'head');
-        cy.get('@first').children(tailStyleSelector).as('tail').should('contain.text', 'tail');
-        cy.get(circle).first().as('first').children(defaultStyleSelector);
-        cy.get('@head').should('contain.text', 'head');
-        cy.get('@tail').should('contain.text', 'tail');
+        getAlias(circle).first().as(first).children(changingStyleSelector);
+        getAlias(first).children(headStyleSelector).as(head).should('contain.text', 'head');
+        getAlias(first).children(tailStyleSelector).as(tail).should('contain.text', 'tail');
+        getAlias(circle).first().as(first).children(defaultStyleSelector);
+        getAlias(head).should('contain.text', 'head');
+        getAlias(tail).should('contain.text', 'tail');
       } else {
-        cy.get(circle).eq(index).as('current').children(changingStyleSelector);
-        cy.get(circle).eq(index - 1).children(tailStyleSelector).as('prevTail').should('contain.text', 'tail');
-        cy.get('@current').children(defaultStyleSelector);
-        cy.get('@current').children(tailStyleSelector).should('contain.text', 'tail');
-        cy.get('@prevTail').should("not.contain.text", "tail");
+        getAlias(circle).eq(index).as(current).children(changingStyleSelector);
+        getAlias(circle).eq(index - 1).children(tailStyleSelector).as('prevTail').should('contain.text', 'tail');
+        getAlias(current).children(defaultStyleSelector);
+        getAlias(current).children(tailStyleSelector).should('contain.text', 'tail');
+        getAlias('prevTail').should('not.contain.text', 'tail');
       }
     });
   });
 
 
-  it('Button delete correct', () => {
+  it('Correct animation of removing from the queue', () => {
     testValues.forEach((value) => {
-      cy.get(input).should('not.be.disabled').type(value);
-      cy.get(buttonAdd).should('not.be.disabled').click();
+      getAlias(input).should('not.be.disabled').type(value);
+      getAlias(buttonAdd).should('not.be.disabled').click();
     });
-    cy.get(fieldset).should('not.be.disabled');
+    getAlias(fieldset).should('not.be.disabled');
 
     for (let i = 0; i < length; i++) {
-      cy.get(buttonDelete).should('not.be.disabled').click();
+      getAlias(buttonDelete).should('not.be.disabled').click();
       if (i === (length - 1)) {
-        cy.get(circle).eq(i).as('current').children(changingStyleSelector);
-        cy.get("@current").children(headStyleSelector).as('head').should('contain.text', 'head');
-        cy.get('@current').children(tailStyleSelector).as('tail').should('contain.text', 'tail');
-        cy.get(circle).eq(i + 1).as('next');
-        cy.get('@next').children(headStyleSelector).as('nextHead').should("not.contain.text", 'head');
-        cy.get('@next').children(tailStyleSelector).as('nextTail').should("not.contain.text", 'tail');
-        cy.get('@current').children(defaultStyleSelector);
-        cy.get('@head').should("not.contain.text", 'head');
-        cy.get('@tail').should("not.contain.text", 'tail');
-        cy.get('@nextHead').should('contain.text', 'head');
-        cy.get('@nextTail').should("not.contain.text", 'tail');
+        getAlias(circle).eq(i).as('current').children(changingStyleSelector);
+        getAlias(current).children(headStyleSelector).as(head).should('contain.text', 'head');
+        getAlias(current).children(tailStyleSelector).as(tail).should('contain.text', 'tail');
+        getAlias(circle).eq(i + 1).as('next');
+        getAlias('next').children(headStyleSelector).as('nextHead').should('not.contain.text', 'head');
+        getAlias('next').children(tailStyleSelector).as('nextTail').should('not.contain.text', 'tail');
+        getAlias(current).children(defaultStyleSelector);
+        getAlias(head).should('not.contain.text', 'head');
+        getAlias(tail).should('not.contain.text', 'tail');
+        getAlias('nextHead').should('contain.text', 'head');
+        getAlias('nextTail').should('not.contain.text', 'tail');
       } else {
-        cy.get(circle).eq(i).as('current').children(changingStyleSelector);
-        cy.get("@current").children(headStyleSelector).as('head').should('contain.text', 'head');
-        cy.get(circle).eq(i + 1).children(headStyleSelector).as('nextHead').should("not.contain.text", 'head');
-        cy.get('@current').children(defaultStyleSelector);
-        cy.get('@head').should("not.contain.text", 'head');
-        cy.get('@nextHead').should('contain.text', 'head');
+        getAlias(circle).eq(i).as('current').children(changingStyleSelector);
+        getAlias(current).children(headStyleSelector).as('head').should('contain.text', 'head');
+        getAlias(circle).eq(i + 1).children(headStyleSelector).as('nextHead').should('not.contain.text', 'head');
+        getAlias(current).children(defaultStyleSelector);
+        getAlias(head).should('not.contain.text', 'head');
+        getAlias('nextHead').should('contain.text', 'head');
       }
-      cy.get(fieldset).should('not.be.disabled');
+      getAlias(fieldset).should('not.be.disabled');
     }
-
   });
-})
-;
+});

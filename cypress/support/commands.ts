@@ -1,87 +1,42 @@
-import {Alias, Selectors} from './@types/selectors';
+import {Aliases, Selectors} from './@types/selectors';
 
 declare global {
   namespace Cypress {
     interface Chainable {
       getDataCy: typeof getDataCy;
-      getCheckActivityButtonAdd: typeof getCheckActivityButtonAdd;
-      getCheckActivityButtonAddFill: typeof getCheckActivityButtonAddFill;
-      getCheckActivityButtonAddMultiple: typeof getCheckDisableButtonAddMultiple;
-      getCheckActivityButtonAddFillMultiple: typeof getCheckActivityButtonAddFillMultiple;
     }
   }
 }
 
-/**
- * Gets element using data-cy selector
- * @param input data-cy attribute value
- * @example
- * // this command
- * cy.getDataCy('header')
- * // will select this element
- * <div data-cy="header">
- * </div>
- *
- */
 export const getDataCy = function (
   input: Selectors
 ) {
-
-  Cypress.log({
-    consoleProps() {
-      return {
-        selector: input,
-      };
-    },
-    displayName: 'getDataCy',
-    name: 'Get by [data-cy] attribute',
-  });
-
   return cy.get(`[data-cy='${input}']`);
-
 };
 
-export const getCheckActivityButtonAdd = function (
-  buttonAdd: Alias, inputValue: Alias
+export const getAlias = function (
+  input: Aliases
 ) {
-
-  cy.get(inputValue).clear();
-  return cy.get(buttonAdd).should('be.disabled');
+  return cy.get(`@${input}`);
 };
-
-
-export const getCheckDisableButtonAddMultiple = function (
-  buttonAdd: Alias[], inputValue: Alias
+export const checkDisabledButtonsWithEmptyInput = function (
+  buttons: Aliases[], inputValue: Aliases
 ) {
-
-  cy.get(inputValue).clear();
-  return buttonAdd.forEach((el) => {cy.get(el).should('be.disabled')});
+  getAlias(inputValue).clear();
+  return buttons.forEach((el) => {
+    getAlias(el).should('be.disabled');
+  });
 };
-
-
-export const getCheckActivityFieldset = function (
-  buttonAdd: Alias, inputValue: Alias, value: string, fieldset: Alias
+export function checkDisabledFieldsetAfterClickButton(buttonAdd: Aliases, inputValue: Aliases, value: string, fieldset: Aliases
 ) {
-  cy.get(inputValue).type(value);
-  cy.get(fieldset).should('not.be.disabled');
-  cy.get(buttonAdd).click();
-  return cy.get(fieldset).should('be.disabled');
-};
-
-export const getCheckActivityButtonAddFill = function (
-  buttonAdd: Alias, inputValue: Alias, value: string
-) {
-
-  cy.get(inputValue).type(value);
-  return cy.get(buttonAdd).should('not.be.disabled');
-};
-
-
-export const getCheckActivityButtonAddFillMultiple = function (
-  buttonAdd: Alias[], inputValue: Alias, value: string
-) {
-
-  cy.get(inputValue).type(value);
-
-  return buttonAdd.forEach((el) => {cy.get(el).should('not.be.disabled')});
-};
+  getAlias(inputValue).type(value);
+  getAlias(fieldset).should('not.be.disabled');
+  getAlias(buttonAdd).click();
+  return getAlias(fieldset).should('be.disabled');
+}
+export function checkActivityButtonsWithNonEmptyInput(buttons: Aliases[], inputValue: Aliases, value: string) {
+  getAlias(inputValue).type(value);
+  return buttons.forEach((el) => {
+    getAlias(el).should('not.be.disabled');
+  });
+}

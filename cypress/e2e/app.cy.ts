@@ -1,5 +1,5 @@
-/// <reference types="cypress" />
-import {getDataCy} from "../support/commands";
+/// <reference types='cypress' />
+import {getDataCy} from '../support/commands';
 
 describe('Testing application availability', function () {
   beforeEach(function () {
@@ -7,11 +7,11 @@ describe('Testing application availability', function () {
   });
 
   it('Application is available at main page', function () {
-    getDataCy("main-page").should("have.length", 1);
+    getDataCy('main-page').should('have.length', 1);
   });
 
   it('All navigation links are accessible', () => {
-    getDataCy("navigation").within(() => {
+    getDataCy('navigation').within(() => {
       cy.get('a').each(page => {
         cy.request(page.prop('href'));
       });

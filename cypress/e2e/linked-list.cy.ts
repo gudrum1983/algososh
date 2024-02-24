@@ -1,244 +1,192 @@
 /// <reference types='cypress' />
-import {getCheckActivityButtonAddFillMultiple, getCheckDisableButtonAddMultiple, getDataCy} from '../support/commands';
-import {Alias} from '../support/@types/selectors';
-import {Path} from "../../src/types/path";
+import {
+  checkActivityButtonsWithNonEmptyInput,
+  checkDisabledButtonsWithEmptyInput,
+  getAlias,
+  getDataCy
+} from '../support/commands';
+import {Aliases} from '../support/@types/selectors';
+import {Path} from '../../src/types/path';
+import {
+  changingStyleSelector, circle, circleDataCySelector, current,
+  defaultStyleSelector, first,
+  headStyleSelector,
+  modifiedStyleSelector, smallStyleSelector,
+  tailStyleSelector
+} from '../support/constants';
 
-const inputValue: Alias = '@inputValue';
-const inputIndex: Alias = '@inputIndex';
-const buttonAddTail: Alias = '@buttonAddTail';
-const buttonAddHead: Alias = '@buttonAddHead';
-const buttonDeleteTail: Alias = '@buttonDeleteTail';
-const buttonDeleteHead: Alias = '@buttonDeleteHead';
-const buttonAddIndex: Alias = '@buttonAddIndex';
-const buttonDeleteIndex: Alias = '@buttonDeleteIndex';
-const circle: Alias = '@circle';
-const defaultStyleSelector = '[class*=default]';
-const changingStyleSelector = '[class*=changing]';
-const modifiedStyleSelector = '[class*=modified]';
-const headStyleSelector = '[class*=head]';
-const tailStyleSelector = '[class*=tail]';
+const inputValue: Aliases = 'inputValue';
+const inputIndex: Aliases = 'inputIndex';
+const buttonAddTail: Aliases = 'buttonAddTail';
+const buttonAddHead: Aliases = 'buttonAddHead';
+const buttonDeleteTail: Aliases = 'buttonDeleteTail';
+const buttonDeleteHead: Aliases = 'buttonDeleteHead';
+const buttonAddIndex: Aliases = 'buttonAddIndex';
+const buttonDeleteIndex: Aliases = 'buttonDeleteIndex';
+const last: Aliases = 'last';
+
+function checkDefaultList(circleAlias: Aliases) {
+  getAlias(circleAlias).should('not.have.length', 0).each(($el, index) => {
+    cy.wrap($el).children(defaultStyleSelector).should('contain.text', '');
+  });
+  getAlias(circleAlias).first().children(headStyleSelector).should('contain.text', 'head');
+  getAlias(circleAlias).last().children(tailStyleSelector).should('contain.text', 'tail');
+}
 
 describe('Testing string reversal algorithm page', function () {
   beforeEach(function () {
     cy.visit(Path.list);
     getDataCy('fieldset-value').within(() => {
-      getDataCy('input-value').as('inputValue').clear();
-      getDataCy('button-add-tail').as('buttonAddTail');
-      getDataCy('button-add-head').as('buttonAddHead');
-      getDataCy('button-delete-tail').as('buttonDeleteTail');
-      getDataCy('button-delete-head').as('buttonDeleteHead');
+      getDataCy('input-value').as(inputValue).clear();
+      getDataCy('button-add-tail').as(buttonAddTail);
+      getDataCy('button-add-head').as(buttonAddHead);
+      getDataCy('button-delete-tail').as(buttonDeleteTail);
+      getDataCy('button-delete-head').as(buttonDeleteHead);
     });
     getDataCy('fieldset-index').within(() => {
-      getDataCy('input-index').as('inputIndex').clear();
-      getDataCy('button-add-by-index').as('buttonAddIndex');
-      getDataCy('button-delete-by-index').as('buttonDeleteIndex');
+      getDataCy('input-index').as(inputIndex).clear();
+      getDataCy('button-add-by-index').as(buttonAddIndex);
+      getDataCy('button-delete-by-index').as(buttonDeleteIndex);
     });
-    getDataCy("circle").as("circle");
+    getDataCy('circle').as(circle);
   });
 
   it('Submit button disabled with empty input', () => {
-    getCheckDisableButtonAddMultiple([buttonAddTail, buttonAddHead, buttonAddIndex], inputValue);
-    getCheckDisableButtonAddMultiple([buttonAddIndex, buttonDeleteIndex], inputIndex);
+    checkDisabledButtonsWithEmptyInput([buttonAddTail, buttonAddHead, buttonAddIndex], inputValue);
+    checkDisabledButtonsWithEmptyInput([buttonAddIndex, buttonDeleteIndex], inputIndex);
   });
 
   it('Submit button activity with filled value input', () => {
-    getCheckActivityButtonAddFillMultiple([buttonAddHead, buttonAddTail, buttonAddIndex], inputValue, 'Hi');
+    checkActivityButtonsWithNonEmptyInput([buttonAddHead, buttonAddTail, buttonAddIndex], inputValue, 'Hi');
   });
 
   it('Submit button activity with filled index input', () => {
-    cy.get(inputValue).should('not.be.disabled').type('Hi');
-    cy.get(buttonAddTail).click();
-    cy.get(inputValue).should('not.be.disabled').type('dear');
-    getCheckActivityButtonAddFillMultiple([buttonAddIndex, buttonDeleteIndex], inputIndex, '1');
+    getAlias(inputValue).should('not.be.disabled').type('Hi');
+    getAlias(buttonAddTail).click();
+    getAlias(inputValue).should('not.be.disabled').type('dear');
+    checkActivityButtonsWithNonEmptyInput([buttonAddIndex, buttonDeleteIndex], inputIndex, '1');
   });
 
-  it('default list', () => {
-
-    cy.get(circle).should("not.have.length", 0).each(($el, index) => {
-      cy.wrap($el).children(defaultStyleSelector).should('contain.text', '');
-    });
-    cy.get(circle).first().children(headStyleSelector).should('contain.text', 'head');
-    cy.get(circle).last().children(tailStyleSelector).should('contain.text', 'tail');
-
-    /*    cy.get(circle).each(($el, index) => {
-          if (index === 0) {
-            cy.wrap($el).children(headStyleSelector).as('head').should('contain.text', 'head');
-          } else if (index === (length - 1)) {
-            cy.wrap($el).children(tailStyleSelector).should('contain.text', 'tail');
-          }
-        });*/
-    // Найти все элементы, которые нужно проверить
-    /*    getDataCy('letter').then(($elements) => {
-          // Фильтровать элементы, у которых нет значения
-          const nonEmptyElements = $elements.filter((index, element) => {
-            return Cypress.$(element).text().trim() !== '';
-          });
-          // Проверить, что количество пустых элементов соответствует ожидаемому
-          cy.wrap(nonEmptyElements).should("have.length", 4);
-        });
-        cy.get(buttonClear).click();
-
-        getDataCy('letter').then(($elements) => {
-          // Фильтровать элементы, у которых нет значения
-          const nonEmptyElements = $elements.filter((index, element) => {
-            return Cypress.$(element).text().trim() !== '';
-          });
-          // Проверить, что количество пустых элементов соответствует ожидаемому
-          cy.wrap(nonEmptyElements).should("have.length", 0);
-        });
-        cy.get("@circle").children(headStyleSelector).contains('head').should("have.length", 0);
-        cy.get("@circle").children(tailStyleSelector).contains('tail').should("have.length", 0);
-    */
+  it('Correct default list', () => {
+    checkDefaultList(circle);
   });
 
 
-  it('addTail', () => {
+  it('Correct animation of adding to the tail of the list', () => {
 
-    cy.get(inputValue).should('not.be.disabled').type('hi');
-    cy.get(buttonAddTail).click();
+    getAlias(inputValue).should('not.be.disabled').type('hi');
+    getAlias(buttonAddTail).click();
 
-    cy.get('@circle').each((element, index, $list) => {
+    getAlias(circle).each((element, index, $list) => {
       if (index === ($list.length - 2)) {
         cy.wrap(element)
           .children(headStyleSelector)
-          .find("[class*='changing']")
+          .find(changingStyleSelector)
           .should('contain.text', 'hi');
       }
     });
-    cy.get('@circle').last().as('last').children(modifiedStyleSelector).should('contain.text', 'hi');
-    cy.get('@last').children(defaultStyleSelector).should('contain.text', 'hi');
+    getAlias(circle).last().as(last).children(modifiedStyleSelector).should('contain.text', 'hi');
+    getAlias(last).children(defaultStyleSelector).should('contain.text', 'hi');
 
   });
 
-  it('addHead', () => {
+  it('Correct animation of adding to the head of the list', () => {
 
-    cy.get(inputValue).should('not.be.disabled').type('hi');
-    cy.get(buttonAddHead).click();
+    getAlias(inputValue).should('not.be.disabled').type('hi');
+    getAlias(buttonAddHead).click();
 
-    cy.get('@circle').each((element, index, $list) => {
+    getAlias(circle).each((element, index) => {
       if (index === 0) {
         cy.wrap(element)
           .children(headStyleSelector)
-          .find("[class*='changing']")
+          .find(changingStyleSelector)
           .should('contain.text', 'hi');
       }
     });
-    cy.get('@circle').first().as('first').children(modifiedStyleSelector).should('contain.text', 'hi');
-    cy.get('@first').children(defaultStyleSelector).should('contain.text', 'hi');
+    getAlias(circle).first().as(first).children(modifiedStyleSelector).should('contain.text', 'hi');
+    getAlias(first).children(defaultStyleSelector).should('contain.text', 'hi');
 
   });
 
-  it('addIndex', () => {
+  it('Correct animation of adding by index of the list', () => {
     const valueIndex = 2;
 
-    cy.get(inputValue).should('not.be.disabled').type('hi');
-    cy.get(buttonAddTail).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('sun');
-    cy.get(buttonAddTail).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('moon');
-    cy.get(inputIndex).should('not.be.disabled').type(String(valueIndex));
-    cy.get(buttonAddIndex).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('hi');
+    getAlias(buttonAddTail).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('sun');
+    getAlias(buttonAddTail).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('moon');
+    getAlias(inputIndex).should('not.be.disabled').type(String(valueIndex));
+    getAlias(buttonAddIndex).should('not.be.disabled').click();
 
-    cy.get('@circle').children(changingStyleSelector).not("[class*='small']").as('test1').should('have.length', 1);
-    cy.get('@test1').last().parent("[data-cy='circle']").children(headStyleSelector)
-      .find("[class*='changing']")
+    getAlias(circle).children(changingStyleSelector).not(smallStyleSelector).as(current).should('have.length', 1);
+    getAlias(current).last().parent(circleDataCySelector).children(headStyleSelector)
+      .find(changingStyleSelector)
       .should('contain.text', 'moon');
-    cy.get('@test1').should('have.length', 2);
-    cy.get('@test1').last().parent("[data-cy='circle']").children(headStyleSelector)
-      .find("[class*='changing']")
+    getAlias(current).should('have.length', 2);
+    getAlias(current).last().parent(circleDataCySelector).children(headStyleSelector)
+      .find(changingStyleSelector)
       .should('contain.text', 'moon');
-    cy.get('@circle').eq(valueIndex).as('testtt').children(modifiedStyleSelector).should('contain.text', 'moon');
-    cy.get('@testtt').children(defaultStyleSelector).should('contain.text', 'moon');
-    cy.get('@circle').children(changingStyleSelector).should('have.length', 0);
-    cy.get('@circle').children(defaultStyleSelector).each((element, index, $list) => {
-      if (index === 0) {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(headStyleSelector)
-          .should('contain.text', 'head');
-      } else if (index === $list.length - 1) {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(tailStyleSelector)
-          .should('contain.text', 'tail');
-      } else {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(headStyleSelector)
-          .should('not.contain.text', 'head');
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(tailStyleSelector)
-          .should('not.contain.text', 'tail');
-      }
-    });
+    getAlias(circle).eq(valueIndex).as(current).children(modifiedStyleSelector).should('contain.text', 'moon');
+    getAlias(current).children(defaultStyleSelector).should('contain.text', 'moon');
+    getAlias(circle).children(changingStyleSelector).should('have.length', 0);
+    checkDefaultList(circle)
   });
 
 
-  it('deleteTail', () => {
-    cy.get(inputValue).should('not.be.disabled').type('moon');
-    cy.get(buttonAddTail).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('sun');
-    cy.get(buttonAddTail).should('not.be.disabled').click();
-    cy.get(buttonDeleteTail).should('not.be.disabled').click();
-    cy.get('@circle').children(defaultStyleSelector).last().should('not.contain.text', 'sun')
-      .parent("[data-cy='circle']").children(tailStyleSelector)
-      .find("[class*='changing']")
+  it('Correct animation of removing tail from the list', () => {
+    getAlias(inputValue).should('not.be.disabled').type('moon');
+    getAlias(buttonAddTail).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('sun');
+    getAlias(buttonAddTail).should('not.be.disabled').click();
+    getAlias(buttonDeleteTail).should('not.be.disabled').click();
+    getAlias(circle).children(defaultStyleSelector).last().should('not.contain.text', 'sun')
+      .parent(circleDataCySelector).children(tailStyleSelector)
+      .find(changingStyleSelector)
       .should('contain.text', 'sun');
-    cy.get('@circle').children(defaultStyleSelector).last().should('contain.text', 'moon');
-    cy.get('@circle').children(defaultStyleSelector).last().parent("[data-cy='circle']").children(tailStyleSelector).should('contain.text', 'tail');
+    getAlias(circle).children(defaultStyleSelector).last().should('contain.text', 'moon');
+    getAlias(circle).children(defaultStyleSelector).last().parent(circleDataCySelector).children(tailStyleSelector).should('contain.text', 'tail');
+    checkDefaultList(circle)
+
   });
 
-  it('deleteHead', () => {
-    cy.get(inputValue).should('not.be.disabled').type('moon');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('sun');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(buttonDeleteHead).should('not.be.disabled').click();
-    cy.get('@circle').children(defaultStyleSelector).first().should('not.contain.text', 'sun')
-      .parent("[data-cy='circle']").children(tailStyleSelector)
-      .find("[class*='changing']")
+  it('Correct animation of removing head from the list', () => {
+    getAlias(inputValue).should('not.be.disabled').type('moon');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('sun');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(buttonDeleteHead).should('not.be.disabled').click();
+    getAlias(circle).children(defaultStyleSelector).first().should('not.contain.text', 'sun')
+      .parent(circleDataCySelector).children(tailStyleSelector)
+      .find(changingStyleSelector)
       .should('contain.text', 'sun');
-    cy.get('@circle').children(defaultStyleSelector).first().should('contain.text', 'moon');
-    cy.get('@circle').children(defaultStyleSelector).first().parent("[data-cy='circle']").children(headStyleSelector).should('contain.text', 'head');
+    getAlias(circle).children(defaultStyleSelector).first().should('contain.text', 'moon');
+    getAlias(circle).children(defaultStyleSelector).first().parent(circleDataCySelector).children(headStyleSelector).should('contain.text', 'head');
+    checkDefaultList(circle)
   });
 
 
-  it('deleteIndex', () => {
+  it('Correct animation of removing by index of the list', () => {
     const valueIndex = 2;
-    cy.get(inputValue).should('not.be.disabled').type('test');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('hi');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('sun');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(inputValue).should('not.be.disabled').type('moon');
-    cy.get(buttonAddHead).should('not.be.disabled').click();
-    cy.get(inputIndex).should('not.be.disabled').type(String(valueIndex));
-    cy.get(buttonDeleteIndex).should('not.be.disabled').click();
-
-    cy.get('@circle').children(changingStyleSelector).not("[class*='small']").as('test1').should('have.length', 1);
-    cy.get('@test1').should('have.length', 2);
-    cy.get('@circle').children(defaultStyleSelector).first().parent("[data-cy='circle']").children(tailStyleSelector)
-      .find("[class*='changing']")
+    getAlias(inputValue).should('not.be.disabled').type('test');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('hi');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('sun');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(inputValue).should('not.be.disabled').type('moon');
+    getAlias(buttonAddHead).should('not.be.disabled').click();
+    getAlias(inputIndex).should('not.be.disabled').type(String(valueIndex));
+    getAlias(buttonDeleteIndex).should('not.be.disabled').click();
+    getAlias(circle).children(changingStyleSelector).not(smallStyleSelector).as(current).should('have.length', 1);
+    getAlias(current).should('have.length', 2);
+    getAlias(circle).children(defaultStyleSelector).first().parent(circleDataCySelector).children(tailStyleSelector)
+      .find(changingStyleSelector)
       .should('contain.text', 'hi');
-
-    cy.get('@circle').eq(valueIndex).as('testtt').should('contain.text', 'test');
-    cy.get('@testtt').children(defaultStyleSelector).should('contain.text', 'test');
-    cy.get('@circle').children(changingStyleSelector).should('have.length', 0);
-    cy.get('@circle').children(defaultStyleSelector).each((element, index, $list) => {
-      if (index === 0) {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(headStyleSelector)
-          .should('contain.text', 'head');
-      } else if (index === $list.length - 1) {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(tailStyleSelector)
-          .should('contain.text', 'tail');
-      } else {
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(headStyleSelector)
-          .should('not.contain.text', 'head');
-        cy.wrap(element).parent("[data-cy='circle']")
-          .children(tailStyleSelector)
-          .should('not.contain.text', 'tail');
-      }
-    });
+    getAlias(circle).eq(valueIndex).as(current).should('contain.text', 'test');
+    getAlias(current).children(defaultStyleSelector).should('contain.text', 'test');
+    getAlias(circle).children(changingStyleSelector).should('have.length', 0);
+    checkDefaultList(circle)
   });
+
 });
