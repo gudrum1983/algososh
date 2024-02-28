@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/algososh/static/css/main.3021d3a6.css",
-    "main.js": "/algososh/static/js/main.12e8205b.js",
+    "main.js": "/algososh/static/js/main.ddef68f9.js",
     "static/js/787.0d1937ff.chunk.js": "/algososh/static/js/787.0d1937ff.chunk.js",
     "static/media/bg.jpg": "/algososh/static/media/bg.971318c52485d1963a30.jpg",
     "static/media/arr-hover.svg": "/algososh/static/media/arr-hover.a52854e0c00e33cd4d38.svg",
@@ -20,11 +20,11 @@
     "static/media/loader.svg": "/algososh/static/media/loader.b935a8aeb021da7b2a90191a58ea95f4.svg",
     "static/media/ChevronRight.svg": "/algososh/static/media/ChevronRight.8eb300d5a2d3e25aa3e3.svg",
     "main.3021d3a6.css.map": "/algososh/static/css/main.3021d3a6.css.map",
-    "main.12e8205b.js.map": "/algososh/static/js/main.12e8205b.js.map",
+    "main.ddef68f9.js.map": "/algososh/static/js/main.ddef68f9.js.map",
     "787.0d1937ff.chunk.js.map": "/algososh/static/js/787.0d1937ff.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3021d3a6.css",
-    "static/js/main.12e8205b.js"
+    "static/js/main.ddef68f9.js"
   ]
 }
