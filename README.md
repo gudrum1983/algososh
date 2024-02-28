@@ -50,10 +50,10 @@ ___
 
 ### Используемые инструменты и технологии
 
-- **Языки:** `HTML` `CSS` `TypeScript`
-- **Фреймворки и инструменты для тестирования:** `Cypress` `Jest` `React Testing Library`
-- **Инструменты управления проектом:** `Git` `GitHub` `GitHub Pages`
-- **Инструменты для разработки и сборки проекта:** `Node.js` `Webpack` `Yarn` `Create React App` `React Router`
+- Языки: `HTML` `CSS` `TypeScript`
+- Фреймворки и инструменты для тестирования: `Cypress` `Jest` `React Testing Library`
+- Инструменты управления проектом: `Git` `GitHub` `GitHub Pages`
+- Инструменты для разработки и сборки проекта: `Node.js` `Webpack` `Yarn` `Create React App` `React Router`
 
 ---
 
