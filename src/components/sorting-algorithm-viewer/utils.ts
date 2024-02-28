@@ -1,20 +1,25 @@
 import {cloneSnapElementsColumn, createDefaultColumnElements, swap} from "../../utils/utils";
 import {Direction} from "../../types/direction";
 import {IColumnComponent} from "../../utils/column";
-import {ICircleComponent} from "../../utils/circle";
+import {IStateCircleElement} from "../../utils/circle";
 import {
-  SimpleContent,
-  SimpleSnapshotStorage,
-  TSimpleStateAndSnapshotStirage
-} from "../../utils/simple-snapshot-storage";
+  Originator,
+  Caretaker,
+  TStateAndSnapshotStorage
+} from "../../utils/memento";
 
 
-export const createSelectionSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TSimpleStateAndSnapshotStirage<ICircleComponent> => {
+export const createSelectionSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
+
+  if (initElements.length === 0){
+    throw new Error("Array cannot be empty");
+  }
+
 
   const elements = createDefaultColumnElements(initElements);
 
-  const state = new SimpleContent<Array<IColumnComponent>>(initElements);
-  const snapshotStorage = new SimpleSnapshotStorage<Array<IColumnComponent>>(state);
+  const state = new Originator<Array<IColumnComponent>>(initElements);
+  const snapshotStorage = new Caretaker<Array<IColumnComponent>>(state);
   snapshotStorage.createAndStoreSnapshot()
 
   const {length} = elements;
@@ -55,12 +60,16 @@ export const createSelectionSortingSnapshots = (initElements: Array<IColumnCompo
 
   return {state, snapshotStorage}
 }
-export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TSimpleStateAndSnapshotStirage<ICircleComponent> => {
+export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponent>, direction: Direction): TStateAndSnapshotStorage<IStateCircleElement> => {
+
+  if (initElements.length === 0){
+    throw new Error("Array cannot be empty");
+  }
 
   const elements = createDefaultColumnElements(initElements);
 
-  const state = new SimpleContent<Array<IColumnComponent>>(initElements);
-  const snapshotStorage = new SimpleSnapshotStorage<Array<IColumnComponent>>(state);
+  const state = new Originator<Array<IColumnComponent>>(initElements);
+  const snapshotStorage = new Caretaker<Array<IColumnComponent>>(state);
   snapshotStorage.createAndStoreSnapshot()
 
   const {length} = elements;
@@ -91,13 +100,12 @@ export const createBubbleSortingSnapshots = (initElements: Array<IColumnComponen
 
     if (!swapped) {
       let index = length - startIndex - 1;
-
       for (let i = index; i >= 0; i--) {
         elements[i].setModifiedState()
       }
       state.setState(cloneSnapElementsColumn(elements));
       snapshotStorage.createAndStoreSnapshot();
-      return {state, snapshotStorage}
+      break
     }
     elements[length - startIndex - 1].setModifiedState()
     state.setState(cloneSnapElementsColumn(elements));

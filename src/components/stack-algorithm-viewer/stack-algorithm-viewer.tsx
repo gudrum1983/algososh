@@ -107,14 +107,14 @@ export const StackAlgorithmViewer: React.FC = () => {
   return (
     <>
       <form className={styles.formStack} onSubmit={disableFormSubmission}>
-        <fieldset className={styles.fieldset} disabled={Boolean(isLoader)}>
-          <Input ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
+        <fieldset data-cy="fieldset" className={styles.fieldset} disabled={Boolean(isLoader)}>
+          <Input data-cy="input-value" ref={inputRef} maxLength={max} isLimitText={isLimitText} onChange={handleChange} tabIndex={0}
                  value={values.inputValue} name='inputValue'/>
-          <ButtonMemo text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
+          <ButtonMemo data-cy="button-add-tail" text={"Добавить"} onClick={handlerOnClickAdd} isLoader={isLoader === Buttons.addTail}
                   name={Buttons.addTail} disabled={!values.inputValue}/>
-          <ButtonMemo text={"Удалить"} onClick={handlerOnClickDelete}
+          <ButtonMemo data-cy="button-delete-tail" text={"Удалить"} onClick={handlerOnClickDelete}
                   isLoader={isLoader === Buttons.deleteTail} name={Buttons.deleteTail} disabled={!isCanDelete}/>
-          <ButtonMemo extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
+          <ButtonMemo data-cy="button-clear" extraClass={"ml-40"} text={"Очистить"} onClick={handlerOnClickClear}
                   isLoader={isLoader === Buttons.clear} name={Buttons.clear} disabled={!isCanDelete}/>
         </fieldset>
       </form>

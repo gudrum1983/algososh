@@ -16,7 +16,7 @@ import {IColumnComponent} from "../../utils/column";
 import {StepByStepDisplay} from "../step-by-step-display/step-by-step-display";
 import {createDefaultColumnElements2} from "../../utils/utils";
 
-import {TSimpleStateAndSnapshotStirage} from "../../utils/simple-snapshot-storage";
+import {TStateAndSnapshotStorage} from "../../utils/memento";
 
 
 type TFormData = { inputValue: string; typeSort: string };
@@ -31,7 +31,7 @@ export const SortingAlgorithmViewer = () => {
   const inputInitialState = {inputValue: "", typeSort: SELECTION};
   const {values, handleChange} = useForm<TFormData>(inputInitialState);
 
-  const stateAndSnapshotsForVisualization = useRef<TSimpleStateAndSnapshotStirage<IColumnComponent> | null>(null);
+  const stateAndSnapshotsForVisualization = useRef<TStateAndSnapshotStorage<IColumnComponent> | null>(null);
 
   const delay = SHORT_DELAY_IN_MS;
 

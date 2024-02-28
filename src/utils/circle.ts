@@ -14,10 +14,10 @@ export interface ICircleElement {
   getIndex: () => number;
   setIndex: (index: number) => void;
   setSmallSize: (isSmall: boolean) => void;
-  getElement:() => ICircleComponent;
+  getElement:() => IStateCircleElement;
 }
 
-export interface ICircleComponent {
+export interface IStateCircleElement {
   state: ElementStates;
   letter?: string;
   head?: string | React.ReactElement | null;
@@ -94,7 +94,7 @@ export class CircleElement implements ICircleElement {
     this.isSmall = isSmall
   };
 
-  getElement(): ICircleComponent {
+  getElement(): IStateCircleElement {
     return {
       state: this.state,
       letter: this.letter,

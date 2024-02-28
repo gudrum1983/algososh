@@ -1,10 +1,10 @@
 import React from "react";
 import {Circle} from "../../ui/circle/circle";
 import styles from "./visual-state-fibonacci.module.css"
-import {ICircleComponent} from "../../../utils/circle";
+import {IStateCircleElement} from "../../../utils/circle";
 
-type TVisualStateFibonacciProps<T extends ICircleComponent> = { state: Array<T> };
-export const VisualStateFibonacci = <T extends ICircleComponent, >({state}: TVisualStateFibonacciProps<T>): JSX.Element => {
+type TVisualStateFibonacciProps<T extends IStateCircleElement> = { state: Array<T> };
+export const VisualStateFibonacci = <T extends IStateCircleElement, >({state}: TVisualStateFibonacciProps<T>): JSX.Element => {
 
   const CircleMemo = React.memo(Circle);
 
