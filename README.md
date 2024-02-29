@@ -1,4 +1,4 @@
-# Учебный проект - "МБОУ АЛГОСОШ им. Фибоначчи"
+# Учебный проект - ["МБОУ АЛГОСОШ им. Фибоначчи"](https://gudrum1983.github.io/algososh/)
 
 курс "Web-разработчик +" от Яндекс Практикум, кагортa 25-aquamarune
 
@@ -21,8 +21,7 @@ ___
 - Ui компоненты
 - Главная страница и роутинг React Router
 
-Учебный репозиторий так же содержит описание задания с которым вы
-можете [ознакомиться по ссылке.](https://github.com/yandex-praktikum/algososh)
+Учебный репозиторий так же содержит описание задания с которым вы можете ознакомиться в разделе [ссылки](https://github.com/gudrum1983/algososh?tab=readme-ov-file#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8).
 
 ---
 
@@ -76,3 +75,4 @@ yarn start
 
 * [Ссылка на дизайн проекта.](https://www.figma.com/file/RIkypcTQN5d37g7RRTFid0/Algososh_external_link?node-id=0%3A1)
 * [Готовый проект на GitHub Pages](https://gudrum1983.github.io/algososh/)
+* [Учебный шаблон репозитория](https://github.com/yandex-praktikum/algososh)
